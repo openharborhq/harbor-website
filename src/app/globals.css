@@ -1,26 +1,96 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Tokens exported from the Paper file (Harbor — Landing page), Tailwind v4 theme format. */
+@theme {
+  --color-ground: #ffffff;
+  --color-panel: #ffffff;
+  --color-surface: #f2f5f9;
+  --color-surface-2: #f7f9fc;
+  --color-border: #dce3ec;
+  --color-border-strong: #c0cad8;
+  --color-muted: #586471;
+  --color-faint: #8894a6;
+  --color-text: #0d1622;
+  --color-ink: #0d1622;
+  --color-accent: #123fa8;
+  --color-accent-soft: #e5ebf8;
+  --color-accent-on-dark: #7ea6ff;
+  --color-on-dark: #a7b4c6;
+  --color-terminal: #131e2d;
+  --color-hairline-dark: #243349;
+  --color-warn: #b06a12;
+  --color-warn-soft: #fbf1e1;
+  --color-danger: #a33125;
+
+  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+
+  --text-display: 40px;
+  --text-title: 30px;
+  --text-section: 19px;
+  --text-body: 15px;
+  --text-row: 14px;
+  --text-small: 13px;
+  --text-label: 11px;
+  --text-hero: 76px;
+  --text-section-head: 44px;
+  --text-lead: 21px;
+  --text-copy: 17px;
+
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-label: 0.08em;
+  --tracking-hero: -0.035em;
+  --tracking-mono: 0.1em;
+
+  --leading-display: 42px;
+  --leading-title: 34px;
+  --leading-section: 26px;
+  --leading-body: 22px;
+  --leading-row: 20px;
+  --leading-hero: 76px;
+  --leading-section-head: 48px;
+  --leading-lead: 32px;
+  --leading-copy: 28px;
+
+  --breakpoint-mobile: 390px;
+  --breakpoint-desktop: 1440px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ground);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* The design is a 1440 artboard with 120px gutters; below that the gutters scale with the viewport. */
+@utility gutter {
+  padding-inline: clamp(20px, 8.333vw, 120px);
+}
+
+/* The 650 display weight Paper uses for titles (Inter is variable). */
+@utility font-title {
+  font-weight: 650;
+  font-variation-settings: "wght" 650;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
