@@ -44,17 +44,17 @@ export function Hero() {
         </div>
       </div>
 
-      {/* The app at 1:1, 1320 wide, running off the right edge and cut by the next section's top rule. */}
-      <div className="gutter-l overflow-hidden pt-[76px]">
-        <div className="w-[1320px] max-w-none overflow-hidden rounded-t-[16px] border border-b-0 border-border bg-panel">
+      {/* The app window, fitted to the content column and shown whole. */}
+      <div className="gutter pt-[76px] pb-[96px]">
+        <div className="overflow-hidden rounded-[16px] border border-border bg-panel">
           <Image
             src="/mock/hero-home@2x.png"
             alt="Harbor's Home page: the Weber household's family members and property, with what expires next."
             width={1320}
             height={800}
             priority
-            sizes="1320px"
-            className="block"
+            sizes="(min-width: 1440px) 1200px, 100vw"
+            className="block h-auto w-full"
           />
         </div>
       </div>
