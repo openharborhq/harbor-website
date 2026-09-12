@@ -66,6 +66,11 @@
 html {
   color-scheme: light;
   scroll-behavior: smooth;
+  /*
+   * The artboard reads large at 1:1 in a browser. This is the same as viewing it at 85% browser
+   * zoom: type, spacing, gutters and the content column all scale together.
+   */
+  zoom: 0.85;
 }
 
 body {
