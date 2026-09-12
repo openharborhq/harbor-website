@@ -45,21 +45,21 @@ export function Comparison() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[880px] border-collapse text-left">
+        <table className="w-full min-w-[880px] table-fixed border-collapse text-left">
           <thead>
-            <tr className="border-b-2 border-text align-bottom">
+            <tr className="border-b-2 border-text align-top">
               <th scope="col" className="w-[264px] pb-[16px] pr-[24px]">
                 <span className="sr-only">Question</span>
               </th>
               <th scope="col" className="w-[444px] pb-[16px] pr-[24px] text-[22px] font-bold leading-copy tracking-[-0.025em] text-text">
                 Hosted services
-                <span className="mt-[6px] block font-mono text-[11px] font-medium leading-[14px] tracking-mono text-faint">
+                <span className="mt-[6px] block whitespace-nowrap font-mono text-[11px] font-medium leading-[14px] tracking-mono text-faint">
                   HOSTED · TRUSTWORTHY, EVERPLANS, PRISIDIO, A DRIVE FOLDER
                 </span>
               </th>
               <th scope="col" className="w-[444px] pb-[16px] text-[22px] font-bold leading-copy tracking-[-0.025em] text-accent">
                 Harbor
-                <span className="mt-[6px] block font-mono text-[11px] font-medium leading-[14px] tracking-mono text-faint">
+                <span className="mt-[6px] block whitespace-nowrap font-mono text-[11px] font-medium leading-[14px] tracking-mono text-faint">
                   OPEN SOURCE · SELF-HOSTED · COMMUNITY-BUILT
                 </span>
               </th>
