@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { SearchVisual } from "./visuals/SearchVisual";
 import { TagVisual } from "./visuals/TagVisual";
 import { UploadVisual } from "./visuals/UploadVisual";
 
@@ -20,7 +21,8 @@ const TILES: { img: string; alt: string; title: string; copy: string; visual?: R
   },
   {
     img: "search",
-    alt: "A search whose match is inside a scanned page, with the matching line highlighted.",
+    visual: <SearchVisual />,
+    alt: "",
     title: "Search intuitively",
     copy: "Find documents using multi-language support. Automated tagging makes finding things easy.",
   },

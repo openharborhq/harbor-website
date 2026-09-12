@@ -204,3 +204,46 @@ body {
   .tag-chip { opacity: 1; transform: translate(var(--dx), var(--dy)); background: var(--color-accent-soft); color: var(--color-accent); border-radius: 999px; padding: 3px 11px; font-size: 13px; }
   .tag-ghost { color: var(--color-accent); box-shadow: inset 0 -1.5px 0 var(--color-accent); }
 }
+
+/* ---- Tile visuals: "Search intuitively" (8s loop) ---- */
+.srch-typed { width: 0; animation: srch-typed 8s linear infinite; }
+@keyframes srch-typed {
+  0%, 6%   { width: 0; animation-timing-function: steps(16, end); }
+  26%, 86% { width: 114px; }
+  90%, 100% { width: 0; }
+}
+.srch-placeholder { animation: srch-placeholder 8s linear infinite; }
+@keyframes srch-placeholder {
+  0%, 6%    { opacity: 1; }
+  7%, 89%   { opacity: 0; }
+  92%, 100% { opacity: 1; }
+}
+.srch-caret { animation: srch-caret 1s steps(2, start) infinite; }
+@keyframes srch-caret { to { visibility: hidden; } }
+.srch-doc { animation-duration: 8s; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); animation-iteration-count: infinite; }
+.srch-miss { animation-name: srch-miss; }
+@keyframes srch-miss {
+  0%, 26%   { opacity: 1; }
+  32%, 84%  { opacity: 0.4; }
+  90%, 100% { opacity: 1; }
+}
+.srch-hit { animation-name: srch-hit; }
+@keyframes srch-hit {
+  0%, 26%   { transform: translateY(0); border-color: var(--color-border); box-shadow: none; }
+  32%, 84%  { transform: translateY(-8px); border-color: var(--color-accent); box-shadow: 0 6px 16px rgba(18, 63, 168, 0.12); }
+  90%, 100% { transform: translateY(0); border-color: var(--color-border); box-shadow: none; }
+}
+.srch-line, .srch-lang { opacity: 0; animation: srch-line 8s ease-in-out infinite; }
+@keyframes srch-line {
+  0%, 28%   { opacity: 0; }
+  34%, 84%  { opacity: 1; }
+  90%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .srch-typed, .srch-placeholder, .srch-caret, .srch-doc, .srch-line, .srch-lang { animation: none; }
+  .srch-typed { width: auto; }
+  .srch-placeholder, .srch-caret { opacity: 0; }
+  .srch-miss { opacity: 0.4; }
+  .srch-hit { transform: translateY(-8px); border-color: var(--color-accent); }
+  .srch-line, .srch-lang { opacity: 1; }
+}
