@@ -108,7 +108,7 @@ export function Carousel() {
 
       <div
         ref={trackRef}
-        className="no-scrollbar gutter flex w-full snap-x snap-mandatory gap-[24px] overflow-x-auto"
+        className="no-scrollbar gutter flex w-full snap-x snap-mandatory gap-[24px] overflow-x-auto [scroll-padding-inline:var(--gutter)]"
         aria-roledescription="carousel"
         aria-label="Screens from Harbor"
       >
