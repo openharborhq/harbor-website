@@ -77,9 +77,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* The design is a 1440 artboard with 120px gutters; below that the gutters scale with the viewport. */
+/*
+ * The design is a 1440 artboard with 120px gutters around 1200px of content. Backgrounds stay
+ * full-bleed; the content column never exceeds 1200px and stays centred on wider screens, and
+ * the gutters scale down with the viewport on narrower ones.
+ */
+:root {
+  --gutter: max(clamp(20px, 8.333vw, 120px), calc((100% - 1200px) / 2));
+}
 @utility gutter {
-  padding-inline: clamp(20px, 8.333vw, 120px);
+  padding-inline: var(--gutter);
+}
+@utility gutter-l {
+  padding-left: var(--gutter);
 }
 
 /* The 650 display weight Paper uses for titles (Inter is variable). */

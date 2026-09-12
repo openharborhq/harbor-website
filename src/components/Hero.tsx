@@ -45,7 +45,7 @@ export function Hero() {
       </div>
 
       {/* The app at 1:1, 1320 wide, running off the right edge and cut by the next section's top rule. */}
-      <div className="overflow-hidden pt-[76px] pl-[clamp(20px,8.333vw,120px)]">
+      <div className="gutter-l overflow-hidden pt-[76px]">
         <div className="w-[1320px] max-w-none overflow-hidden rounded-t-[16px] border border-b-0 border-border bg-panel">
           <Image
             src="/mock/hero-home@2x.png"
