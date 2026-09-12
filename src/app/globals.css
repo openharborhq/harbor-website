@@ -247,3 +247,47 @@ body {
   .srch-hit { transform: translateY(-8px); border-color: var(--color-accent); }
   .srch-line, .srch-lang { opacity: 1; }
 }
+
+/* ---- Tile visuals: "Share with tax advisers" (9s loop) ---- */
+.shr-token { opacity: 0; transform: scale(0.6); animation: shr-token 9s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+@keyframes shr-token {
+  0%, 8%    { opacity: 0; transform: translateX(0) scale(0.6); background: var(--color-accent); }
+  12%       { opacity: 1; transform: translateX(0) scale(1); background: var(--color-accent); }
+  34%, 62%  { opacity: 1; transform: translateX(200px) scale(1); background: var(--color-accent); box-shadow: 0 3px 8px rgba(18, 63, 168, 0.25); }
+  66%, 86%  { opacity: 1; transform: translateX(200px) scale(1); background: var(--color-border-strong); box-shadow: none; }
+  90%, 100% { opacity: 0; transform: translateX(200px) scale(0.6); background: var(--color-border-strong); box-shadow: none; }
+}
+.shr-trail { animation: shr-trail 9s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+@keyframes shr-trail {
+  0%, 12%   { width: 0; background: var(--color-accent); }
+  34%, 62%  { width: 200px; background: var(--color-accent); }
+  66%, 86%  { width: 200px; background: var(--color-border-strong); }
+  90%, 100% { width: 0; background: var(--color-border-strong); }
+}
+.shr-badge { opacity: 0; transform: scale(0.4); animation: shr-badge 9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
+@keyframes shr-badge {
+  0%, 34%   { opacity: 0; transform: scale(0.4); }
+  38%, 62%  { opacity: 1; transform: scale(1); }
+  66%, 100% { opacity: 0; transform: scale(0.4); }
+}
+.shr-label { opacity: 0; transform: translateY(6px); animation: shr-label 9s ease-in-out infinite; }
+@keyframes shr-label {
+  0%, 36%   { opacity: 0; transform: translateY(6px); }
+  40%, 86%  { opacity: 1; transform: translateY(0); }
+  90%, 100% { opacity: 0; transform: translateY(6px); }
+}
+.shr-l1, .shr-l2, .shr-l3 { opacity: 0; animation-duration: 9s; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.shr-l1 { animation-name: shr-l1; }
+.shr-l2 { animation-name: shr-l2; }
+.shr-l3 { animation-name: shr-l3; }
+@keyframes shr-l1 { 0%, 38% { opacity: 0; } 40%, 50% { opacity: 1; } 52%, 100% { opacity: 0; } }
+@keyframes shr-l2 { 0%, 50% { opacity: 0; } 52%, 62% { opacity: 1; } 64%, 100% { opacity: 0; } }
+@keyframes shr-l3 { 0%, 63% { opacity: 0; } 66%, 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .shr-token, .shr-trail, .shr-badge, .shr-label, .shr-l1, .shr-l2, .shr-l3 { animation: none; }
+  .shr-token { opacity: 1; transform: translateX(200px) scale(1); }
+  .shr-trail { width: 200px; }
+  .shr-badge { opacity: 1; transform: scale(1); }
+  .shr-label { opacity: 1; transform: none; }
+  .shr-l1 { opacity: 1; }
+}

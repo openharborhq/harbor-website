@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { SearchVisual } from "./visuals/SearchVisual";
+import { ShareVisual } from "./visuals/ShareVisual";
 import { TagVisual } from "./visuals/TagVisual";
 import { UploadVisual } from "./visuals/UploadVisual";
 
@@ -28,7 +29,8 @@ const TILES: { img: string; alt: string; title: string; copy: string; visual?: R
   },
   {
     img: "share",
-    alt: "A share sheet: a link to one document for a tax adviser, with an expiry date and a download switch.",
+    visual: <ShareVisual />,
+    alt: "",
     title: "Share with tax advisers",
     copy: "Secure sharing with tax advisers. You control who can download and when links expire.",
   },
