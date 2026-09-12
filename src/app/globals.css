@@ -109,3 +109,64 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ---- Tile visuals: "Upload photos and docs" (8s loop) ---- */
+.upl-file {
+  animation: upl-file 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: var(--d);
+  transform: translate(calc(var(--x) - 280px), -190px) rotate(-16deg);
+  opacity: 0;
+}
+@keyframes upl-file {
+  0%   { transform: translate(calc(var(--x) - 280px), -190px) rotate(-16deg); opacity: 0; }
+  3%   { opacity: 1; }
+  16%  { transform: translate(var(--x), 0) rotate(var(--r)); opacity: 1; }
+  84%  { transform: translate(var(--x), 0) rotate(var(--r)); opacity: 1; }
+  90%  { opacity: 0; transform: translate(var(--x), 10px) rotate(var(--r)); }
+  100% { opacity: 0; transform: translate(calc(var(--x) - 280px), -190px) rotate(-16deg); }
+}
+.upl-zone { animation: upl-zone 8s ease-in-out infinite; }
+@keyframes upl-zone {
+  0%, 4%   { border-color: var(--color-border-strong); background: var(--color-ground); }
+  8%, 16%  { border-color: var(--color-accent); background: var(--color-accent-soft); }
+  22%, 100% { border-color: var(--color-border-strong); background: var(--color-ground); }
+}
+.upl-idle { animation: upl-idle 8s ease-in-out infinite; }
+@keyframes upl-idle {
+  0%, 12%  { opacity: 1; }
+  18%, 90% { opacity: 0; }
+  96%, 100% { opacity: 1; }
+}
+.upl-reading { animation: upl-reading 8s ease-in-out infinite; }
+@keyframes upl-reading {
+  0%, 18%  { opacity: 0; }
+  22%, 56% { opacity: 1; }
+  60%, 100% { opacity: 0; }
+}
+.upl-bar { animation: upl-bar 8s cubic-bezier(0.3, 0, 0.3, 1) infinite; }
+@keyframes upl-bar {
+  0%, 22% { width: 0; }
+  57%, 100% { width: 100%; }
+}
+.upl-scan { animation: upl-scan 8s linear infinite; }
+@keyframes upl-scan {
+  0%, 22%  { top: 0; opacity: 0; }
+  23%      { opacity: 1; }
+  38%      { top: 72px; opacity: 1; }
+  38.5%    { top: 0; opacity: 0; }
+  39%      { opacity: 1; }
+  55%      { top: 72px; opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+.upl-done { animation: upl-done 8s ease-in-out infinite; transform: translateY(6px); }
+@keyframes upl-done {
+  0%, 58%  { opacity: 0; transform: translateY(6px); }
+  63%, 86% { opacity: 1; transform: translateY(0); }
+  91%, 100% { opacity: 0; transform: translateY(6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .upl-file, .upl-zone, .upl-idle, .upl-reading, .upl-bar, .upl-scan, .upl-done { animation: none; }
+  .upl-file { transform: translate(var(--x), 0) rotate(var(--r)); opacity: 1; }
+  .upl-idle, .upl-reading { opacity: 0; }
+  .upl-done { opacity: 1; transform: none; }
+}

@@ -1,9 +1,12 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
+import { UploadVisual } from "./visuals/UploadVisual";
 
-const TILES = [
+const TILES: { img: string; alt: string; title: string; copy: string; visual?: ReactNode }[] = [
   {
     img: "filing",
-    alt: "A phone photo of a letter being dropped into Harbor, with the summary and category it proposes.",
+    visual: <UploadVisual />,
+    alt: "",
     title: "Upload photos and docs",
     copy: "All uploaded files are auto-summarized and categorized for you. Filing docs is a breeze.",
   },
@@ -36,6 +39,7 @@ export function Pipeline() {
       <div className="grid gap-[48px] md:grid-cols-2 md:gap-x-[24px]">
         {TILES.map((t) => (
           <article key={t.img} className="flex flex-col gap-[18px]">
+            {t.visual ?? (
             <div className="overflow-hidden rounded-lg border border-border bg-surface">
               <Image
                 src={`/mock/tile-${t.img}@2x.png`}
@@ -46,6 +50,7 @@ export function Pipeline() {
                 className="block h-auto w-full"
               />
             </div>
+            )}
             <div className="flex flex-col gap-[8px]">
               <h3 className="font-title text-lead leading-copy tracking-[-0.025em] text-text">{t.title}</h3>
               <p className="text-[15.5px] leading-[25px] text-muted">{t.copy}</p>
