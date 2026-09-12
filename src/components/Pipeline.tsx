@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { TagVisual } from "./visuals/TagVisual";
 import { UploadVisual } from "./visuals/UploadVisual";
 
 const TILES: { img: string; alt: string; title: string; copy: string; visual?: ReactNode }[] = [
@@ -12,7 +13,8 @@ const TILES: { img: string; alt: string; title: string; copy: string; visual?: R
   },
   {
     img: "tagging",
-    alt: "A document with the tags Harbor pulled from its own text: the insurer, the address, the year.",
+    visual: <TagVisual />,
+    alt: "",
     title: "Tagged automatically",
     copy: "Every document gets tags pulled from its own content: the insurer, the address, the year, “tax-deductible”. A filter finds what a folder never could.",
   },
