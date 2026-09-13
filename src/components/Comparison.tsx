@@ -36,6 +36,24 @@ const ROWS: [string, string, string][] = [
   ],
 ];
 
+/*
+ * The phone view. The table has nowhere to go on a 390px screen — three columns and seven rows,
+ * scrolled sideways with a pinned label, is a worse read than no table at all. Below md the same
+ * argument is made as a list: each row's Harbor answer with its question folded into the sentence,
+ * so a bullet carries its own meaning instead of borrowing half of it from a column header.
+ *
+ * The wording is the table's. Change a row's claim above and change its bullet here.
+ */
+const BULLETS: string[] = [
+  "Records live on your own hardware, in your house or on a server you rent, reachable only over your own network.",
+  "Only you and the people you invite can read them. There is no vendor account, and the encryption keys never leave your disk.",
+  "If there’s a breach, your box is nobody’s honeypot. Nothing listens on the public internet, and nothing phones home.",
+  "There is no company to change course. The code is AGPL-3.0 and can be forked, audited and kept running by anyone; your files stay plain files on disk.",
+  "It is built by a community, in the open. Every line of code, every issue and the roadmap are on GitHub. Read it before you trust it.",
+  "It is free. A small Linux box you already own, or a $5 to $10 VPS. No tiers, no seats.",
+  "If your records are subpoenaed, there is no third party to ask. Anyone who wants your records has to come to you, and you will know.",
+];
+
 export function Comparison() {
   return (
     <section id="pricing" className="gutter flex flex-col gap-[40px] pb-[88px] pt-[96px]">
@@ -44,12 +62,31 @@ export function Comparison() {
         <h2 className="text-section-head font-bold leading-section-head tracking-tight text-text">The open source alternative.</h2>
       </div>
 
+      {/* The phone reads the bullets; md and up gets the table. */}
+      <div className="flex flex-col gap-[22px] md:hidden">
+        <p className="text-body leading-[23px] text-muted">
+          Against a hosted vault — Trustworthy, Everplans, Prisidio, a Drive folder — running Harbor yourself means:
+        </p>
+        <ul className="flex flex-col gap-[18px]">
+          {BULLETS.map((bullet) => (
+            <li key={bullet} className="flex gap-[12px]">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" className="mt-[3px] shrink-0 text-accent" aria-hidden="true">
+                <path d="M3.5 9.2 6.8 12.5 13.5 4.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {/* text-text, not muted: the table gives the Harbor column the darker ink and the
+                  hosted one the lighter, and this is the Harbor column. */}
+              <p className="text-body leading-[23px] text-text">{bullet}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/*
        * Narrower than 880px the table scrolls sideways inside this region. The question column
        * stays pinned so a row keeps its label while the two answers slide past; the region is
        * focusable so keyboard users can scroll it too.
        */}
-      <div className="overflow-x-auto" role="region" aria-label="Hosted services compared with Harbor" tabIndex={0}>
+      <div className="hidden overflow-x-auto md:block" role="region" aria-label="Hosted services compared with Harbor" tabIndex={0}>
         <table className="w-full min-w-[880px] table-fixed border-collapse text-left">
           <thead>
             <tr className="border-b-2 border-text align-top">
@@ -83,7 +120,8 @@ export function Comparison() {
           </tbody>
         </table>
       </div>
-      <p className="-mt-[26px] max-w-[900px] text-small leading-row text-faint">
+      {/* The pull-up is tuned to the table's last rule; under the bullets it would crowd them. */}
+      <p className="max-w-[900px] text-small leading-row text-faint md:-mt-[26px]">
         Hosted pricing from trustworthy.com, everplans.com and prisidio.com, September 2026. Nothing here is legal
         advice; how a request for records is handled depends on where you and the provider are.
       </p>

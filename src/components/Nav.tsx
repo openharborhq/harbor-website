@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { formatStars, getStars, GITHUB } from "@/lib/github";
 import { Wordmark } from "./Logo";
+import { NavMenu } from "./NavMenu";
+import { NavScroll } from "./NavScroll";
 import { ThemeToggle } from "./ThemeToggle";
 
 export { GITHUB };
@@ -23,12 +25,16 @@ export async function Nav({ current, wide = false }: { current?: NavKey; wide?: 
   const showStars = stars !== null && stars >= STARS_FLOOR;
 
   return (
-    <header className={`${wide ? "px-[28px] md:px-[36px]" : "gutter"} flex items-center justify-between border-b border-border py-[26px]`}>
+    // Pinned to the top on a phone, where the call to action is only in reach if the bar stays
+    // put. Left in the flow above md, where the page has room to carry it.
+    <header className={`${wide ? "px-[28px] md:px-[36px]" : "gutter"} relative flex items-center justify-between border-b border-border py-[26px] max-md:sticky max-md:top-0 max-md:z-50 max-md:bg-ground`}>
+      <NavScroll />
       <Link href="/" aria-label="Harbor home">
         <Wordmark />
       </Link>
-      {/* Below md the links fold away and the GitHub link keeps only its mark, so the wordmark,
-          the theme control, GitHub and the pill still sit on one line on a 390px phone. */}
+      {/* Below md the links, GitHub and the theme control fold into the burger, so the wordmark,
+          the pill and the burger still sit on one line on a 390px phone. Anything more and "Get
+          started" wraps. */}
       <nav className="flex items-center gap-[14px] md:gap-[34px]" aria-label="Primary">
         {LINKS.map((l) => (
           <Link
@@ -40,18 +46,36 @@ export async function Nav({ current, wide = false }: { current?: NavKey; wide?: 
             {l.label}
           </Link>
         ))}
-        <ThemeToggle />
+        <span className="hidden md:block">
+          <ThemeToggle />
+        </span>
         <Link
           href={GITHUB}
-          className="flex min-h-[40px] min-w-[40px] items-center justify-center gap-[8px] text-text md:min-w-0 md:justify-start"
+          className="hidden min-h-[40px] items-center gap-[8px] text-text md:flex"
           aria-label={showStars ? `Harbor on GitHub, ${formatStars(stars)} stars` : "Harbor on GitHub"}
         >
           <GitHubIcon />
-          <span className="hidden font-mono text-small font-medium leading-[16px] md:inline">{showStars ? formatStars(stars) : "GitHub"}</span>
+          <span className="font-mono text-small font-medium leading-[16px]">{showStars ? formatStars(stars) : "GitHub"}</span>
         </Link>
-        <Link href={`${GITHUB}#install`} className="rounded-pill bg-text px-[20px] py-[11px] text-row font-semibold leading-[18px] tracking-[-0.01em] text-ground">
+        {/* Held back until the page moves — see nav-cta in globals.css. It grows leftwards into
+            empty bar, so the burger it appears beside does not shift. */}
+        <Link href={`${GITHUB}#install`} className="nav-cta rounded-pill bg-text px-[20px] py-[11px] text-row font-semibold leading-[18px] tracking-[-0.01em] text-ground">
           Get started
         </Link>
+        <NavMenu links={LINKS} current={current} wide={wide}>
+          {/* The mark alone carries the link in the bar above md; in the menu there is room to say
+              what it is, and to spell the star count out. */}
+          <Link href={GITHUB} className="flex items-center gap-[10px] py-[13px] text-body font-medium leading-[18px] text-muted">
+            <GitHubIcon />
+            GitHub
+            {showStars && <span className="font-mono text-small leading-[16px] text-faint">{formatStars(stars)}</span>}
+          </Link>
+          {/* The control cycles in place: changing the theme is not a reason to close the menu. */}
+          <div className="flex items-center justify-between border-t border-border py-[6px]">
+            <span className="text-body font-medium leading-[18px] text-muted">Theme</span>
+            <ThemeToggle />
+          </div>
+        </NavMenu>
       </nav>
     </header>
   );
