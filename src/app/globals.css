@@ -127,6 +127,9 @@ body {
  */
 :root {
   --gutter: max(clamp(20px, 8.333vw, 120px), calc((100% - 1200px) / 2));
+  /* The nav's own height: 26px of padding around a 40px row, plus its rule. Anything that sticks
+     underneath it on a phone has to start below this. */
+  --nav-h: 93px;
 }
 @utility gutter {
   padding-inline: var(--gutter);
@@ -511,6 +514,26 @@ body {
   .docs-pager { grid-template-columns: minmax(0, 1fr); }
   .docs-pager-link.is-next { text-align: left; align-items: flex-start; }
 }
+/* ---- Phone ---- */
+@media (max-width: 767px) {
+  /*
+   * The call to action is held back until the page moves: at the top of a phone screen the nav is
+   * the wordmark and the menu, nothing else. It is the last thing before the burger in a bar that
+   * is otherwise empty, so it grows leftwards into that space and nothing already on screen moves
+   * — the point of a nav that stays put is that it stays put.
+   */
+  .nav-cta { display: none; }
+  html[data-scrolled] .nav-cta { display: block; animation: nav-cta-in 180ms ease-out; }
+
+  /* The docs list sticks under the nav rather than behind it, and an anchored heading clears
+     both. */
+  .docs-nav { top: var(--nav-h); }
+  .doc-prose h2, .doc-prose h3 { scroll-margin-top: calc(var(--nav-h) + 56px); }
+}
+@keyframes nav-cta-in {
+  from { opacity: 0; transform: translateY(-6px); }
+}
+
 @media (max-width: 639px) {
   .doc-prose { font-size: 16px; line-height: 26px; }
   .docs-title { font-size: 30px; }

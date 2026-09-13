@@ -28,18 +28,22 @@ export function Hero() {
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </Link>
+          {/* Gone on a phone: the section below is the answer to it, and scrolling is already how
+              you get there. Kept above md, where the two buttons sit side by side. */}
           <Link
             href="#features"
-            className="rounded-pill border border-border px-[26px] py-[15px] text-[16px] font-semibold leading-row tracking-[-0.01em] text-text"
+            className="hidden rounded-pill border border-border px-[26px] py-[15px] text-[16px] font-semibold leading-row tracking-[-0.01em] text-text md:block"
           >
             See how it works
           </Link>
         </div>
       </div>
 
-      {/* The negative right margin lets the cable run past the gutter on narrow screens too;
-          the section clips it, so nothing overflows the page. */}
-      <div className="-mr-[var(--gutter)] w-auto shrink-0 lg:mr-0 lg:ml-auto lg:w-[640px]">
+      {/* Gone on a phone: at that width the drawing is too small to read as a scanner and a stack
+          of paper, and it pushes the two buttons — the only thing this section is asking for — off
+          the first screen. The negative right margin lets the cable run past the gutter on the
+          widths that do keep it; the section clips it, so nothing overflows the page. */}
+      <div className="hidden w-auto shrink-0 md:-mr-[var(--gutter)] md:block lg:mr-0 lg:ml-auto lg:w-[640px]">
         <VaultIllustration />
       </div>
     </section>
