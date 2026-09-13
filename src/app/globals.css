@@ -22,6 +22,12 @@
   --color-warn-soft: #fbf1e1;
   --color-danger: #a33125;
 
+  /* The promise band stays the same saturated cobalt in both themes, so these four never flip. */
+  --color-band: #123fa8;
+  --color-on-band: #ffffff;
+  --color-band-soft: #c3d2f5;
+  --color-band-line: #5f82d2;
+
   --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
 
@@ -65,14 +71,12 @@
 
 html {
   color-scheme: light;
-  scroll-behavior: smooth;
-  /*
-   * The artboard reads large at 1:1 in a browser. This is the same as viewing it at 85% browser
-   * zoom: type, spacing, gutters and the content column all scale together.
-   */
-  zoom: 0.85;
 }
-
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
 body {
   background: var(--color-ground);
   color: var(--color-text);
@@ -80,6 +84,40 @@ body {
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Browser surfaces the palette owns: focus, selection, tabular numerals in the mono face. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+.font-mono,
+.font-mono * {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Skip link: invisible until a keyboard user tabs into the page. */
+.skip-link {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 50;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+  color: var(--color-ground);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform 120ms ease-out;
+}
+.skip-link:focus-visible {
+  transform: none;
+  outline-color: var(--color-ground);
+  outline-offset: -4px;
 }
 
 /*
@@ -290,4 +328,428 @@ body {
   .shr-badge { opacity: 1; transform: scale(1); }
   .shr-label { opacity: 1; transform: none; }
   .shr-l1 { opacity: 1; }
+}
+
+/* ---- Tile stages are drawn at 500px. Narrower containers scale them whole instead of cropping. ---- */
+.tile-stage-wrap {
+  container-type: inline-size;
+}
+@container (max-width: 540px) {
+  .tile-stage { transform: scale(0.84); }
+}
+@container (max-width: 450px) {
+  .tile-stage { transform: scale(0.72); }
+}
+@container (max-width: 390px) {
+  .tile-stage { transform: scale(0.64); }
+}
+@container (max-width: 340px) {
+  .tile-stage { transform: scale(0.56); }
+}
+
+/* =====================================================================================
+   Docs. The conventional documentation shell: full width, left navigation, content in the
+   middle, on-this-page on the right. Same tokens as the landing page throughout.
+   ===================================================================================== */
+
+/* Every size below is its on-screen size: the site renders at 1:1. */
+:root { --ds: 1; }
+
+/* ---- Shell ---- */
+.docs-shell { display: grid; grid-template-columns: 272px minmax(0, 1fr); min-height: 70vh; }
+.docs-main { display: grid; grid-template-columns: minmax(0, 800px) 232px; justify-content: start; column-gap: 64px; align-items: start; padding: 44px 40px 96px 64px; min-width: 0; }
+.docs-article { max-width: 800px; min-width: 0; }
+
+/* ---- Left navigation ---- */
+.docs-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border-right: 1px solid var(--color-border); padding: 36px 20px 48px 36px; background: var(--color-ground); scrollbar-width: thin; }
+.docs-nav-toggle { display: none; }
+.docs-nav-section + .docs-nav-section { margin-top: 28px; }
+.docs-nav-heading { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 8px; padding-left: 10px; }
+.docs-nav-link { display: block; padding: 6px 10px; border-radius: 6px; font-size: calc(14px * var(--ds)); line-height: calc(20px * var(--ds)); color: var(--color-muted); }
+.docs-nav-link:hover { color: var(--color-text); background: var(--color-surface); }
+.docs-nav-link[aria-current] { color: var(--color-accent); background: var(--color-accent-soft); font-weight: 600; }
+
+/* ---- Article ---- */
+.docs-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; font-size: calc(13.5px * var(--ds)); line-height: calc(20px * var(--ds)); color: var(--color-muted); }
+.docs-crumbs li + li::before { content: "/"; margin-right: 8px; color: var(--color-border-strong); }
+.docs-crumbs a { color: var(--color-muted); }
+.docs-crumbs a:hover { color: var(--color-accent); }
+.docs-title { margin-top: 12px; font-size: calc(36px * var(--ds)); line-height: 1.15; font-weight: 700; letter-spacing: var(--tracking-tight); color: var(--color-text); }
+.docs-desc { margin-top: 14px; font-size: calc(18px * var(--ds)); line-height: calc(28px * var(--ds)); color: var(--color-muted); }
+.docs-article > .doc-prose { margin-top: 36px; }
+
+.docs-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--color-border); }
+.docs-pager-link { display: flex; flex-direction: column; gap: 4px; color: var(--color-text); }
+.docs-pager-link.is-next { text-align: right; align-items: flex-end; }
+.docs-pager-label { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); }
+.docs-pager-title { font-size: calc(16px * var(--ds)); line-height: calc(22px * var(--ds)); font-weight: 600; }
+.docs-pager-link:hover .docs-pager-title { color: var(--color-accent); }
+
+/* ---- On this page ---- */
+.docs-toc { position: sticky; top: 44px; align-self: start; max-height: calc(100vh - 88px); overflow-y: auto; font-size: calc(13.5px * var(--ds)); line-height: calc(19px * var(--ds)); }
+.docs-toc-heading { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text); margin-bottom: 10px; }
+.docs-toc-list { border-left: 1px solid var(--color-border); }
+.docs-toc-link { display: block; padding: 4px 0 4px 14px; margin-left: -1px; border-left: 1px solid transparent; color: var(--color-muted); }
+.docs-toc-list li[data-depth="3"] .docs-toc-link { padding-left: 26px; }
+.docs-toc-link:hover { color: var(--color-text); }
+.docs-toc-link[aria-current] { color: var(--color-accent); border-left-color: var(--color-accent); }
+.docs-toc-mobile { display: none; }
+
+/* ---- Prose ---- */
+.doc-prose { font-size: calc(17px * var(--ds)); line-height: calc(28px * var(--ds)); color: var(--color-text); }
+.doc-prose > * + * { margin-top: 18px; }
+.doc-prose h2 { font-size: calc(24px * var(--ds)); line-height: calc(32px * var(--ds)); font-weight: 650; font-variation-settings: "wght" 650; letter-spacing: var(--tracking-snug); margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--color-border); scroll-margin-top: 28px; }
+.doc-prose h3 { font-size: calc(19px * var(--ds)); line-height: calc(26px * var(--ds)); font-weight: 650; font-variation-settings: "wght" 650; letter-spacing: var(--tracking-snug); margin-top: 36px; scroll-margin-top: 28px; }
+.doc-prose h2 + *, .doc-prose h3 + * { margin-top: 12px; }
+.doc-prose .doc-anchor { margin-left: 10px; color: var(--color-border-strong); text-decoration: none; opacity: 0; font-weight: 500; }
+.doc-prose h2:hover .doc-anchor, .doc-prose h3:hover .doc-anchor, .doc-prose .doc-anchor:focus-visible { opacity: 1; }
+.doc-prose .doc-anchor:hover { color: var(--color-accent); }
+@media (hover: none) { .doc-prose .doc-anchor { opacity: 1; } }
+.doc-prose a { color: var(--color-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent); }
+.doc-prose a:hover { text-decoration-color: currentColor; }
+.doc-prose strong { font-weight: 600; }
+.doc-prose em { font-style: italic; }
+.doc-prose ul, .doc-prose ol { padding-left: 24px; }
+.doc-prose ul { list-style: disc; }
+.doc-prose ol { list-style: decimal; }
+.doc-prose li + li { margin-top: 8px; }
+.doc-prose li::marker { color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.doc-prose :not(pre) > code { font-family: var(--font-mono); font-size: 0.86em; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 4px; padding: 1px 3px; white-space: nowrap; }
+.doc-prose hr { border: 0; border-top: 1px solid var(--color-border); margin: 32px 0; }
+
+/* Tables: hairlines, scroll sideways inside the column rather than break it. */
+.doc-table { overflow-x: auto; margin-top: 22px; }
+.doc-table table { width: 100%; border-collapse: collapse; font-size: calc(15px * var(--ds)); line-height: calc(23px * var(--ds)); text-align: left; }
+.doc-table th { font-weight: 600; color: var(--color-text); border-bottom: 2px solid var(--color-text); padding: 8px 20px 10px 0; vertical-align: bottom; }
+.doc-table td { border-bottom: 1px solid var(--color-border); padding: 11px 20px 11px 0; vertical-align: top; color: var(--color-text); }
+.doc-table td:first-child { font-weight: 500; }
+.doc-table table:has(tr > :nth-child(3)) { min-width: 520px; }
+.doc-table tr > *:last-child { padding-right: 0; }
+
+/* Code: the terminal token, a slim bar with the copy control. */
+.doc-prose figure[data-rehype-pretty-code-figure] { margin-top: 22px; border-radius: 12px; background: var(--color-terminal); color: #dfe6f1; overflow: hidden; }
+.doc-prose figcaption[data-rehype-pretty-code-title] { font-family: var(--font-mono); font-size: 12px; line-height: 16px; letter-spacing: 0.06em; color: var(--color-on-dark); padding: 10px 18px; border-bottom: 1px solid var(--color-hairline-dark); }
+.doc-code { position: relative; }
+.doc-code-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 10px 7px 20px; border-bottom: 1px solid var(--color-hairline-dark); }
+.doc-code-lang { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.1em; color: var(--color-on-dark); }
+.doc-code pre { margin: 0; padding: 16px 20px 18px; overflow-x: auto; font-family: var(--font-mono); font-size: calc(13.5px * var(--ds)); line-height: calc(22px * var(--ds)); tab-size: 4; white-space: pre-wrap; overflow-wrap: anywhere; scrollbar-width: thin; scrollbar-color: var(--color-hairline-dark) transparent; }
+.doc-code pre code { display: block; }
+/* Wrapped continuation lines hang under the command, so a wrap never reads as a new command. */
+.doc-code [data-line] { display: block; padding-left: 2ch; text-indent: -2ch; }
+.doc-code pre::selection, .doc-code pre *::selection { background: rgba(126, 166, 255, 0.28); color: inherit; }
+.doc-copy { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.08em; color: var(--color-on-dark); background: var(--color-terminal); border: 1px solid var(--color-hairline-dark); border-radius: var(--radius-pill); padding: 6px 10px; cursor: pointer; }
+.doc-copy:hover { color: #ffffff; border-color: var(--color-on-dark); }
+.doc-copy[data-state="copied"] { color: var(--color-accent-on-dark); border-color: var(--color-accent-on-dark); }
+.doc-copy:focus-visible { outline-color: var(--color-accent-on-dark); }
+/* A plain code block outside the prose (the key diagram) keeps the same look. */
+.doc-prose pre:not([data-language]) { font-family: var(--font-mono); }
+
+/* Notes: a hairline box with a label, never a coloured edge. */
+.doc-note { border: 1px solid var(--color-border); background: var(--color-surface); border-radius: 12px; padding: 18px 22px 20px; margin-top: 24px; }
+.doc-note-label { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 10px; }
+.doc-note-body { font-size: calc(15.5px * var(--ds)); line-height: calc(25px * var(--ds)); color: var(--color-text); }
+.doc-note-body > * + * { margin-top: 12px; }
+
+/* The checkpoint list. */
+.doc-prove { margin-top: 24px; border: 1px solid var(--color-border); border-radius: 12px; padding: 18px 22px 20px; }
+.doc-prove-count { font-family: var(--font-mono); font-size: calc(12px * var(--ds)); line-height: 16px; letter-spacing: 0.06em; color: var(--color-muted); margin-bottom: 14px; }
+.doc-prove-num { color: var(--color-accent); font-weight: 500; }
+.doc-prove-reset { font: inherit; letter-spacing: inherit; color: var(--color-muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.doc-prove-reset:hover { color: var(--color-text); }
+.doc-prove-list { list-style: none; padding: 0; }
+.doc-prove-list li + li { margin-top: 2px; }
+.doc-prove-item { display: grid; grid-template-columns: 18px minmax(0, 1fr); column-gap: 14px; align-items: start; padding: 8px 0; cursor: pointer; font-size: calc(16px * var(--ds)); line-height: calc(25px * var(--ds)); }
+.doc-prove-item input { width: 18px; height: 18px; margin-top: 4px; accent-color: var(--color-accent); cursor: pointer; }
+.doc-prove-item input:checked + .doc-prove-text { color: var(--color-muted); text-decoration: line-through; text-decoration-color: var(--color-border-strong); }
+
+/* The box diagram. */
+.doc-box { margin-top: 24px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 18px; font-size: calc(13.5px * var(--ds)); line-height: calc(19px * var(--ds)); }
+.doc-box-caption { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 10px; }
+.doc-box-outside ul { display: flex; flex-direction: column; gap: 10px; }
+.doc-box-outside li { display: flex; flex-direction: column; gap: 2px; border: 1px solid var(--color-border); border-radius: 8px; padding: 9px 12px; }
+.doc-box-outside-name { font-weight: 600; color: var(--color-text); }
+.doc-box-outside-via { color: var(--color-muted); font-size: calc(12.5px * var(--ds)); }
+.doc-box-machine { border: 1px solid var(--color-border-strong); border-radius: 12px; padding: 14px 16px 16px; background: var(--color-ground); }
+.doc-box-containers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.doc-box-container { display: flex; flex-direction: column; gap: 3px; border: 1px solid var(--color-border); border-radius: 8px; padding: 9px 12px; background: var(--color-surface); }
+.doc-box-name { font-family: var(--font-mono); font-size: calc(12.5px * var(--ds)); letter-spacing: 0.02em; color: var(--color-text); font-weight: 500; }
+.doc-box-does { color: var(--color-muted); font-size: calc(12.5px * var(--ds)); line-height: calc(18px * var(--ds)); }
+.doc-box-talks { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.04em; margin-top: 4px; }
+.doc-box-talks.is-out { color: var(--color-accent); }
+.doc-box-talks.is-none { color: var(--color-text); }
+.doc-box-talks.is-in { color: var(--color-muted); }
+.doc-box-volume { margin-top: 10px; border: 1px dashed var(--color-border-strong); border-radius: 8px; padding: 9px 12px; color: var(--color-muted); font-size: calc(12.5px * var(--ds)); line-height: calc(18px * var(--ds)); }
+.doc-box-volume .doc-box-name { margin-right: 8px; }
+.doc-box-legend { grid-column: 1 / -1; font-size: calc(13.5px * var(--ds)); line-height: calc(20px * var(--ds)); color: var(--color-muted); }
+
+/* ---- Narrower ---- */
+@media (max-width: 1279px) {
+  .docs-main { grid-template-columns: minmax(0, 1fr); padding: 36px 32px 88px 44px; }
+  .docs-article { max-width: 800px; }
+  .docs-toc { display: none; }
+  .docs-toc-mobile { display: block; margin-top: 24px; border: 1px solid var(--color-border); border-radius: 10px; padding: 0 16px; font-size: calc(14px * var(--ds)); line-height: calc(20px * var(--ds)); }
+  .docs-toc-mobile summary { cursor: pointer; padding: 11px 0; font-family: var(--font-mono); font-size: calc(11px * var(--ds)); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text); }
+  .docs-toc-mobile .docs-toc-list { border-left: 0; padding-bottom: 12px; }
+  .docs-toc-mobile .docs-toc-link { border-left: 0; padding-left: 0; }
+  .docs-toc-mobile li[data-depth="3"] .docs-toc-link { padding-left: 16px; }
+  .docs-article { order: -1; }
+  .docs-main { display: flex; flex-direction: column; align-items: stretch; }
+}
+@media (max-width: 1023px) {
+  .docs-shell { grid-template-columns: minmax(0, 1fr); }
+  .docs-nav { position: sticky; top: 0; z-index: 20; max-height: none; overflow: visible; border-right: 0; border-bottom: 1px solid var(--color-border); padding: 0; }
+  .docs-nav-toggle { display: flex; width: 100%; align-items: center; gap: 12px; padding: 14px 28px; background: var(--color-ground); font-size: 15px; line-height: 20px; color: var(--color-text); text-align: left; cursor: pointer; }
+  .docs-nav-toggle-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); }
+  .docs-nav-toggle-current { flex: 1; font-weight: 600; }
+  .docs-nav-toggle[aria-expanded="true"] .docs-nav-toggle-icon { transform: rotate(180deg); }
+  .docs-nav-list { display: none; padding: 8px 20px 24px; border-top: 1px solid var(--color-border); background: var(--color-ground); max-height: 70vh; overflow-y: auto; }
+  .docs-nav-list[data-open] { display: block; }
+  .docs-main { padding: 32px 28px 80px; }
+  .doc-prose h2, .doc-prose h3 { scroll-margin-top: 64px; }
+  .doc-box { grid-template-columns: minmax(0, 1fr); }
+  .doc-box-containers { grid-template-columns: minmax(0, 1fr); }
+  .docs-pager { grid-template-columns: minmax(0, 1fr); }
+  .docs-pager-link.is-next { text-align: left; align-items: flex-start; }
+}
+@media (max-width: 639px) {
+  .doc-prose { font-size: 16px; line-height: 26px; }
+  .docs-title { font-size: 30px; }
+  .docs-main { padding: 28px 20px 72px; }
+  .docs-nav-toggle { padding: 12px 20px; }
+  .doc-code pre { padding: 14px 16px 16px; font-size: 13px; }
+  .doc-note, .doc-prove { padding: 16px 16px 18px; }
+}
+
+/* ---- Dark theme ---- */
+/* The dark palette, derived from the landing page's terminal and on-dark tokens. It lands on the
+   root, so the landing page and the docs alike are repainted by the same redefinition. */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --color-ground: #0f1723;
+  --color-panel: #0f1723;
+  --color-surface: #162031;
+  --color-surface-2: #1a2536;
+  --color-border: #243349;
+  --color-border-strong: #34475f;
+  --color-muted: #a7b4c6;
+  --color-faint: #7d8a9c;
+  --color-text: #e6ecf5;
+  --color-ink: #e6ecf5;
+  --color-accent: #7ea6ff;
+  --color-accent-soft: #1c2c4d;
+  --color-terminal: #0a111b;
+  --color-hairline-dark: #2b3b52;
+  --color-on-dark: #a7b4c6;
+  background: var(--color-ground);
+  color: var(--color-text);
+}
+html[data-theme="dark"] ::selection { background: #1c2c4d; color: #c3d2f5; }
+/* Docs-only: on dark the code slab needs an edge, and the copy control keeps its white hover. */
+html[data-theme="dark"] .docs-root .doc-prose figure[data-rehype-pretty-code-figure] { border: 1px solid var(--color-border); }
+html[data-theme="dark"] .docs-root .doc-copy:hover { color: #ffffff; }
+
+/* ---- Sketch variant of the upload tile: the drawn drop zone takes the highlight that the
+   bordered one carried on its border and background. Every other upl-* keyframe is shared. ---- */
+.upl-zone-sketch {
+  animation: upl-zone-sketch 8s ease-in-out infinite;
+  fill: var(--color-ground);
+  stroke: var(--color-border-strong);
+}
+@keyframes upl-zone-sketch {
+  0%, 4% { stroke: var(--color-border-strong); fill: var(--color-ground); }
+  8%, 16% { stroke: var(--color-accent); fill: var(--color-accent-soft); }
+  22%, 100% { stroke: var(--color-border-strong); fill: var(--color-ground); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .upl-zone-sketch { animation: none; }
+}
+
+/* ---- Features header: pages drifting into the machine (6s loop, one lands every 2s) ----
+   The page glyphs are drawn around their own origin, so transform-origin 0 0 means translate
+   places the centre of the page exactly where it should land. */
+.fb-doc {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  opacity: 0;
+  animation: fb-doc 6s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  animation-delay: var(--d);
+}
+@keyframes fb-doc {
+  0% { transform: translate(var(--sx), var(--sy)) rotate(var(--sr)) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  62% { opacity: 1; }
+  76% { transform: translate(280px, 104px) rotate(0deg) scale(0.3); opacity: 0.85; }
+  84%, 100% { transform: translate(280px, 116px) rotate(0deg) scale(0.05); opacity: 0; }
+}
+.fb-led { animation: fb-led 2s ease-in-out infinite; }
+@keyframes fb-led {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fb-doc,
+  .fb-led { animation: none; }
+  .fb-doc { opacity: 0; }
+}
+
+/* ---- Sketch variants of the remaining tiles. Timing matches the drafted originals; only the
+   properties that moved from a CSS box onto a drawn path need their own keyframes. ---- */
+
+/* Tagging: the pill is drawn, so the chip animates position alone and the outline fades in. */
+.tagk-chip {
+  opacity: 0;
+  animation: tagk-chip 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: var(--d);
+}
+@keyframes tagk-chip {
+  0%, 6% { opacity: 0; transform: translate(0, 0) scale(0.94); }
+  9% { opacity: 1; }
+  14% { transform: translate(0, -6px) scale(1.04); }
+  24%, 70% { opacity: 1; transform: translate(var(--dx), var(--dy)) scale(1); }
+  75%, 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1); }
+}
+.tagk-pill {
+  opacity: 0;
+  animation: tagk-pill 9s ease-in-out infinite;
+  animation-delay: var(--d);
+}
+@keyframes tagk-pill {
+  0%, 9% { opacity: 0; }
+  15%, 70% { opacity: 1; }
+  75%, 100% { opacity: 0; }
+}
+
+/* Search: the hit card's edge is a stroke now, not a border. */
+.srchk-card {
+  stroke: var(--color-border-strong);
+  animation: srchk-card 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes srchk-card {
+  0%, 26% { stroke: var(--color-border-strong); }
+  32%, 84% { stroke: var(--color-accent); }
+  90%, 100% { stroke: var(--color-border-strong); }
+}
+
+/* Share: the trail draws itself along the path instead of growing a bar. */
+.shrk-trail {
+  stroke: var(--color-accent);
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: shrk-trail 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes shrk-trail {
+  0%, 12% { stroke-dashoffset: 100; stroke: var(--color-accent); }
+  34%, 62% { stroke-dashoffset: 0; stroke: var(--color-accent); }
+  66%, 86% { stroke-dashoffset: 0; stroke: var(--color-border-strong); }
+  90%, 100% { stroke-dashoffset: 100; stroke: var(--color-border-strong); }
+}
+.shrk-token-body {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+  animation: shrk-token-body 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes shrk-token-body {
+  0%, 62% { fill: var(--color-accent); stroke: var(--color-accent); }
+  66%, 100% { fill: var(--color-border-strong); stroke: var(--color-border-strong); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tagk-chip,
+  .tagk-pill,
+  .srchk-card,
+  .shrk-trail,
+  .shrk-token-body { animation: none; }
+  .tagk-chip { opacity: 1; transform: translate(var(--dx), var(--dy)); }
+  .tagk-pill { opacity: 1; }
+  .srchk-card { stroke: var(--color-accent); }
+  .shrk-trail { stroke-dashoffset: 0; }
+}
+
+/* ---- Hero: the Inbox taking documents in (12s loop, one row every four seconds) ----
+   Each row runs the same timeline offset by --d, so one is always arriving, one being read and
+   one filed. Percentages: 0 arrives, 12 read, 22 summarized and filed, 88 rests, 96 makes way. */
+.hib-row {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  opacity: 0;
+  animation: hib-row 12s ease-out infinite;
+  animation-delay: var(--d);
+}
+@keyframes hib-row {
+  0% { opacity: 0; transform: translate(26px, 6px); }
+  5% { opacity: 1; transform: translate(0, 0); }
+  88% { opacity: 1; transform: translate(0, 0); }
+  96%, 100% { opacity: 0; transform: translate(0, -12px); }
+}
+.hib-reading { animation: hib-reading 12s ease-in-out infinite; animation-delay: var(--d); }
+@keyframes hib-reading {
+  0%, 6% { opacity: 1; }
+  20%, 100% { opacity: 0; }
+}
+.hib-bar {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: hib-bar 12s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+  animation-delay: var(--d);
+}
+@keyframes hib-bar {
+  0%, 5% { stroke-dashoffset: 100; }
+  19%, 100% { stroke-dashoffset: 0; }
+}
+.hib-summary { opacity: 0; animation: hib-summary 12s ease-out infinite; animation-delay: var(--d); }
+@keyframes hib-summary {
+  0%, 19% { opacity: 0; }
+  25%, 92% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+.hib-chips {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  opacity: 0;
+  animation: hib-chips 12s cubic-bezier(0.34, 1.3, 0.64, 1) infinite;
+  animation-delay: var(--d);
+}
+@keyframes hib-chips {
+  0%, 21% { opacity: 0; transform: translate(10px, 0); }
+  28%, 92% { opacity: 1; transform: translate(0, 0); }
+  96%, 100% { opacity: 0; transform: translate(0, 0); }
+}
+.hib-check {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  opacity: 0;
+  animation: hib-check 12s cubic-bezier(0.34, 1.5, 0.64, 1) infinite;
+  animation-delay: var(--d);
+}
+@keyframes hib-check {
+  0%, 28% { opacity: 0; }
+  34%, 92% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+/* The sidebar count ticks up as the document lands in that category. */
+.hib-count-old { animation: hib-count-old 12s step-end infinite; animation-delay: var(--d); }
+@keyframes hib-count-old {
+  0%, 31% { opacity: 1; }
+  32%, 100% { opacity: 0; }
+}
+.hib-count-new { opacity: 0; animation: hib-count-new 12s step-end infinite; animation-delay: var(--d); }
+@keyframes hib-count-new {
+  0%, 31% { opacity: 0; }
+  32%, 100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hib-row,
+  .hib-reading,
+  .hib-bar,
+  .hib-summary,
+  .hib-chips,
+  .hib-check,
+  .hib-count-old,
+  .hib-count-new { animation: none; }
+  .hib-row,
+  .hib-summary,
+  .hib-chips,
+  .hib-check,
+  .hib-count-new { opacity: 1; transform: none; }
+  .hib-reading,
+  .hib-count-old { opacity: 0; }
 }

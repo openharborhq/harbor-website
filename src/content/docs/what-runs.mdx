@@ -1,0 +1,47 @@
+export const meta = {
+  title: "What runs",
+  description: "Every container on the box, what each one does, and which of them may talk to anything outside.",
+};
+
+<BoxDiagram />
+
+## The containers
+
+| Container | Does | Network |
+| --- | --- | --- |
+| `tailscale` | Optional. Serves the app on your tailnet over HTTPS | When present, the only thing reachable, and only from your tailnet. Without it, `web` publishes a port on the address you chose |
+| `web` | The app | No host port of its own behind Tailscale; otherwise the published port |
+| `api` | HTTP API, migrations, sessions | Internal, plus mail autodiscover during setup |
+| `worker` | OCR, thumbnails, text extraction; the only process that opens documents | **No route out** |
+| `suggester` | Titles, categories and dates from the text, via the model you chose or none | Out to that provider only |
+| `mailfetch` | Reads connected mailboxes over IMAP; the only process that unseals mail passwords | Out to IMAP hosts only |
+| `backup` | Nightly database dump and snapshot, monthly restore test | Out to the backup target only |
+| `postgres`, `redis` | State and queues, on the encrypted volume | Internal |
+
+## Isolation
+
+The OCR toolchain has a long history of vulnerabilities, and email-in lets strangers hand you a file. So the worker runs in its own container with no network except the database and queue, a read-only filesystem, no root, and a timeout per job. **The API never opens a document.**
+
+## Keys
+
+```
+Volume passphrase, typed at boot ————— protects the powered-off box
+  └─ master key, a file on that volume —— protects every document and every backup
+       └─ a key per file ————————————— protects each document independently
+```
+
+Every document is encrypted under a key of its own, wrapped by the master key. The master key lives only on the encrypted volume and on [the envelope](/docs/break-glass). Rotating it re-wraps the per-file keys in seconds and never touches a document.
+
+The database keeps each document's text in the clear so that search is fast, which is why [the data volume](/docs/data-volume) must be encrypted and the installer refuses otherwise.
+
+## What it defends against
+
+| Someone | Gets | Why it is useless to them |
+| --- | --- | --- |
+| A burglar who takes the box | A powered-off appliance | The volume is encrypted; the passphrase is never on the device |
+| A breach at the backup provider | Snapshots | Encrypted on the box before they leave; the key is only at home |
+| An attacker on the internet | Nothing to connect to | Zero inbound ports on the tailnet path; on your own network, nothing unless you publish to the internet yourself |
+| A malicious PDF sent by email | Code running in the OCR worker | The worker has no network and no root |
+| Someone with a stolen family laptop | A session | Two-factor required; sessions revocable |
+
+Not defended against, by design: a compromised *running* server, which holds plaintext; a malicious owner account; and the model provider, which sees document text. There is no end-to-end encryption between household members. The repository's [security page](https://github.com/openharborhq/harbor/blob/main/SECURITY.md) states this in full.

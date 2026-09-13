@@ -1,0 +1,43 @@
+export const meta = {
+  title: "First run",
+  description: "Create the first owner, then make the vault prove each of its claims before you trust it with anything.",
+};
+
+## Create the first owner
+
+Open the address the installer printed. A vault with no owner shows **Set up your vault** instead of a sign-in page: your name, your email, and a password of at least twelve characters.
+
+The next screen shows an authenticator key and ten recovery codes, **once**. Add the key to your authenticator app and print the codes now. Two-factor is required for every account. There is no password reset by email, on purpose, and this page never appears again. Everyone else in the household joins through an invitation from Settings.
+
+If you prefer a console:
+
+```sh
+docker compose --env-file /data/harbor.env -f compose.yml -f compose.prod.yml \
+  run --rm -e HARBOR_SETUP_PASSWORD='choose-a-long-password' api node dist/setup.js \
+  --email you@example.com --name "Your name"
+```
+
+## Choose a language model
+
+Settings, Suggestions: pick a provider and press *Test*, which makes a real call before saving anything. You can skip this and run with no model; cards then arrive without a summary. [The language model](/docs/language-model) explains the choices and what each sends.
+
+## Prove it
+
+<Prove id="first-run" items={[
+  "Sign in with your password and the six-digit code.",
+  "Open Add documents and drop a scanned bill. A photo of one is fine.",
+  "Watch the row go from Reading page N of M to Done, then open the Inbox.",
+  "Search for a word that appears only inside the scan. It comes back highlighted.",
+  "On the box, run the command below. The first bytes of a stored document must not read %PDF.",
+  "Settings, Backups: Back up now, then Test a restore. Both must say OK.",
+]} />
+
+```sh
+head -c 5 /data/blobs/*/* | xxd | head -1
+```
+
+Note how long the first scan took per page; the Inbox card shows it. That number is the box's budget for everything it does from now on.
+
+## Then
+
+Print [the break-glass envelope](/docs/break-glass). Without it a dead disk means the documents are gone.

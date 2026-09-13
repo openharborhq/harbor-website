@@ -1,0 +1,21 @@
+export const meta = {
+  title: "The Inbox",
+  description: "Paperwork arrives already read: a summary, a proposed filing, and a reminder if the paper is asking for something. Nothing is filed until you accept it.",
+};
+
+A document arrives in the Inbox with a card: the first page, a two-sentence summary in your language, and a proposed filing. *Looks like an electricity bill from Stadtwerke München for August 2026, €84.20, due 15 September.* Below it, the category it probably belongs to, the person or thing it is about, the document's date, up to three tags, and, if the paper is asking for something, a reminder as a ticked clause you can untick: "…and remind me to pay €84.20 by 15 September."
+
+## Accepting
+
+You confirm with one click, or change any part first. **Nothing is filed until you accept it.** The model proposes; a person decides. Accepting copies the proposal onto the document and records who accepted it and when. *Accept all suggestions* takes only the ones the model was confident about.
+
+## What the card does on its own
+
+- A category it proposes is always one of yours. It never invents a new one; at most it leaves a hint.
+- Leaflets, newsletters and safety notices that arrive beside the bill are held back under *Probably not paperwork*: counted, one link away, deletable in bulk, never deleted silently.
+- If no suggestion could be made, because you chose no model, or it refused, or it answered nonsense, the card collapses to the original and a plain form. Nothing crashes and nothing is half filled in.
+- If a scan failed, the card says so and offers Retry.
+
+## After filing
+
+The document has a page of its own: every page as it arrived, beside the summary, tags, notes, versions, and a record of who changed what. Deleting a document moves it to Recently deleted, from where it can be restored.

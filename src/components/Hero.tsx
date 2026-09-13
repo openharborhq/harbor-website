@@ -1,62 +1,46 @@
-import Image from "next/image";
 import Link from "next/link";
 import { GITHUB } from "./Nav";
+import { VaultIllustration } from "./visuals/VaultIllustration";
 
+/**
+ * Copy on the left, the drawing on the right with its cable running off the edge of the viewport.
+ * The row keeps the page's left gutter but drops the right one, so the illustration reaches the
+ * screen edge at any width and the cable is cut off by the viewport rather than ending in mid-air.
+ */
 export function Hero() {
   return (
-    <section>
-      <div className="gutter flex flex-col pt-[96px]">
-        <h1 className="max-w-[903px] text-[clamp(42px,5.28vw,76px)] font-extrabold leading-[1] tracking-hero text-text">
-          Bring sanity to your household paperwork.
+    <section className="flex flex-col gap-10 overflow-hidden pb-[64px] pl-[var(--gutter)] pr-[var(--gutter)] pt-[80px] lg:flex-row lg:items-center lg:gap-[40px] lg:pr-0">
+      <div className="flex max-w-[620px] flex-col gap-[26px]">
+        <h1 className="text-[clamp(38px,4.3vw,56px)] font-extrabold leading-[1.07] tracking-[-0.038em] text-text">
+          Bring sanity to your household paperwork
         </h1>
-        <div className="flex flex-col items-start justify-between gap-10 pt-[40px] lg:flex-row lg:items-end">
-          <div className="flex max-w-[752px] flex-col gap-[34px]">
-            <p className="text-lead leading-lead tracking-[-0.011em] text-muted">
-              Never lose important documents again. Keep records of your passports, deeds or bills in your own vault and
-              find everything in seconds.
-            </p>
-            <div className="flex flex-wrap items-center gap-[12px]">
-              <Link
-                href={`${GITHUB}#install`}
-                className="flex items-center gap-[9px] rounded-pill bg-accent px-[26px] py-[15px] text-[16px] font-semibold leading-row tracking-[-0.01em] text-ground"
-              >
-                Get started
-                <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" className="shrink-0" aria-hidden="true">
-                  <path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="#FFFFFF" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-              <Link
-                href="#inside"
-                className="rounded-pill border border-border px-[26px] py-[15px] text-[16px] font-semibold leading-row tracking-[-0.01em] text-text"
-              >
-                See how it works
-              </Link>
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-[14px] pb-[8px]">
-            <div className="h-[2px] w-[56px] bg-accent" />
-            <p className="whitespace-pre text-right text-[25px] font-semibold leading-[36px] tracking-[-0.025em] text-text">
-              Your data. Your rules.
-              {"\n"}
-              Your Harbor.
-            </p>
-          </div>
+        <p className="max-w-[540px] text-section leading-[30px] text-muted">
+          Harbor is your open source document vault that transforms record management in your home. Connect your
+          inbox or upload files and see Harbor work to tag, sort, and retrieve.
+        </p>
+        <div className="flex flex-wrap items-center gap-[12px] pt-[8px]">
+          <Link
+            href={`${GITHUB}#install`}
+            className="flex items-center gap-[9px] rounded-pill bg-accent px-[26px] py-[15px] text-[16px] font-semibold leading-row tracking-[-0.01em] text-ground"
+          >
+            Get started
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" className="shrink-0" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <Link
+            href="#features"
+            className="rounded-pill border border-border px-[26px] py-[15px] text-[16px] font-semibold leading-row tracking-[-0.01em] text-text"
+          >
+            See how it works
+          </Link>
         </div>
       </div>
 
-      {/* The app window, fitted to the content column and shown whole. */}
-      <div className="gutter pt-[76px] pb-[96px]">
-        <div className="overflow-hidden rounded-[16px] border border-border bg-panel">
-          <Image
-            src="/mock/hero-home@2x.png"
-            alt="Harbor's Home page: the Weber household's family members and property, with what expires next."
-            width={1320}
-            height={800}
-            priority
-            sizes="(min-width: 1440px) 1200px, 100vw"
-            className="block h-auto w-full"
-          />
-        </div>
+      {/* The negative right margin lets the cable run past the gutter on narrow screens too;
+          the section clips it, so nothing overflows the page. */}
+      <div className="-mr-[var(--gutter)] w-auto shrink-0 lg:mr-0 lg:ml-auto lg:w-[640px]">
+        <VaultIllustration />
       </div>
     </section>
   );

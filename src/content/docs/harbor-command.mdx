@@ -1,0 +1,40 @@
+export const meta = {
+  title: "The harbor command",
+  description: "Everything you do to the box day to day goes through one command the installer leaves behind.",
+};
+
+```sh
+harbor status          # what is running
+harbor logs worker     # follow one service
+harbor backup          # back up now
+harbor restore-test    # prove the backup can be read back
+harbor break-glass     # the keys to print and keep
+harbor config          # change a setting
+harbor start           # apply it
+harbor upgrade         # back up, pull the release you chose, restart
+harbor unlock          # after a power cut: type the passphrase, mount, start
+harbor version         # what you are running
+```
+
+## Upgrades
+
+Installs pin to a release tag. `harbor config` sets `HARBOR_IMAGE_TAG` to the release you want; `harbor upgrade` takes a backup, pulls, restarts, and refuses to continue if the backup fails. Migrations apply on start and only run forward, so rolling back is restoring: see [When something breaks](/docs/when-something-breaks).
+
+## After an update
+
+A release can change what the model is asked about each document. The suggester says at boot how many documents still answer the older question. Re-reading them is never automatic, because with a hosted model it spends per document:
+
+```sh
+docker compose … exec suggester node dist/suggester.js rerun --dry-run   # how many
+docker compose … exec suggester node dist/suggester.js rerun --limit 50  # re-read that many
+```
+
+Documents whose suggestion you already accepted or rejected are skipped; your judgement is the answer.
+
+## The long form
+
+The `harbor` command wraps `docker compose` with the right files. The long form still works:
+
+```sh
+docker compose --env-file /data/harbor.env -f compose.yml -f compose.prod.yml logs -f api
+```

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 const SLIDES = [
   {
@@ -32,22 +32,37 @@ const SLIDES = [
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 /**
  * One full slide plus a quarter of the next, as in the design: 1000px slides on a track that
  * starts at the page gutter. The track is a real scroll container so trackpads and touch work;
  * the buttons and dots just scroll it.
+ *
+ * Accessibility follows the WAI-ARIA tabbed-carousel pattern: the dots are a tablist with roving
+ * focus and arrow-key movement, each slide is the tabpanel they control.
  */
 export function Carousel() {
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
-  const timer = useRef<number | null>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const settleTimer = useRef<number | null>(null);
+  const id = useId();
+  const tabId = (i: number) => `${id}-tab-${i}`;
+  const panelId = (i: number) => `${id}-panel-${i}`;
 
   const go = useCallback((i: number) => {
     const el = trackRef.current;
     const next = Math.max(0, Math.min(SLIDES.length - 1, i));
     setIndex(next);
     const slide = el?.children[next] as HTMLElement | undefined;
-    if (el && slide) el.scrollTo({ left: slide.offsetLeft - parseFloat(getComputedStyle(el).paddingLeft), behavior: "smooth" });
+    if (el && slide) {
+      el.scrollTo({
+        left: slide.offsetLeft - parseFloat(getComputedStyle(el).paddingLeft),
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+      });
+    }
   }, []);
 
   // Keep the caption in step when the user drags the track instead of pressing the arrows.
@@ -55,8 +70,8 @@ export function Carousel() {
     const el = trackRef.current;
     if (!el) return;
     const onScroll = () => {
-      if (timer.current) window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => {
+      if (settleTimer.current) window.clearTimeout(settleTimer.current);
+      settleTimer.current = window.setTimeout(() => {
         const pad = parseFloat(getComputedStyle(el).paddingLeft);
         let best = 0;
         let bestDist = Infinity;
@@ -71,8 +86,25 @@ export function Carousel() {
       }, 80);
     };
     el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      if (settleTimer.current) window.clearTimeout(settleTimer.current);
+    };
   }, []);
+
+  // Left/Right/Home/End on the dots move the selection and keep focus on the active dot.
+  const onTabKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const last = SLIDES.length - 1;
+    let next: number | null = null;
+    if (e.key === "ArrowRight") next = index === last ? 0 : index + 1;
+    else if (e.key === "ArrowLeft") next = index === 0 ? last : index - 1;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = last;
+    if (next === null) return;
+    e.preventDefault();
+    go(next);
+    tabRefs.current[next]?.focus();
+  };
 
   const current = SLIDES[index];
   const atStart = index === 0;
@@ -85,19 +117,33 @@ export function Carousel() {
           <span className="font-mono text-[12px] font-medium leading-[16px] tracking-mono text-faint">A LOOK INSIDE</span>
           <h2 className="text-section-head font-bold leading-section-head tracking-tight text-text">See how Harbor works</h2>
         </div>
-        <div className="flex items-center gap-[18px] pb-[6px]">
-          <div className="flex items-center gap-[8px]" role="tablist" aria-label="Screens">
-            {SLIDES.map((s, i) => (
-              <button
-                key={s.img}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                aria-label={s.title}
-                onClick={() => go(i)}
-                className={`h-[6px] rounded-pill transition-all ${i === index ? "w-[22px] bg-text" : "w-[6px] bg-border-strong hover:bg-faint"}`}
-              />
-            ))}
+        <div className="flex items-center gap-[18px]">
+          <div className="flex items-center" role="tablist" aria-label="Screens" onKeyDown={onTabKeyDown}>
+            {SLIDES.map((s, i) => {
+              const selected = i === index;
+              return (
+                <button
+                  key={s.img}
+                  ref={(el) => {
+                    tabRefs.current[i] = el;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={tabId(i)}
+                  aria-selected={selected}
+                  aria-controls={panelId(i)}
+                  aria-label={s.title}
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => go(i)}
+                  className="group flex h-[40px] items-center px-[4px]"
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`block h-[6px] rounded-pill transition-all ${selected ? "w-[22px] bg-text" : "w-[6px] bg-border-strong group-hover:bg-faint"}`}
+                  />
+                </button>
+              );
+            })}
           </div>
           <div className="flex gap-[8px]">
             <ArrowButton dir="prev" disabled={atStart} onClick={() => go(index - 1)} />
@@ -115,19 +161,29 @@ export function Carousel() {
         {SLIDES.map((s, i) => (
           <figure
             key={s.img}
+            id={panelId(i)}
+            role="tabpanel"
+            aria-labelledby={tabId(i)}
             className="w-[min(1000px,calc(100vw-40px))] shrink-0 snap-start overflow-hidden rounded-[14px] border border-border bg-ground"
             aria-roledescription="slide"
-            aria-label={`${i + 1} of ${SLIDES.length}: ${s.title}`}
           >
-            <Image src={`/mock/slide-${s.img}@2x.png`} alt={s.alt} width={1000} height={720} sizes="1000px" className="block h-auto w-full" priority={i === 0} />
+            <Image
+              src={`/mock/slide-${s.img}@2x.png`}
+              alt={s.alt}
+              width={1000}
+              height={720}
+              sizes="(min-width: 1040px) 1000px, calc(100vw - 40px)"
+              className="block h-auto w-full"
+              priority={i === 0}
+            />
           </figure>
         ))}
       </div>
 
       <div className="gutter flex items-start justify-between gap-8">
-        <div className="flex items-start gap-[16px]" aria-live="polite">
+        <div className="flex min-w-0 items-start gap-[16px]" aria-live="polite">
           <span className="w-[28px] shrink-0 pt-[5px] font-mono text-[12px] font-medium leading-[16px] tracking-mono text-accent">{pad2(index + 1)}</span>
-          <div className="flex max-w-[720px] flex-col gap-[6px]">
+          <div className="flex min-w-0 max-w-[720px] flex-col gap-[6px]">
             <h3 className="font-title text-[20px] leading-[24px] tracking-snug text-text">{current.title}</h3>
             <p className="text-[16px] leading-section text-muted">{current.copy}</p>
           </div>

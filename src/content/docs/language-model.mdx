@@ -1,0 +1,44 @@
+export const meta = {
+  title: "The language model",
+  description: "The summaries and proposed filings come from a model you choose. The three kinds of provider, exactly what each document sends, and what it costs.",
+};
+
+The summary, the proposed title, category, dates, tags and reminders on each Inbox card come from a language model. Which one is yours to choose, under Settings, Suggestions, with a *Test* button that makes a real call before saving anything. The key is sealed on the box and never returned to the browser.
+
+## Three kinds of provider
+
+| Provider | Covers | You give it |
+| --- | --- | --- |
+| Anthropic | Claude, through the official SDK. The primary path, and the one the summaries were written against. | An API key. |
+| OpenAI-compatible | OpenAI, Groq, Mistral, DeepSeek, OpenRouter, and anything else that speaks the same chat endpoint, including Ollama, llama.cpp and LM Studio on your own network. | A base URL, a model name, and a key if the service wants one. |
+| None | Heuristics only: the sender becomes the item, a date in the filename becomes the document date. Cards arrive without a summary. | Nothing. |
+
+The commercial services are presets: choosing one fills in the base URL and a model name and asks for a key.
+
+Fully local is a first-class configuration: point the OpenAI-compatible provider at Ollama on your network and no part of the stack talks to the internet at all. The trade is quality. A small local model gives noticeably weaker summaries and misses categories a frontier model gets right. That is the operator's call, which is the point of offering it.
+
+## What leaves the house, per document
+
+The filename, the sender's address if it came by email, the page count, the first four thousand characters of its text, and your list of category names and item labels, which includes people's first names. Nothing else: no images, no whole documents. The item list can be withheld with `SUGGEST_SEND_PEOPLE=false`, at the cost of the "who is this about" prefill.
+
+What was sent is reconstructible from the document's text and the recorded model, prompt version and character range; it is not stored twice.
+
+## What never leaves
+
+The OCR container has no route to the internet under any configuration. Each container that talks outside is allowed one destination and nothing else: the suggester to your chosen provider, the mail fetcher to your IMAP hosts, backup to your backup target. There is no telemetry. See [What runs](/docs/what-runs).
+
+## What it costs
+
+At Anthropic's list prices in September 2026, a document is roughly 2,500 tokens in and 200 out:
+
+| Model | Per document | Backfill of 500 documents | A month of 30 |
+| --- | --- | --- | --- |
+| Claude Opus 5 | about $0.018 | about $4.50 | about $0.55 |
+| Claude Sonnet 5 | about $0.007 | about $1.75 | about $0.21 |
+| Claude Haiku 4.5 | about $0.0035 | about $0.90 | about $0.10 |
+
+Backfills of a whole vault go through the batch API at half price. Cost is not the reason to skip this; exposure is the only real decision, and it is yours rather than the project's.
+
+## Changing the model later
+
+A change of model, or a new release's prompt, never re-reads your documents on its own, because at a hosted provider that spends per document. The suggester tells you how many are behind, and re-reading them is a command you run: see [The harbor command](/docs/harbor-command#after-an-update). Documents whose suggestion you already accepted or rejected are skipped.

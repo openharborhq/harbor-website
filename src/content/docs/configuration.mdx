@@ -1,0 +1,55 @@
+export const meta = {
+  title: "Configuration",
+  description: "The settings the installer writes to /data/harbor.env, and what each one means. Change them with harbor config.",
+};
+
+Most settings are made once by the installer. Since v0.4.0 the language model is chosen in Settings, not here. `harbor config` edits the file; `harbor start` applies it.
+
+## Where things are
+
+| Variable | Meaning |
+| --- | --- |
+| `HARBOR_DATA_DIR` | Where documents, database, queues and secrets live. Default `/data`. Must be on an encrypted volume. |
+| `HARBOR_IMAGE_TAG` | The release the box runs. Changed by `harbor config`, applied by `harbor upgrade`. |
+
+## Reaching the vault
+
+| Variable | Meaning |
+| --- | --- |
+| `TS_AUTHKEY` | Optional. A Tailscale auth key. With it the vault is reachable only on your tailnet, over HTTPS, and nothing listens on the machine's own interfaces. Needed only on first start. |
+| `TAILSCALE_HOSTNAME` | The name the vault takes in your tailnet. |
+| `WEB_ORIGIN` | The address the vault is reached at, such as `https://harbor.your-tailnet.ts.net`. |
+| `HARBOR_BIND`, `HARBOR_WEB_PORT` | Without Tailscale, the address and port to publish on: a LAN address, or the address a VPN you run gives the box. Default `127.0.0.1:3000`. |
+| `SESSION_COOKIE_SECURE` | `true` behind HTTPS. |
+
+## Backups
+
+| Variable | Meaning |
+| --- | --- |
+| `RESTIC_REPOSITORY` | Where snapshots go: `b2:bucket:/harbor`, `sftp:user@host:/path`, or `/backup` for a second disk. |
+| `B2_ACCOUNT_ID`, `B2_ACCOUNT_KEY` | The Backblaze application key, restricted to that bucket and without the permission to delete. |
+| `HARBOR_BACKUP_DIR` | For a second disk: the directory on the host mounted as `/backup`. |
+| `BACKUP_HOUR` | When the nightly run starts. Default 3. |
+| `BACKUP_PRUNE` | `false` to keep every snapshot until you prune from a machine with a full key. |
+| `TZ` | The zone `BACKUP_HOUR` is read in, such as `Europe/Berlin`. |
+
+## Reading documents
+
+| Variable | Meaning |
+| --- | --- |
+| `OCR_CONCURRENCY` | Pages read at once. Cores minus one on a small box. |
+| `OCR_LANGUAGES` | The languages your paperwork arrives in, such as `deu+eng`. |
+
+## Suggestions
+
+| Variable | Meaning |
+| --- | --- |
+| `SUGGEST_SEND_PEOPLE` | `false` withholds your list of people and things from the model. Suggestions then arrive without a "who is this about" prefill. See [The language model](/docs/language-model). |
+
+## Mail
+
+| Variable | Meaning |
+| --- | --- |
+| `MAIL_SYNC_INTERVAL_SECONDS` | How often connected mailboxes are checked. Default 300. |
+
+The secrets, the master key and the backup password, are files under `HARBOR_DATA_DIR/secrets`, never variables. They belong on [the envelope](/docs/break-glass).

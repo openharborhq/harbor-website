@@ -1,0 +1,28 @@
+export const meta = {
+  title: "To do",
+  description: "The bills that still need paying, the forms that still need returning. Why a bill and a passport are different, and why only overdue is red.",
+};
+
+A passport and a bill both carry a date, and they behave in opposite ways. A passport stops being valid on its date, and the answer is a new document. A bill wants an act before its date, an act in the world that Harbor cannot see. So Harbor keeps two separate ideas: an **expiry**, which lives on the document, and a **to-do**, which is a thing a person does.
+
+## Where to-dos come from
+
+From the Inbox card's ticked clause, or you add them by hand. Each has a kind, pay, file, renew, fetch or review, a due date, and for payments an amount. One document can carry two: a tax assessment says pay by the 14th and object by the 28th. A to-do can also have no document at all, such as "ask the building manager about the meter reading", and it sorts last under *No date*.
+
+## The list
+
+The **To do** page groups them: Overdue, Today, This week, Later, No date, with Done kept below. Home shows the same things under *Needs attention*, beside upcoming expiries; only the to-dos get a checkbox.
+
+Three rules run through every place they appear:
+
+- **Overdue is the only red.** A date that has not passed is amber at most. Red that shows up early stops meaning anything by the third time.
+- **The badge counts overdue and due today, and nothing else.** A badge that counts a renewal eleven weeks out can never reach zero, and a badge that never reaches zero is wallpaper.
+- **Nothing is deleted when it is done.** Closing keeps the row, who closed it, and when, so "did we ever pay that?" is answerable a year later. *Dismissed* is a third state for the obligation that was never yours.
+
+## Repeating
+
+A repeating to-do, monthly, quarterly, yearly or every two years, creates its successor when you close it, dated from the occurrence you closed rather than from today, so a bill paid three days late does not drag the series later. Dismissing ends the series.
+
+## What Harbor does not do
+
+Reminders stay in the app. There is no email digest or calendar feed in this version, and Harbor never marks a bill paid on its own, because it cannot see the bank.

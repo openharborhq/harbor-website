@@ -13,8 +13,8 @@ const DOCS: { bars: number[]; match?: { line: number; text: string; lang?: strin
 
 export function SearchVisual() {
   return (
-    <div className="relative flex aspect-[588/300] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface" aria-hidden="true">
-      <div className="relative h-[230px] w-[500px] shrink-0">
+    <div className="tile-stage-wrap relative flex aspect-[588/300] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface" aria-hidden="true">
+      <div className="tile-stage relative h-[230px] w-[500px] shrink-0">
         {/* Search field */}
         <div className="absolute left-[30px] top-[16px] flex h-[40px] w-[440px] items-center gap-[10px] rounded-[10px] border border-border bg-ground px-[14px]">
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="var(--color-muted)" strokeWidth="1.6" strokeLinecap="round" className="shrink-0">

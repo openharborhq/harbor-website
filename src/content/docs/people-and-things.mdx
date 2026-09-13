@@ -1,0 +1,37 @@
+export const meta = {
+  title: "People and things",
+  description: "A document answers two questions: what kind of paper is this, and who or what is it about. Harbor keeps them separate.",
+};
+
+*What kind of paper is this?* is the **category**. *Who or what is it about?* is the **item**: a person, a property, a vehicle, an account. A hosted vault that only asks the first question makes you file the boiler invoice as either a receipt or a house document. Asking both keeps each answer honest.
+
+## Kinds
+
+| Kind | Examples |
+| --- | --- |
+| Person | Each member of the household |
+| Property | The house, the flat, the cabin |
+| Vehicle | The car, the boat, the trailer |
+| Account | The joint current account, the pension |
+
+Boats and campers are vehicles; the category tree already separates them.
+
+## Things inside things
+
+A thing can sit inside another thing: the boiler inside the house, the engine inside the boat. You can change where a thing sits at any time from its page. Two rules follow, so a document is filed once and found everywhere: filing something to the boiler also files it to the house, visibly, as both chips land; and the house's page lists the boiler's documents without a second link. A person is never inside anything.
+
+## Key documents
+
+Each item has a short list of key documents, seeded by kind: Passport, Deed, Title, Latest statement. A slot with nothing in it reads *Not on file*. Absence is visible from day one, which is the point. The slots are editable.
+
+## Deleting a thing
+
+Deleting a thing removes exactly its label and its links. **Documents are never deleted with it.** They keep their bytes, their category and their other links; they are simply no longer marked as being about it. Things inside it move up a level rather than vanishing. The confirmation states both counts before you agree.
+
+## The FOR control
+
+When you file, one control finds everything: a single searchable list grouped by kind, with things-inside-a-thing sorted under their parent. Type "boil" and the boiler comes up; type "mus" and the house does. You never choose a kind of picker first.
+
+## Where they appear
+
+**Home** shows a Family row and a Property and things row. Each item has a page with its key documents, the things inside it, and every record about it. The Library filters by item, and item names are searchable.

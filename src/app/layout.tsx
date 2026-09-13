@@ -29,10 +29,25 @@ export const metadata: Metadata = {
   },
 };
 
+/*
+ * Resolves the theme before anything paints: the saved choice, or the device setting. The same
+ * logic lives in ThemeToggle for changes made after load. The key is written out here rather than
+ * imported: THEME_KEY lives in a "use client" module, and a server file that imports a plain value
+ * from one gets a client reference, not the string. Keep it in step with THEME_KEY by hand.
+ */
+const themeScript = `(function(){try{var c=localStorage.getItem("harbor-theme");var d=c==="dark"||(c!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light";}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${plexMono.variable}`}>
-      <body>{children}</body>
+    // suppressHydrationWarning: the script above writes data-theme on <html> before React sees it.
+    <html lang="en" className={`${inter.variable} ${plexMono.variable}`} suppressHydrationWarning>
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

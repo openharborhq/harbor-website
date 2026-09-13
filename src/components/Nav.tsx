@@ -1,29 +1,53 @@
 import Link from "next/link";
+import { formatStars, getStars, GITHUB } from "@/lib/github";
 import { Wordmark } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 
-export const GITHUB = "https://github.com/openharborhq/harbor";
+export { GITHUB };
 
 const LINKS = [
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Docs", href: `${GITHUB}#readme` },
-];
+  { label: "Features", href: "/features", key: "features" },
+  { label: "Docs", href: "/docs", key: "docs" },
+] as const;
 
-export function Nav() {
+export type NavKey = (typeof LINKS)[number]["key"];
+
+/**
+ * Below this the count says less than the plain link does. Raise or lower it as the project
+ * grows; the number itself always comes from GitHub, never from this file.
+ */
+const STARS_FLOOR = 50;
+
+export async function Nav({ current, wide = false }: { current?: NavKey; wide?: boolean } = {}) {
+  const stars = await getStars();
+  const showStars = stars !== null && stars >= STARS_FLOOR;
+
   return (
-    <header className="gutter flex items-center justify-between border-b border-border py-[26px]">
+    <header className={`${wide ? "px-[28px] md:px-[36px]" : "gutter"} flex items-center justify-between border-b border-border py-[26px]`}>
       <Link href="/" aria-label="Harbor home">
         <Wordmark />
       </Link>
-      <nav className="flex items-center gap-[34px]" aria-label="Primary">
+      {/* Below md the links fold away and the GitHub link keeps only its mark, so the wordmark,
+          the theme control, GitHub and the pill still sit on one line on a 390px phone. */}
+      <nav className="flex items-center gap-[14px] md:gap-[34px]" aria-label="Primary">
         {LINKS.map((l) => (
-          <Link key={l.label} href={l.href} className="hidden text-body font-medium leading-[18px] text-muted hover:text-text md:block">
+          <Link
+            key={l.label}
+            href={l.href}
+            aria-current={current === l.key ? "page" : undefined}
+            className={`hidden text-body font-medium leading-[18px] hover:text-text md:block ${current === l.key ? "text-text" : "text-muted"}`}
+          >
             {l.label}
           </Link>
         ))}
-        <Link href={GITHUB} className="flex items-center gap-[8px] text-text" aria-label="Harbor on GitHub, 2.4k stars">
+        <ThemeToggle />
+        <Link
+          href={GITHUB}
+          className="flex min-h-[40px] min-w-[40px] items-center justify-center gap-[8px] text-text md:min-w-0 md:justify-start"
+          aria-label={showStars ? `Harbor on GitHub, ${formatStars(stars)} stars` : "Harbor on GitHub"}
+        >
           <GitHubIcon />
-          <span className="font-mono text-small font-medium leading-[16px]">2.4k</span>
+          <span className="hidden font-mono text-small font-medium leading-[16px] md:inline">{showStars ? formatStars(stars) : "GitHub"}</span>
         </Link>
         <Link href={`${GITHUB}#install`} className="rounded-pill bg-text px-[20px] py-[11px] text-row font-semibold leading-[18px] tracking-[-0.01em] text-ground">
           Get started

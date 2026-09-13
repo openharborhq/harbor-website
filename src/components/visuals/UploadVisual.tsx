@@ -4,7 +4,7 @@
  */
 export function UploadVisual() {
   return (
-    <div className="upl relative flex aspect-[588/300] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface" aria-hidden="true">
+    <div className="upl tile-stage-wrap relative flex aspect-[588/300] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface" aria-hidden="true">
       <div className="upl-zone relative flex h-[168px] w-[340px] items-center justify-center rounded-[12px] border-[1.5px] border-dashed border-border-strong bg-ground">
         {/* Idle label */}
         <div className="upl-idle absolute inset-x-0 bottom-[22px] flex flex-col items-center gap-[6px]">
@@ -33,7 +33,7 @@ export function UploadVisual() {
           <span className="flex items-center gap-[6px] text-[13px] font-medium text-text">
             <svg width="16" height="16" viewBox="0 0 16 16" className="shrink-0">
               <circle cx="8" cy="8" r="8" fill="var(--color-accent)" />
-              <path d="M4.6 8.3l2.2 2.2 4.6-4.8" fill="none" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M4.6 8.3l2.2 2.2 4.6-4.8" fill="none" stroke="var(--color-ground)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Filed
           </span>

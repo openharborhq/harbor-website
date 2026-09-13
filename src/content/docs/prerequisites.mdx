@@ -1,0 +1,51 @@
+export const meta = {
+  title: "Prerequisites",
+  description: "What you need before you install: a Linux machine with Docker, free disk for an encrypted volume, and a decision about how you will reach the vault.",
+};
+
+## A machine of its own
+
+Any Linux machine with Docker and about 100 GB free will do: a small fanless N100-class box, a NUC, a Raspberry Pi 5 with an SSD, or a rented VPS. The guides were written against **Debian 12 (bookworm)**, minimal, with SSH, and that is what the installer is tested on.
+
+<Note label="One rule">
+
+Do not run Harbor on the machine that is also your firewall or router. If your fanless box runs OPNsense or pfSense, the vault gets a box of its own.
+
+</Note>
+
+## Free disk for the data volume
+
+Everything Harbor stores, documents, database, queues and secrets, lives in one directory, `/data` by default. That directory must sit on an encrypted volume, because the database keeps the text of every document in the clear so that search is fast. The installer checks this and refuses to continue otherwise.
+
+Leave at least 100 GB unallocated during the operating system install, or plan to use a second disk. [The data volume](/docs/data-volume) walks through formatting it.
+
+## Docker
+
+```sh
+curl -fsSL https://get.docker.com | sh
+```
+
+## How you will reach the vault
+
+The installer asks. Tailscale is optional; it is the easiest path and the one these guides describe first, but the others work just as well:
+
+- **Over your tailnet.** Install Tailscale on the host, and the vault is reachable only from your own devices, over HTTPS, with nothing listening on the machine's own network interfaces.
+- **On your own network.** The vault publishes a port on an address you choose, for example the machine's LAN address. No accounts and no third party; open to everything on that network.
+- **A VPN or mesh you already run, or headscale.** Harbor treats a VPN address like your own network, and headscale works with the Tailscale path unchanged.
+
+[Reaching your vault](/docs/reaching-your-vault) lays out all of them. Only if you choose the tailnet, install Tailscale now so the installer can detect it:
+
+```sh
+curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up
+```
+
+## Somewhere for backups to go
+
+The installer's third question. A Backblaze B2 bucket, an SFTP host you already have, or a second disk in the same machine. [Backups](/docs/backups) explains the three options; decide before you run the installer, or leave it unset and configure it afterwards.
+
+## A printer, at the end
+
+The install finishes with one sheet of paper that can rebuild the vault from nothing. You will want to print it.
+
+Next: [Install](/docs/install).

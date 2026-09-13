@@ -1,0 +1,48 @@
+export const meta = {
+  title: "Email",
+  description: "Harbor reads mail the way a mail client does: over IMAP, from your box, with a password you issued it. Two ways to set it up, and the trade each one makes.",
+};
+
+No company's servers ever touch your mailbox, which is why no OAuth sign-in is involved. Your box reads your mail the way Thunderbird does. The choice below is per connection, and both can be used at once.
+
+## A forwarding mailbox
+
+A dedicated address, `vault@` something, that you forward paperwork to. Harbor holds a credential to a throwaway mailbox and nothing else. This is the zero-risk option, the path for a phone's own scanner, and the answer for any provider Harbor cannot connect to directly. You forward each document yourself. Mail Harbor has processed is removed from this mailbox after thirty days.
+
+## A connected inbox
+
+Point Harbor at a mailbox you already use. It first scans the last two months, read only, and shows the result grouped by sender: "142 candidates from 23 senders." You approve senders in bulk, and each approval becomes a standing rule, so the next bill from your electricity company files itself, correctly and silently. Rules are visible and editable; nothing is learned invisibly.
+
+Mail from anyone you did not approve is **held** for you to look at, never dropped and never filed on its own. Held mail and candidates are visible only to the person who connected the mailbox, until they file something. See [The household](/docs/household).
+
+<Note label="The trade-off, stated plainly">
+
+An IMAP app password is a broader grant than an OAuth sign-in would be. Gmail's app password can read the whole mailbox and send mail as you. Harbor chooses it for deployment friction, not because it is safer. Two things narrow it: the default *folder* mode reads only one folder, which a filter you import into Gmail fills; and a forwarding mailbox holds no credential to your real inbox at all. The setup page says this at the point of choice.
+
+</Note>
+
+## Providers
+
+Setup asks for an email address and works out the server from it. Each known provider gets a direct link to its app-password page and one line on where it hides.
+
+| Provider | Works with |
+| --- | --- |
+| Gmail and Google Workspace | An app password. Requires 2-Step Verification to be on first. |
+| iCloud, Fastmail, Yahoo, Zoho, Posteo, mailbox.org | An app password. |
+| Proton | An app password against Proton Bridge on your network. |
+| A self-hosted server | A plain IMAP credential. A private CA can be supplied. |
+| Outlook.com and Microsoft 365 | Not supported. Microsoft retired password IMAP. Use a forwarding mailbox and a rule on their side. |
+
+Plaintext IMAP is refused, with no override.
+
+## What Harbor never does to your mailbox
+
+Nothing is marked read, moved, or deleted, unless you turn that on per connection. Mail is deleted after thirty days only from a forwarding mailbox the vault owns. Held mail is not copied into the vault or its backups; Harbor keeps the envelope and fetches the body when you open it.
+
+## Invoices with no attachment
+
+Many invoices are the email body itself. Those are rendered to a PDF and filed like any other document. "Your invoice is ready, log in to view" has no document in it at all; in this version those are set aside for you to fetch by hand.
+
+## Limits
+
+25 MB per attachment, ten attachments per message, 200 messages per sync. Anything over a limit is held, never dropped, and the held item says which limit it hit. New mail is picked up on an interval, five minutes by default.

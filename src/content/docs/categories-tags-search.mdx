@@ -1,0 +1,24 @@
+export const meta = {
+  title: "Categories, tags, and search",
+  description: "Categories say what kind of paper something is. Tags are yours. Both are searchable, alongside every word inside every document.",
+};
+
+## Categories
+
+A tree you own: Utilities, then Electricity; Transportation, then Boat. Harbor suggests one from the text of each document, and only from the categories that already exist. It never creates one for you.
+
+## Tags
+
+Up to three are suggested per document, again only from tags you have already used; the rest you add. The address, the year, the insurer, *tax-deductible*: a filter across tags finds what a folder never could.
+
+## What search covers
+
+The text of every document, its title, its tags, its summary, the notes you added, and the names of the people and things it is about. The matching line shows in the results before you open anything, and you can narrow by person, thing, category, or date.
+
+## Languages
+
+Text is indexed in English and German at once, so a query stemmed either way matches. Two more things bridge languages when your paperwork does not arrive in the one you think in. The summary is written in your language, so it is often the only English description of a German certificate. And for each document the model also records up to six other names for that *kind* of paper, in both languages, indexed but never shown: a German *Abstammungsurkunde* answers to "birth certificate" without depending on the summary happening to use the words.
+
+## Reindexing
+
+Change a title, a tag, a note, or an item and the document is reindexed in the same moment, so a name you removed stops matching immediately. The index is a cache, rebuilt from the documents at any time, never the only copy of anything.

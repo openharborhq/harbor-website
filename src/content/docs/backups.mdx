@@ -1,0 +1,53 @@
+export const meta = {
+  title: "Backups",
+  description: "What the nightly backup holds, where it can go, and how Harbor proves every month that it can be read back.",
+};
+
+## What a backup holds
+
+Every night the **backup** container dumps the database to one file and takes one encrypted snapshot of that dump and of every document. Once a month it restores the latest snapshot to scratch space, loads the dump into a scratch database, decrypts twenty documents at random and checks each against its recorded hash. Every run, and every test, shows in Settings under Backups. A test that never ran, or failed, is shown. There is never an empty list pretending to be a clean one.
+
+Snapshots are encrypted on the box before they leave it, with a password that only the box and your envelope hold. A breach at the backup provider yields noise. Retention is thirty daily and twelve monthly snapshots.
+
+Three things are deliberately **not** in a backup:
+
+- **The master key and the backup password.** That is what [the envelope](/docs/break-glass) is for. A backup that contained its own keys would protect nothing.
+- **The live database directory.** It is inconsistent while the server runs. The nightly dump *is* the database, so you lose at most the day since the last dump.
+- **Queues and scratch space.** Anything that was mid-scan at the moment of loss shows as *queued* or *failed* in the Inbox afterwards; open it and add the file again.
+
+## Where backups go
+
+The installer asks and writes the answer into the configuration. Afterwards, `harbor config` changes it. Three targets work, in rough order of preference.
+
+**A Backblaze B2 bucket** is the recommended offsite option. Make an application key restricted to that one bucket. The repository line looks like `b2:your-bucket-name:/harbor`, plus the key id and key.
+
+**An SFTP host you already have**, a NAS or a relative's machine. The line looks like `sftp:backup@nas.local:/srv/harbor`.
+
+**A second disk in the same machine** is the no-cloud option. Create the directory and `chown 1000:1000` it, since the backup container writes as that user. It survives a dead system disk. It does not survive a fire, a flood, or a burglar who takes the whole machine.
+
+<Note label="A backup on the same disk is not a backup">
+
+The vault will accept the configuration and dutifully snapshot the disk onto itself. When that disk dies, both copies die with it.
+
+</Note>
+
+Leave the target unset and the vault runs, Settings says *Not configured*, and every night records a failed run. That is on purpose: a vault with no backup should never look healthy.
+
+## Ransomware on the box must not be able to delete history
+
+With B2, give the backup a key *without* the permission to delete files and set `BACKUP_PRUNE=false`. Snapshots then accumulate until you prune from a laptop that holds a full key. Anyone who takes over the appliance can add snapshots but never remove one.
+
+## Prove it, monthly
+
+A backup you have never restored is a hope. Harbor tests its own on the first of every month and shows the result beside *Back up now* and *Test a restore* in Settings. Look at it once a month yourself. If a run is red, fix it before anything else: usually the target's credential expired or the disk filled.
+
+Both actions are also commands on the box:
+
+```sh
+harbor backup          # take a snapshot now
+harbor restore-test    # restore the latest snapshot to scratch and verify it
+```
+
+The test proves the repository password is right, the snapshot can be read, the dump loads, and the master key still decrypts what is in it. It does not touch the running vault.
+
+The nightly run starts at `BACKUP_HOUR`, three in the morning by default, in the `TZ` you set.

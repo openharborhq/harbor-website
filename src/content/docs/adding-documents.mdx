@@ -1,0 +1,28 @@
+export const meta = {
+  title: "Adding documents",
+  description: "Drop a file and it appears in the Inbox instantly. What happens next depends on what the file is.",
+};
+
+Drop a file on **Add documents** and it appears in the Inbox at once, with a spinner. The original bytes are stored first, encrypted under a key of their own, before anything else happens. Everything after that is a background stage that can fail and be retried. A failed scan degrades to "filed but not searchable", never to lost paperwork.
+
+## What Harbor does with each kind of file
+
+| You drop | Harbor does |
+| --- | --- |
+| A PDF that already has a text layer, such as a statement or a downloaded policy | Reads the text directly and skips OCR entirely. This is most paperwork, and it is fast. |
+| A PDF that is only images, such as a scan | Runs OCR page by page. Two to five seconds a page on a small box. The row shows *Reading page 3 of 12*. |
+| A phone photo, HEIC or JPEG or PNG | Wraps it in a PDF and reads it like a scan. Crooked and skewed pages are straightened first. |
+| A ZIP of a decade of scans | Each file inside, one by one. |
+| A Word or Excel file | Stored as it is, not searchable. Office formats are not read in this version. |
+
+## Duplicates
+
+Harbor recognises a file it has already seen and asks whether to add it as a new version of the existing document or skip it. Files are never silently merged.
+
+## Long documents
+
+Documents over about a hundred pages ask for confirmation before they are read, rather than quietly taking an hour of the box's time.
+
+## From a phone
+
+Scan with the phone's own scanner and email the result to the vault. Emailed photos arrive as HEIC or JPEG and are handled like any other photo. See [Email](/docs/email).

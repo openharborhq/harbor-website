@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local tooling state (Impeccable): critique snapshots, review artifacts, installed skill
+/.impeccable
+/.claude/skills

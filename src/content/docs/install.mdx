@@ -1,0 +1,53 @@
+export const meta = {
+  title: "Install",
+  description: "One shell script, three questions, and about ten minutes, most of it pulling images.",
+};
+
+You need a Linux machine with Docker and an encrypted volume mounted at `/data`. If you have not got those yet, [Prerequisites](/docs/prerequisites) and [The data volume](/docs/data-volume) are short.
+
+## Run the installer
+
+The installer is one shell script. Read it before you run it as root.
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/openharborhq/harbor/main/install.sh
+less install.sh
+sudo sh install.sh
+```
+
+It asks three questions:
+
+1. **Where the documents should live.** The encrypted volume, `/data` by default.
+2. **How you want to reach it.** Over a Tailscale tailnet, or on an address of your own network, which also covers a VPN you already run. Tailscale is optional. See [Reaching your vault](/docs/reaching-your-vault).
+3. **Where backups should go.** A bucket, an SFTP host, or a second disk. See [Backups](/docs/backups).
+
+Then it does everything else: compose files, secrets, configuration, images, and starting the eight containers. When it finishes it prints the address of your vault. Open it and continue with [First run](/docs/first-run).
+
+## Unattended install
+
+Answer any of the questions up front and the installer stays silent, which is what makes it scriptable:
+
+```sh
+sudo env HARBOR_DATA_DIR=/data TS_AUTHKEY=tskey-auth-… RESTIC_REPOSITORY=b2:my-bucket:/harbor sh install.sh
+```
+
+| Variable | What it sets |
+| --- | --- |
+| `HARBOR_DATA_DIR` | Where documents, database and secrets live. Default `/data`. |
+| `TS_AUTHKEY` | Optional. A Tailscale auth key. With it the vault is reachable **only** on your tailnet, over HTTPS, and nothing listens on the machine's own interfaces. |
+| `HARBOR_BIND`, `HARBOR_WEB_PORT` | Without Tailscale, the address and port to publish on: a LAN address, or the address a VPN gives the box. Default `127.0.0.1:3000`, that machine only. |
+| `RESTIC_REPOSITORY` | Where nightly backups go. |
+
+Every variable is described in [Configuration](/docs/configuration).
+
+## What the installer checks and will not do for you
+
+It refuses to continue if `HARBOR_DATA_DIR` is not on an encrypted volume. It generates two secrets that exist nowhere else, the master key that decrypts every document and the password that encrypts every backup; they belong on [the break-glass envelope](/docs/break-glass) and nowhere else. And it cannot give your backups somewhere to go unless you tell it.
+
+## Releases
+
+The install pins to a release tag, not to `latest`, so the box only moves when you decide it should. `harbor upgrade` backs up first and refuses to continue if the backup fails. The [changelog](https://github.com/openharborhq/harbor/blob/main/CHANGELOG.md) says what changed in each release.
+
+## By hand
+
+If you would rather see every part than let a script do it, the repository's [deploy.md](https://github.com/openharborhq/harbor/blob/main/docs/deploy.md) is the same procedure step by step: the compose files, the configuration file, and starting the stack yourself.

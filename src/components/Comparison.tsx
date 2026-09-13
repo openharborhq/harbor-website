@@ -44,11 +44,16 @@ export function Comparison() {
         <h2 className="text-section-head font-bold leading-section-head tracking-tight text-text">The open source alternative.</h2>
       </div>
 
-      <div className="overflow-x-auto">
+      {/*
+       * Narrower than 880px the table scrolls sideways inside this region. The question column
+       * stays pinned so a row keeps its label while the two answers slide past; the region is
+       * focusable so keyboard users can scroll it too.
+       */}
+      <div className="overflow-x-auto" role="region" aria-label="Hosted services compared with Harbor" tabIndex={0}>
         <table className="w-full min-w-[880px] table-fixed border-collapse text-left">
           <thead>
             <tr className="border-b-2 border-text align-top">
-              <th scope="col" className="w-[264px] pb-[16px] pr-[24px]">
+              <th scope="col" className="sticky left-0 z-[1] w-[264px] bg-ground pb-[16px] pr-[24px]">
                 <span className="sr-only">Question</span>
               </th>
               <th scope="col" className="w-[444px] pb-[16px] pr-[24px] text-[22px] font-bold leading-copy tracking-[-0.025em] text-text">
@@ -68,7 +73,7 @@ export function Comparison() {
           <tbody>
             {ROWS.map(([q, hosted, harbor]) => (
               <tr key={q} className="border-b border-border align-top">
-                <th scope="row" className="py-[16px] pr-[24px] text-body font-semibold leading-[23px] tracking-[-0.01em] text-text">
+                <th scope="row" className="sticky left-0 z-[1] bg-ground py-[16px] pr-[24px] text-body font-semibold leading-[23px] tracking-[-0.01em] text-text">
                   {q}
                 </th>
                 <td className="py-[16px] pr-[24px] text-body leading-[23px] text-muted">{hosted}</td>

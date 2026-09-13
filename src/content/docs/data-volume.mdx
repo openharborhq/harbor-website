@@ -1,0 +1,40 @@
+export const meta = {
+  title: "The data volume",
+  description: "Everything Harbor stores lives in one directory on one encrypted volume. How to set it up, and why it is not optional.",
+};
+
+## Why it is required
+
+The data directory holds the documents, the database, the queues and the secrets. Every document is encrypted with a key of its own, but the database keeps the extracted text of every document in the clear so that search is fast. A stolen disk without volume encryption is therefore a readable copy of your paperwork. The installer checks that `HARBOR_DATA_DIR` sits on an encrypted volume and refuses to continue otherwise.
+
+## Format the volume
+
+These steps use LUKS, which every Debian install ships with. Replace the device with your free partition or second disk. Everything runs as root.
+
+```sh
+apt update && apt install -y cryptsetup
+cryptsetup luksFormat --type luks2 /dev/nvme0n1p3     # a long passphrase; it goes on the envelope
+cryptsetup open /dev/nvme0n1p3 harbordata
+mkfs.ext4 -L harbordata /dev/mapper/harbordata
+mkdir -p /data
+echo 'harbordata /dev/nvme0n1p3 none luks' >> /etc/crypttab
+echo '/dev/mapper/harbordata /data ext4 defaults 0 2' >> /etc/fstab
+mount /data
+```
+
+Reboot once and confirm the machine asks for the passphrase and comes up with `/data` mounted. Write the passphrase down: it is the first line of [the envelope](/docs/break-glass).
+
+## Suggestions
+
+- **A second disk is simpler than a partition.** If the machine has a spare NVMe or SATA slot, give the vault a disk of its own and you never have to resize anything.
+- **ext4 is enough.** Harbor stores documents as files and the database as files; there is nothing here that needs a fancier filesystem.
+- **Size for the scans, not the PDFs.** Born-digital PDFs are small. Phone photos and scans of long contracts are not. 100 GB holds a household's paperwork for years; a decade of scans in one ZIP may want more.
+- **Leave the system disk alone.** The operating system and Docker stay on the unencrypted system disk, which is what lets the box boot far enough to ask for the passphrase.
+
+## A power cut
+
+A power cut means the vault is down until someone types the passphrase. That is the trade for a disk that is useless to a burglar. A small UPS is strongly recommended.
+
+When power returns the box comes back with SSH working, but the vault stays closed until `harbor unlock` and the passphrase. While it is closed the mount point is write-protected, so a container that starts early fails loudly instead of quietly building a second, empty database on the system disk.
+
+Auto-unlock through the TPM is possible. It trades stolen-box protection for hands-off reboots, and it is deliberately not the default.

@@ -5,8 +5,8 @@
  */
 export function ShareVisual() {
   return (
-    <div className="relative flex aspect-[588/300] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface" aria-hidden="true">
-      <div className="relative h-[230px] w-[500px] shrink-0">
+    <div className="tile-stage-wrap relative flex aspect-[588/300] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface" aria-hidden="true">
+      <div className="tile-stage relative h-[230px] w-[500px] shrink-0">
         {/* The document being shared */}
         <div className="absolute left-[40px] top-[55px] h-[120px] w-[96px] rounded-[12px] border border-border bg-ground">
           {[64, 52, 68, 46, 58].map((w, i) => (
@@ -21,7 +21,7 @@ export function ShareVisual() {
 
         {/* The travelling secure link */}
         <div className="shr-token absolute left-[140px] top-[100px] flex h-[30px] w-[30px] items-center justify-center rounded-pill bg-accent shadow-[0_3px_8px_rgba(18,63,168,0.25)]">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--color-ground)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="7" width="10" height="7" rx="1.5" />
             <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
           </svg>
@@ -31,7 +31,7 @@ export function ShareVisual() {
         <div className="absolute left-[380px] top-[88px] flex h-[52px] w-[52px] items-center justify-center rounded-pill bg-accent-soft text-[15px] font-semibold text-accent">
           JA
           <span className="shr-badge absolute -right-[2px] -top-[2px] flex h-[18px] w-[18px] items-center justify-center rounded-pill bg-accent ring-2 ring-surface">
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="var(--color-ground)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3.5 8.5l3 3 6-6.5" />
             </svg>
           </span>
