@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { Toc, TocMobile } from "@/components/docs/Toc";
 import { ALL_PAGES, findPage, getToc, loadPage } from "@/content/docs";
+import { hrefFor } from "@/content/docs/nav";
+import { Anchor } from "@/mdx-components";
+import type { ComponentProps } from "react";
 
 /** One documentation page: crumbs, title, content, on-this-page, and the pages either side. */
-export async function DocPage({ slug }: { slug: string }) {
+export async function DocPage({ slug, base = "/docs" }: { slug: string; base?: string }) {
   const found = findPage(slug);
   if (!found) return null;
   const { section, index } = found;
@@ -17,7 +20,7 @@ export async function DocPage({ slug }: { slug: string }) {
         <nav className="docs-crumbs" aria-label="Breadcrumb">
           <ol>
             <li>
-              <Link href="/docs">Docs</Link>
+              <Link href={base}>Docs</Link>
             </li>
             <li aria-current={slug === "overview" ? "page" : undefined}>{section.section}</li>
           </ol>
@@ -26,11 +29,11 @@ export async function DocPage({ slug }: { slug: string }) {
         <p className="docs-desc">{meta.description}</p>
         <TocMobile items={toc} />
         <div className="doc-prose">
-          <Content />
+          <Content components={{ a: (props: ComponentProps<"a">) => <Anchor {...props} base={base} /> }} />
         </div>
         <nav className="docs-pager" aria-label="Neighbouring pages">
           {prev ? (
-            <Link href={prev.href} className="docs-pager-link">
+            <Link href={hrefFor(prev.slug, base)} className="docs-pager-link">
               <span className="docs-pager-label">Previous</span>
               <span className="docs-pager-title">{prev.title}</span>
             </Link>
@@ -38,7 +41,7 @@ export async function DocPage({ slug }: { slug: string }) {
             <span />
           )}
           {next ? (
-            <Link href={next.href} className="docs-pager-link is-next">
+            <Link href={hrefFor(next.slug, base)} className="docs-pager-link is-next">
               <span className="docs-pager-label">Next</span>
               <span className="docs-pager-title">{next.title}</span>
             </Link>

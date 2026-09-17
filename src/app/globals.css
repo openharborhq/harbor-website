@@ -22,6 +22,19 @@
   --color-warn-soft: #fbf1e1;
   --color-danger: #a33125;
 
+  /*
+   * The icon-tile palette. Four hues carry the eight feature boxes and the four
+   * "How it works" options, so a tile's colour is what ties an option to the panel it opens.
+   * The green is not new — apps/web has defined this pair since the app shipped, where it is
+   * called `label`. It is `green` here because `--color-label` collides with the `--text-label`
+   * font size: Tailwind resolves `text-label` to the colour and drops the 11px, which turns every
+   * mono eyebrow on the site green and 16px. `violet` is the one hue Harbor did not already own.
+   */
+  --color-green: #17604a;
+  --color-green-soft: #e3f2ea;
+  --color-violet: #5b3fd0;
+  --color-violet-soft: #ece7fb;
+
   /* The promise band stays the same saturated cobalt in both themes, so these four never flip. */
   --color-band: #123fa8;
   --color-on-band: #ffffff;
@@ -30,6 +43,9 @@
 
   --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+  /* Hero headlines only. A grotesque drawn to sit beside a mono, which the eyebrows already use.
+     Body copy stays on Inter. */
+  --font-display: var(--font-geist), Geist, Inter, system-ui, sans-serif;
 
   --text-display: 40px;
   --text-title: 30px;
@@ -136,6 +152,21 @@ body {
 }
 @utility gutter-l {
   padding-left: var(--gutter);
+}
+
+/*
+ * The v2 content lane.
+ *
+ * Sections below the hero are full-bleed bands whose *content* stops at 1152px — the width the
+ * 1440 artboard gives them once its 120px gutters are taken off. Expressed as padding rather than
+ * a max-width child so the band keeps its own background and rounded corners edge to edge, and so
+ * no section needs an extra wrapper element.
+ *
+ * At 1440 this resolves to exactly the 120px the design uses. Past that the second term takes
+ * over and the lane centres instead of sprawling; below it the clamp keeps a sane phone gutter.
+ */
+@utility lane {
+  padding-inline: max(clamp(24px, 8.333vw, 120px), calc((100% - 1152px) / 2));
 }
 
 /* The 650 display weight Paper uses for titles (Inter is variable). */
@@ -562,6 +593,10 @@ html[data-theme="dark"] {
   --color-accent-soft: #1c2c4d;
   --color-terminal: #0a111b;
   --color-hairline-dark: #2b3b52;
+  --color-green: #5cc79d;
+  --color-green-soft: #122e24;
+  --color-violet: #b3a1ff;
+  --color-violet-soft: #251c47;
   --color-on-dark: #a7b4c6;
   background: var(--color-ground);
   color: var(--color-text);
@@ -775,4 +810,363 @@ html[data-theme="dark"] .docs-root .doc-copy:hover { color: #ffffff; }
   .hib-count-new { opacity: 1; transform: none; }
   .hib-reading,
   .hib-count-old { opacity: 0; }
+}
+
+/* ---- Hero demo (v2) ------------------------------------------------------------------------
+ *
+ * A scripted run through the real app: sign in, the authenticator, Home, the Inbox worked card by
+ * card — three filed and two deleted — and the two to-dos that filing created.
+ *
+ * It plays ONCE rather than looping, and that is what makes the timing tractable: on a single
+ * pass `animation-delay` is an absolute position on one clock, so every element schedules itself
+ * by wall-clock seconds through `--in` / `--act` / `--out` / `--d`. On a loop a delay shifts that
+ * element's whole cycle instead and the scenes drift apart after the first pass.
+ *
+ * Views that must leave carry two animations: enter with `both`, exit with `forwards`. The exit
+ * must not use `backwards` or its start state would apply before its delay and clobber the
+ * entrance, being later in the list.
+ *
+ * The clock is 28s. Percentages below are of that, so 1% = 0.28s.
+ *
+ * Wall clock (s): 0 sign-in · 2.6 Continue · 3.0 out · 3.2 authenticator · 5.0 out · 5.3 app
+ * · 5.45–6.52 Home's cards build · 6.5–9.6 HOLD · 9.6–12.9 the page scrolls · 13.5 Inbox
+ * · 14.2–24.5 five cards · 24.9 To do · 25.2 tasks land.
+ */
+@keyframes hd-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hd-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes hd-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes hd-pop { from { opacity: 0; transform: scale(0.82); } to { opacity: 1; transform: none; } }
+@keyframes hd-press { 0% { transform: none; } 45% { transform: scale(0.97); filter: brightness(0.9); } 100% { transform: none; } }
+
+.hd-play > span { transform-origin: center; }
+.hd-play:hover > span { transform: scale(1.05); }
+.hd-play:active > span { transform: scale(0.99); }
+
+/* 1 — sign in */
+.hd-signin { animation: hd-fade-out 0.35s ease-in forwards; animation-delay: 3s; }
+.hd-type {
+  display: inline-block; overflow: hidden; white-space: nowrap; max-width: 0;
+  animation: hd-typing 1.4s steps(19, end) both; animation-delay: 0.6s;
+}
+@keyframes hd-typing { from { max-width: 0; } to { max-width: 19ch; } }
+.hd-caret {
+  width: 1px; height: 11px; background: var(--color-accent);
+  animation: hd-blink 0.45s steps(1, end) 5, hd-fade-out 0.01s linear forwards;
+  animation-delay: 0.2s, 2.1s;
+}
+@keyframes hd-blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+.hd-dot { opacity: 0; animation: hd-pop 0.16s ease-out both; animation-delay: var(--d); }
+.hd-submit { animation: hd-press 0.3s ease-out both; animation-delay: 2.6s; }
+
+/* 1b — the authenticator step */
+.hd-totp {
+  opacity: 0;
+  animation: hd-fade-in 0.3s ease-out both, hd-fade-out 0.35s ease-in forwards;
+  animation-delay: 3.2s, 5s;
+}
+.hd-digit { opacity: 0; animation: hd-pop 0.2s ease-out both; animation-delay: var(--d); }
+
+/* 2 — the shell */
+.hd-app { opacity: 0; animation: hd-fade-in 0.4s ease-out both; animation-delay: 5.3s; }
+
+/* The nav highlight, as three absolute tracks on the 28s clock: 19% = 5.3s, 48% = 13.4s,
+   88% = 24.6s. */
+.hd-nav-home { animation: hd-nav-home 28s linear both; }
+.hd-nav-inbox { animation: hd-nav-inbox 28s linear both; }
+.hd-nav-todo { animation: hd-nav-todo 28s linear both; }
+@keyframes hd-nav-home {
+  0%, 18% { background: transparent; color: var(--color-text); }
+  19%, 47.5% { background: var(--color-accent-soft); color: var(--color-accent); font-weight: 600; }
+  48.5%, 100% { background: transparent; color: var(--color-text); }
+}
+@keyframes hd-nav-inbox {
+  0%, 47.5% { background: transparent; color: var(--color-text); }
+  48.5%, 87.5% { background: var(--color-accent-soft); color: var(--color-accent); font-weight: 600; }
+  88.5%, 100% { background: transparent; color: var(--color-text); }
+}
+@keyframes hd-nav-todo {
+  0%, 87.5% { background: transparent; color: var(--color-text); }
+  88.5%, 100% { background: var(--color-accent-soft); color: var(--color-accent); font-weight: 600; }
+}
+.hd-badge-inbox { animation: hd-fade-out 0.3s ease-in forwards; animation-delay: 24.6s; }
+.hd-badge-todo { opacity: 0; animation: hd-fade-in 0.3s ease-out both; animation-delay: 24.9s; }
+
+/* 3 — Home. The cards build, the page HOLDS for three seconds, then it scrolls.
+   34.3% = 9.6s · 39.6% = 11.1s · 41.4% = 11.6s · 46.1% = 12.9s. */
+.hd-home { animation: hd-fade-out 0.3s ease-in forwards; animation-delay: 13.4s; }
+.hd-scroll { animation: hd-scroll 28s cubic-bezier(0.4, 0, 0.2, 1) both; }
+@keyframes hd-scroll {
+  0%, 34.3% { transform: none; }
+  39.6%, 41.4% { transform: translateY(-34%); }
+  46.1%, 100% { transform: none; }
+}
+/* Ten pixels up on a long ease-out, 65ms apart — family, then property. The tail settles at
+   ~6.5s and nothing else moves until 9.6s. */
+.hd-item { opacity: 0; animation: hd-item-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: var(--d); }
+@keyframes hd-item-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* 4 — the Inbox, one card at a time */
+.hd-inbox {
+  opacity: 0;
+  animation: hd-fade-in 0.3s ease-out both, hd-fade-out 0.3s ease-in forwards;
+  animation-delay: 13.6s, 24.6s;
+}
+.hd-count { animation: hd-fade-in 0.3s ease-out both; animation-delay: 13.8s; }
+.hd-row { opacity: 0; max-height: 58px; }
+/* Filed rows slide right, deleted ones just fall away — then both collapse their own height so
+   the list closes up and the next row rises into the same place. That is what lets the pointer
+   hold one position through all five verdicts. */
+.hd-row-accept {
+  animation: hd-rise 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) both, hd-file 0.55s ease-in forwards;
+  animation-delay: var(--in), var(--out);
+}
+.hd-row-delete {
+  animation: hd-rise 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) both, hd-discard 0.55s ease-in forwards;
+  animation-delay: var(--in), var(--out);
+}
+/*
+ * A row has to give up its padding and its border as well as its height, or it leaves a ~14px
+ * box behind and the rows below never reach the top of the list. `max-height` alone clamps the
+ * content box; the padding and border sit outside it and keep rendering.
+ *
+ * The negative margin absorbs the flex `gap` the empty slot would otherwise still claim.
+ */
+@keyframes hd-file {
+  0%, 55% { max-height: 58px; margin-bottom: 0; padding-block: 6px; border-block-width: 1px; }
+  0% { opacity: 1; transform: none; }
+  55% { opacity: 0; transform: translateX(12%); }
+  100% { opacity: 0; transform: translateX(12%); max-height: 0; margin-bottom: -5px; padding-block: 0; border-block-width: 0; }
+}
+@keyframes hd-discard {
+  0%, 55% { max-height: 58px; margin-bottom: 0; padding-block: 6px; border-block-width: 1px; }
+  0% { opacity: 1; transform: none; }
+  55% { opacity: 0; transform: scale(0.97); }
+  100% { opacity: 0; transform: scale(0.97); max-height: 0; margin-bottom: -5px; padding-block: 0; border-block-width: 0; }
+}
+.hd-btn { animation: hd-press 0.3s ease-out both; animation-delay: var(--act); }
+
+/* 5 — To do */
+.hd-todo { opacity: 0; animation: hd-fade-in 0.3s ease-out both, hd-fade-out 0.3s ease-in forwards; animation-delay: 24.9s, 30.6s; }
+.hd-task { opacity: 0; animation: hd-rise 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) both; animation-delay: var(--d); }
+
+/* 6 — the search, and 7 — the share dialog.
+ *
+ * The beat is one causal chain and the delays say so: the box is focused before it is typed into,
+ * the results arrive after the query is whole, the tick precedes the Share control that only
+ * exists because of it, and the dialog opens after the press. Each link in that chain gets a
+ * pause long enough to be read, which is most of the eighteen seconds this adds.
+ */
+@keyframes hd-focus {
+  0%, 100% { border-color: var(--color-border); }
+  1%, 99%  { border-color: var(--color-accent); }
+}
+.hd-t-search { animation: hd-focus 2.5s linear both; animation-delay: 28.4s; }
+.hd-t-rcpt   { animation: hd-focus 3.3s linear both; animation-delay: 39.3s; }
+
+/* Placeholders go the instant the box takes focus, and are out of flow so what is typed starts
+   hard left rather than after them. */
+.hd-ph, .hd-kbd { animation: hd-fade-out 0.15s linear forwards; animation-delay: 28.4s; }
+.hd-rph { animation: hd-fade-out 0.15s linear forwards; animation-delay: 39.3s; }
+
+/*
+ * Typing, as a clip rather than a per-character script: `steps()` on `max-width` reveals one
+ * character's worth at a time. The target is in `ch` and deliberately a little over the string's
+ * real width — overshooting is invisible, because past the last glyph there is nothing left to
+ * uncover, while falling short would cut the word off.
+ */
+.hd-typed, .hd-rcpt {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.hd-scaret, .hd-rcaret { width: 1px; background: var(--color-accent); }
+.hd-typed { animation: hd-type-q 1.4s steps(8, end) both; animation-delay: 28.9s; }
+.hd-rcpt  { animation: hd-type-r 1.7s steps(22, end) both; animation-delay: 39.7s; }
+@keyframes hd-type-q { from { max-width: 0; } to { max-width: 8ch; } }
+@keyframes hd-type-r { from { max-width: 0; } to { max-width: 22ch; } }
+
+/* Carets that blink while their box has focus, reusing sign-in's `hd-blink` rather than redefining
+   it — a second @keyframes of the same name would silently replace the first one everywhere. Named
+   apart from `.hd-caret` for the same reason: that class is sign-in's. */
+.hd-scaret { opacity: 0; animation: hd-blink 0.85s steps(1, end) 3 both; animation-delay: 28.4s; }
+.hd-rcaret { opacity: 0; animation: hd-blink 0.85s steps(1, end) 4 both; animation-delay: 39.3s; }
+
+.hd-search { opacity: 0; animation: hd-fade-in 0.3s ease-out both; animation-delay: 30.9s; }
+.hd-hit { opacity: 0; animation: hd-rise 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) both; animation-delay: var(--d); }
+
+/* The tick colours the box, its border and the glyph together — the glyph inherits `color`, so
+   before the tick it is transparent rather than white-on-white. */
+@keyframes hd-check {
+  from { background-color: transparent; border-color: var(--color-border-strong); color: transparent; }
+  to   { background-color: var(--color-band); border-color: var(--color-band); color: var(--color-on-band); }
+}
+.hd-tick { animation: hd-check 0.25s cubic-bezier(0.2, 0.7, 0.3, 1) both; animation-delay: 33.8s; }
+
+/* The Share control is absent until the tick exists, which is the app's rule, so its entrance is
+   the point of the beat rather than decoration. */
+@keyframes hd-reveal { from { opacity: 0; transform: translateY(-4px) scale(0.94); } to { opacity: 1; transform: none; } }
+.hd-sharebtn { opacity: 0; animation: hd-reveal 0.32s cubic-bezier(0.2, 0.7, 0.3, 1) both; animation-delay: 34.1s; }
+
+.hd-modal { opacity: 0; animation: hd-fade-in 0.28s ease-out both; animation-delay: 36.9s; }
+@keyframes hd-panel-in { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: none; } }
+.hd-panel { animation: hd-panel-in 0.34s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 36.9s; }
+
+.hd-create { animation: hd-press 0.3s ease-out both; animation-delay: 43.1s; }
+
+/* The form gives way to the one thing that is readable exactly once. */
+.hd-form, .hd-foot { animation: hd-fade-out 0.25s ease-in forwards; animation-delay: 43.45s; }
+.hd-linkpanel { opacity: 0; animation: hd-fade-in 0.3s ease-out both; animation-delay: 43.6s; }
+
+/* The stage is authored at 880×534 (see HeroDemo) and scaled to whatever width the hero is.
+   Percentages inside it — the pointer's, above all — therefore mean the same thing at every
+   viewport, which a percentage-sized stage full of fixed-px furniture could not promise. */
+.hd-stage { transform: scale(var(--hd-scale, 1)); }
+
+/* The transport's reference clock: an empty 28s animation, read for `currentTime`. */
+.hd-clock { animation: hd-clock 46s linear both; }
+@keyframes hd-clock { from { opacity: 0; } to { opacity: 0; } }
+
+/* ---- Hero demo: the pointer -----------------------------------------------------------------
+ *
+ * The track carries a timing function *per keyframe*, which is what makes it read as a hand: each
+ * move is a short eased arc, and each arrival is followed by a `linear` segment between two
+ * identical positions — a real stop, not a slow glide. One easing stretched across the whole clock
+ * would mean it never rests.
+ *
+ * Of 28s: 10.7% = 3.0s (Continue) · 48.2% = 13.5s (the Inbox row) ·
+ * 55.4 / 62.9 / 69.6 / 77.9 / 84.6% = the five verdicts · 89.3% = 25.0s (To do).
+ *
+ * Every row now carries both verdicts, so the pointer no longer parks: it sits over Accept, and
+ * steps left to the trash for the two rows the script discards (3rd and 5th), returning in
+ * between. Each step is ~0.4s of ease over 36px, timed to land before the press it belongs to.
+ */
+.hd-cursor { top: 55%; left: 62%; animation: hd-cursor 46s both; }
+/*
+ * Measured off the rendered 750×455 stage, not estimated — and re-measured whenever that design
+ * size changes, because every one of these is a fraction of it. The pointer's tip sits at the
+ * element's top-left, so `top`/`left` are the target's centre:
+ *   email 50/46.9 · password 50/59.6 · Continue 50/69.7
+ *   Inbox row 12.3/21.8 · Accept 93.5/30.4 · Trash 88.7/30.4 · To do row 12.3/27.9
+ * Rows collapse as they leave, so each next one rises into the first row's slot and the single
+ * action position serves all five verdicts.
+ */
+@keyframes hd-cursor {
+  0%      { top: 55%; left: 62%; opacity: 0; animation-timing-function: ease-out; }  /* 0.00s */
+  0.609%  { top: 55%; left: 62%; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 0.28s */
+  1.887%  { top: 46.9%; left: 50%; animation-timing-function: linear; }  /* 0.87s */
+  3.348%  { top: 46.9%; left: 50%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 1.54s */
+  4.261%  { top: 59.6%; left: 50%; animation-timing-function: linear; }  /* 1.96s */
+  4.93%   { top: 59.6%; left: 50%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 2.27s */
+  5.417%  { top: 69.7%; left: 50%; animation-timing-function: linear; }  /* 2.49s */
+  6.574%  { top: 69.7%; left: 50%; opacity: 1; animation-timing-function: ease-in; }  /* 3.02s */
+  7.183%  { top: 69.7%; left: 50%; opacity: 0; animation-timing-function: linear; }  /* 3.30s */
+  11.748% { top: 50%; left: 55%; opacity: 0; animation-timing-function: ease-out; }  /* 5.40s */
+  12.539% { top: 50%; left: 55%; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 5.77s */
+  14.609% { top: 44%; left: 48%; animation-timing-function: linear; }  /* 6.72s */
+  28.304% { top: 44%; left: 48%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 13.02s */
+  29.339% { top: 21.8%; left: 12.3%; animation-timing-function: linear; }  /* 13.50s */
+  30.739% { top: 21.8%; left: 12.3%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 14.14s */
+  31.957% { top: 30.4%; left: 93.5%; animation-timing-function: linear; }  /* 14.70s */
+  41.087% { top: 30.4%; left: 93.5%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 18.90s */
+  41.939% { top: 30.4%; left: 88.7%; animation-timing-function: linear; }  /* 19.29s */
+  45.957% { top: 30.4%; left: 88.7%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 21.14s */
+  46.626% { top: 30.4%; left: 93.5%; animation-timing-function: linear; }  /* 21.45s */
+  50.217% { top: 30.4%; left: 93.5%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 23.10s */
+  50.887% { top: 30.4%; left: 88.7%; animation-timing-function: linear; }  /* 23.41s */
+  52.348% { top: 30.4%; left: 88.7%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 24.08s */
+  54.357% { top: 27.9%; left: 12.3%; animation-timing-function: linear; }  /* 25.00s */
+  60.87%  { top: 27.9%; left: 12.3%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 28.00s */
+  61.739% { top: 5.05%; left: 46.8%; animation-timing-function: linear; }  /* 28.40s */
+  72.174% { top: 5.05%; left: 46.8%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 33.20s */
+  73.478% { top: 30.11%; left: 28.2%; animation-timing-function: linear; }  /* 33.80s */
+  78.696% { top: 30.11%; left: 28.2%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 36.20s */
+  79.565% { top: 5.05%; left: 75.82%; animation-timing-function: linear; }  /* 36.60s */
+  84.348% { top: 5.05%; left: 75.82%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 38.80s */
+  85.435% { top: 50.16%; left: 20.53%; animation-timing-function: linear; }  /* 39.30s */
+  92.609% { top: 50.16%; left: 20.53%; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }  /* 42.60s */
+  93.696% { top: 88.9%; left: 33.73%; animation-timing-function: linear; }  /* 43.10s */
+  100%    { top: 88.9%; left: 33.73%; opacity: 1; }  /* 46.00s */
+}
+
+.hd-click { opacity: 0; animation: hd-click 46s linear both; }
+@keyframes hd-click {
+  0%          { opacity: 0; transform: scale(0.45); }
+  6.4%       { opacity: 0; transform: scale(0.45); }
+  6.522%     { opacity: 0.9; transform: scale(0.45); }
+  7.191%     { opacity: 0; transform: scale(1.6); }  /* 3.0s */
+  29.226%    { opacity: 0; transform: scale(0.45); }
+  29.348%    { opacity: 0.9; transform: scale(0.45); }
+  30.017%    { opacity: 0; transform: scale(1.6); }  /* 13.5s */
+  33.574%    { opacity: 0; transform: scale(0.45); }
+  33.696%    { opacity: 0.9; transform: scale(0.45); }
+  34.365%    { opacity: 0; transform: scale(1.6); }  /* 15.5s */
+  38.139%    { opacity: 0; transform: scale(0.45); }
+  38.261%    { opacity: 0.9; transform: scale(0.45); }
+  38.93%     { opacity: 0; transform: scale(1.6); }  /* 17.6s */
+  42.27%     { opacity: 0; transform: scale(0.45); }
+  42.391%    { opacity: 0.9; transform: scale(0.45); }
+  43.061%    { opacity: 0; transform: scale(1.6); }  /* 19.5s */
+  47.27%     { opacity: 0; transform: scale(0.45); }
+  47.391%    { opacity: 0.9; transform: scale(0.45); }
+  48.061%    { opacity: 0; transform: scale(1.6); }  /* 21.8s */
+  51.4%      { opacity: 0; transform: scale(0.45); }
+  51.522%    { opacity: 0.9; transform: scale(0.45); }
+  52.191%    { opacity: 0; transform: scale(1.6); }  /* 23.7s */
+  54.226%    { opacity: 0; transform: scale(0.45); }
+  54.348%    { opacity: 0.9; transform: scale(0.45); }
+  55.017%    { opacity: 0; transform: scale(1.6); }  /* 25.0s */
+  61.617%    { opacity: 0; transform: scale(0.45); }
+  61.739%    { opacity: 0.9; transform: scale(0.45); }
+  62.409%    { opacity: 0; transform: scale(1.6); }  /* 28.4s */
+  73.357%    { opacity: 0; transform: scale(0.45); }
+  73.478%    { opacity: 0.9; transform: scale(0.45); }
+  74.148%    { opacity: 0; transform: scale(1.6); }  /* 33.8s */
+  79.443%    { opacity: 0; transform: scale(0.45); }
+  79.565%    { opacity: 0.9; transform: scale(0.45); }
+  80.235%    { opacity: 0; transform: scale(1.6); }  /* 36.6s */
+  85.313%    { opacity: 0; transform: scale(0.45); }
+  85.435%    { opacity: 0.9; transform: scale(0.45); }
+  86.104%    { opacity: 0; transform: scale(1.6); }  /* 39.3s */
+  93.574%    { opacity: 0; transform: scale(0.45); }
+  93.696%    { opacity: 0.9; transform: scale(0.45); }
+  94.365%    { opacity: 0; transform: scale(1.6); }  /* 43.1s */
+  100%        { opacity: 0; transform: scale(1.6); }
+}
+
+/*
+ * Reduced motion: no walkthrough at all. The play control is removed rather than made static —
+ * a button that does nothing is worse than no button, and the still is a complete hero on its own.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .hd-play { display: none; }
+  .hd-signin, .hd-type, .hd-caret, .hd-dot, .hd-submit, .hd-totp, .hd-digit, .hd-app, .hd-home,
+  .hd-scroll, .hd-item, .hd-inbox, .hd-count, .hd-card, .hd-btn, .hd-confirm, .hd-todo, .hd-task,
+  .hd-nav-home, .hd-nav-inbox, .hd-nav-todo, .hd-badge-inbox, .hd-badge-todo,
+  .hd-t-search, .hd-ph, .hd-kbd, .hd-typed, .hd-scaret, .hd-search, .hd-hit, .hd-tick,
+  .hd-sharebtn, .hd-modal, .hd-panel, .hd-form, .hd-foot, .hd-linkpanel, .hd-create,
+  .hd-t-rcpt, .hd-rph, .hd-rcpt, .hd-rcaret,
+  .hd-cursor, .hd-click { animation: none; }
+  .hd-item { opacity: 1; }
+  .hd-cursor, .hd-click { opacity: 0; }
+  .hd-play > span, .hd-play:hover > span { transform: none; }
+}
+
+/*
+ * The pill's arrival: it drops in from above the viewport and decelerates into place.
+ *
+ * The transition is on `translate`, NOT `transform`. Tailwind v4 compiles its translate utilities
+ * to the standalone `translate` property, so a `transition: transform` here watches a property
+ * that never changes — the pill snapped into place with no motion at all, which is exactly how
+ * this first shipped. `transform` stays untouched and reads as `none` throughout.
+ *
+ * Both are composited properties, so none of this relayouts the page mid-scroll.
+ */
+.sticky-nav {
+  transition: translate 340ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease-out;
+  will-change: translate, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* The drop goes; the fade stays. `translate` is left alone because it also centres the pill. */
+  .sticky-nav { transition: opacity 120ms linear; }
 }

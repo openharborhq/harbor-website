@@ -15,7 +15,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params;
   if (!findPage(slug) || slug === "overview") return {};
   const { meta } = await loadPage(slug);
-  return { title: `${meta.title} · Harbor docs`, description: meta.description };
+  return {
+    title: `${meta.title} · Harbor docs`,
+    description: meta.description,
+  };
 }
 
 export default async function Page({ params }: { params: Params }) {

@@ -9,7 +9,19 @@ export type NavPage = { slug: string; title: string; href: string };
 export type NavSection = { section: string; pages: NavPage[] };
 export type TocItem = { id: string; text: string; depth: 2 | 3 };
 
-const page = (slug: string, title: string): NavPage => ({ slug, title, href: slug === "overview" ? "/docs" : `/docs/${slug}` });
+/**
+ * Where a slug lives, under whichever docs tree is asking.
+ *
+ * `base` is a parameter because the redesign's docs lived at `/v2/docs` beside the live ones for a
+ * while, and the nav and the pager had to stay inside whichever tree the reader was in. There is
+ * one tree again; the parameter stays because it costs nothing and the next staging run will want
+ * it.
+ */
+export function hrefFor(slug: string, base = "/docs"): string {
+  return slug === "overview" ? base : `${base}/${slug}`;
+}
+
+const page = (slug: string, title: string): NavPage => ({ slug, title, href: hrefFor(slug) });
 
 /** The left navigation, in reading order. Every slug is a file in this directory. */
 export const NAV: NavSection[] = [

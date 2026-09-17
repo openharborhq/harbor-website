@@ -3,18 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { ALL_PAGES, NAV } from "@/content/docs/nav";
+import { ALL_PAGES, NAV, hrefFor } from "@/content/docs/nav";
 
 /** The left navigation: every page, grouped by section, the current one marked. */
-export function DocsNav() {
+export function DocsNav({ base = "/docs", className = "" }: { base?: string; className?: string } = {}) {
   const pathname = usePathname();
   // The phone menu remembers which page it was opened on, so a navigation closes it by itself.
   const [openFor, setOpenFor] = useState<string | null>(null);
   const open = openFor === pathname;
-  const current = ALL_PAGES.find((p) => p.href === pathname);
+  const current = ALL_PAGES.find((p) => hrefFor(p.slug, base) === pathname);
 
   return (
-    <nav className="docs-nav" aria-label="Documentation">
+    <nav className={`docs-nav ${className}`.trim()} aria-label="Documentation">
       <button
         type="button"
         className="docs-nav-toggle"
@@ -34,10 +34,11 @@ export function DocsNav() {
             <p className="docs-nav-heading">{s.section}</p>
             <ul>
               {s.pages.map((p) => {
-                const active = p.href === pathname;
+                const href = hrefFor(p.slug, base);
+                const active = href === pathname;
                 return (
                   <li key={p.slug}>
-                    <Link href={p.href} aria-current={active ? "page" : undefined} className="docs-nav-link">
+                    <Link href={href} aria-current={active ? "page" : undefined} className="docs-nav-link">
                       {p.title}
                     </Link>
                   </li>

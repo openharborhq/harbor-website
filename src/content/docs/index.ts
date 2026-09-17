@@ -1,12 +1,16 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import GithubSlugger from "github-slugger";
+import type { MDXComponents } from "mdx/types";
 import type { ComponentType } from "react";
 import type { PageMeta, TocItem } from "./nav";
 
 export * from "./nav";
 
-export async function loadPage(slug: string): Promise<{ Content: ComponentType; meta: PageMeta }> {
+/** `components` is how a page overrides the global MDX map for one render — see `DocPage`. */
+export type DocContent = ComponentType<{ components?: MDXComponents }>;
+
+export async function loadPage(slug: string): Promise<{ Content: DocContent; meta: PageMeta }> {
   const mod = await import(`@/content/docs/${slug}.mdx`);
   return { Content: mod.default, meta: mod.meta };
 }
