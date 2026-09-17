@@ -23,7 +23,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Harbor: everything that matters, safely together",
+  // The default for any page that does not set its own — the 404 among them. It was the old home
+  // page's headline, which outlived the page itself.
+  title: "Harbor: a document vault for a household, on a machine you own",
   description:
     "An open-source, self-hosted home for your family's essential documents. Email it in, Harbor reads and files it, on hardware you own.",
   metadataBase: new URL("https://openharbor.app"),
