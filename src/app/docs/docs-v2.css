@@ -1,0 +1,73 @@
+/*
+ * The v2 docs shell: the same reading grid, held inside the page's 24px inset.
+ *
+ * Deliberately its own file rather than an addition to `globals.css`. Everything here belongs to
+ * one route, and the shared sheet is long enough already.
+ *
+ * Only the container changes. The reading column stays 800px, the type stays on the 17px rule,
+ * and every inner class — `docs-nav-link`, `doc-prose`, `docs-pager`, the phone bar under 1024px
+ * — is the live docs' own, reused rather than restated. Selectors are written as descendants of
+ * `.v2docs-shell` so they outrank the base rules whatever order the two sheets land in.
+ */
+.v2docs-band {
+  border: 1px solid var(--color-border);
+  border-radius: 26px;
+  background: var(--color-ground);
+  /* No `overflow: hidden`, however much the rounded corner wants it: it would make the sidebar's
+     `position: sticky` resolve against this box instead of the viewport, and the nav would scroll
+     away with the page. The sidebar is transparent, so nothing bleeds past the corner anyway. */
+}
+
+.v2docs-shell {
+  display: grid;
+  grid-template-columns: 272px minmax(0, 1fr);
+  min-height: 60vh;
+}
+
+.v2docs-shell .docs-nav {
+  position: sticky;
+  /* Clears the band's own top edge rather than the viewport's, so the nav stops level with the
+     first line of the article instead of riding under the rounded corner. */
+  top: 24px;
+  align-self: start;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border-right: 1px solid var(--color-border);
+  padding: 40px 20px 48px 36px;
+  background: transparent;
+}
+
+.v2docs-shell .docs-main {
+  display: grid;
+  grid-template-columns: minmax(0, 800px) 232px;
+  justify-content: start;
+  column-gap: 64px;
+  align-items: start;
+  padding: 44px 40px 96px 56px;
+  min-width: 0;
+}
+
+@media (max-width: 1279px) {
+  .v2docs-shell .docs-main { grid-template-columns: minmax(0, 1fr); padding: 40px 36px 88px 44px; }
+}
+
+@media (max-width: 1023px) {
+  .v2docs-shell { grid-template-columns: minmax(0, 1fr); }
+  /* Under 1024px the nav becomes the phone bar the live docs already define. It keeps that
+     behaviour; what changes is that it now has a rounded corner above it to sit under. */
+  .v2docs-shell .docs-nav {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0;
+    border-radius: 25px 25px 0 0;
+    background: var(--color-ground);
+  }
+  .v2docs-shell .docs-main { padding: 32px 28px 80px; }
+}
+
+@media (max-width: 719px) {
+  .v2docs-shell .docs-main { padding: 28px 20px 72px; }
+}

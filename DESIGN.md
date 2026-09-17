@@ -285,7 +285,7 @@ Four radii, plus the pill. Pills (`999px`) are every button, the copy control, t
 ## Components
 
 ### Buttons
-Pill, semibold, no shadow, no hover treatment on the landing page beyond the cursor; the docs' controls do show hover.
+Pill, semibold, no shadow — including on hover, which is never lifted by one. The hero pair (decision, 2026-09-17) rests bare: each button holds its mark hidden behind its own label and reveals it on hover — the primary's arrow, the secondary's GitHub logo. The button scales to 1.02 on hover and 0.99 on press over 180ms on the standard ease; the label slides 12.5px left over 260ms on the same ease while the mark fades from 0 and travels 14px right over 300ms on the overshoot curve, landing the pair optically centred. The mark is out of flow, so the button's layout width never changes and neither button moves the other. Under `prefers-reduced-motion: reduce` both revert to the static pair: the primary shows its arrow outright, the secondary offers a `{colors.surface}` wash, and nothing transforms — hiding a mark from these readers would cost them the content, not just the animation. The v2 "How it works" selector, being a control rather than a link, washes its unselected options to `{colors.panel}` at 60% on hover and drops the resting shadow its active card used to carry. The rest of the landing page's buttons carry no hover treatment beyond the cursor; the docs' controls do show hover.
 - **Shape:** pill (`999px`)
 - **Primary:** cobalt on white text, `15px 26px`, 16px/20px semibold, -0.01em, with a 15px arrow icon at 9px gap. Used once above the fold (hero "Get started").
 - **Nav:** ink on white text, `11px 20px`, 14px/18px semibold. The header's "Get started".

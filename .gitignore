@@ -43,3 +43,6 @@ next-env.d.ts
 # local tooling state (Impeccable): critique snapshots, review artifacts, installed skill
 /.impeccable
 /.claude/skills
+
+# local MCP server config: carries a personal API key
+/.mcp.json

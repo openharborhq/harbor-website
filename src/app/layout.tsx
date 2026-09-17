@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Inter } from "next/font/google";
+import { Geist, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+/* Display face for hero headlines (see --font-display). Body copy stays on Inter. */
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
   display: "swap",
 });
 
@@ -40,7 +47,7 @@ const themeScript = `(function(){try{var c=localStorage.getItem("harbor-theme");
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // suppressHydrationWarning: the script above writes data-theme on <html> before React sees it.
-    <html lang="en" className={`${inter.variable} ${plexMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${geist.variable} ${plexMono.variable}`} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <a href="#main" className="skip-link">

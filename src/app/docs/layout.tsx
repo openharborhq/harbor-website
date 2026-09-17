@@ -1,18 +1,29 @@
 import { DocsNav } from "@/components/docs/DocsNav";
-import { Footer } from "@/components/Footer";
-import { Nav } from "@/components/Nav";
+import { FooterV2 } from "@/components/v2/FooterV2";
+import { NavV2 } from "@/components/v2/NavV2";
+import "./docs-v2.css";
 
-export default function DocsLayout({ children }: { children: React.ReactNode }) {
+/*
+ * Docs under the v2 chrome.
+ *
+ * `docs-root` is kept on the wrapper because two dark-theme rules in `globals.css` are scoped to
+ * it; drop the class and the code figures lose their border at night. The 24px inset and NavV2
+ * are the rest of the site's, so a reader crossing from the home page into the docs does not
+ * cross a seam.
+ */
+export default function V2DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="docs-root">
-      <Nav current="docs" wide />
-      <div className="docs-shell">
-        <DocsNav />
-        <main id="main" className="docs-main">
-          {children}
-        </main>
+    <div className="docs-root px-[24px]">
+      <NavV2 />
+      <div className="v2docs-band">
+        <div className="v2docs-shell">
+          <DocsNav />
+          <main id="main" className="docs-main">
+            {children}
+          </main>
+        </div>
       </div>
-      <Footer wide />
+      <FooterV2 />
     </div>
   );
 }

@@ -1,0 +1,45 @@
+/*
+ * The two chip rows on the features hero, running in opposite directions for ever.
+ *
+ * Kept out of `globals.css` for the same reason the v2 docs shell is: it belongs to one component.
+ *
+ * The seam is the whole problem with a marquee. Each row is drawn once, rendered twice side by
+ * side, and the pair is slid exactly one copy's width — expressed as `-50%` of the track, so the
+ * number never has to be kept in sync with the chips. At the moment the animation restarts, copy
+ * two is sitting precisely where copy one began and nothing on screen moves.
+ */
+.marq {
+  overflow: hidden;
+  /* The rows bleed to the band's edges, and the band's own rounded corner clips them. Masking the
+     ends as well would fight that corner, so the fade is left to the band. */
+  width: 100%;
+}
+
+.marq-track {
+  display: flex;
+  width: max-content;
+  /* Duration is set per row from its own width, so a long row and a short one travel at the same
+     speed rather than taking the same time. */
+  animation: marq-left var(--marq-dur, 60s) linear infinite;
+  will-change: transform;
+}
+
+.marq-track[data-dir="right"] {
+  animation-name: marq-right;
+}
+
+@keyframes marq-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marq-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Stopped, not hidden. The rows still read as a sample of a longer list because they still run
+     past both edges — they simply stop travelling. */
+  .marq-track { animation: none; transform: translateX(-25%); }
+}
