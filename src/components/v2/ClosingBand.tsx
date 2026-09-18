@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Arrow } from "./parts";
 import { doc } from "./routes";
+import { StaggerGroup, StaggerItem } from "./Stagger";
 
 /*
  * The last thing on the page.
@@ -11,10 +12,10 @@ import { doc } from "./routes";
  */
 export function ClosingBand() {
   return (
-    <section className="flex flex-col items-start justify-between gap-[48px] rounded-[26px] bg-surface lane py-[60px] md:py-[88px] lg:flex-row lg:items-center lg:gap-[80px]">
+    <StaggerGroup as="section" stagger={0.16} className="flex flex-col items-start justify-between gap-[48px] rounded-[26px] bg-surface lane py-[60px] md:py-[88px] lg:flex-row lg:items-center lg:gap-[80px]">
       {/* Wide enough for the headline to hold one line at desktop — the old 680px column and the
           600px cap on the h2 broke it across two, which turned three short clauses into a block. */}
-      <div className="flex max-w-[860px] flex-col gap-[20px]">
+      <StaggerItem className="flex max-w-[860px] flex-col gap-[20px]">
         <h2 className="text-section-head font-extrabold leading-[1.15] tracking-hero text-text">
           Your data. Your rules. Your Harbor.
         </h2>
@@ -22,7 +23,8 @@ export function ClosingBand() {
           No account on anyone else&rsquo;s server, and no plan to upgrade. The software, the machine you put it on,
           and a household that knows where everything is.
         </p>
-      </div>
+      </StaggerItem>
+      <StaggerItem className="shrink-0">
       <Link
         href={doc("install")}
         className="flex shrink-0 items-center gap-[10px] rounded-pill bg-accent px-[26px] py-[13px] text-copy font-bold leading-body tracking-[-0.01em] text-ground"
@@ -30,6 +32,7 @@ export function ClosingBand() {
         Install Harbor
         <Arrow />
       </Link>
-    </section>
+      </StaggerItem>
+    </StaggerGroup>
   );
 }

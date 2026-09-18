@@ -6,6 +6,7 @@ import { FeatureBand } from "@/components/v2/FeatureBand";
 import { FooterV2 } from "@/components/v2/FooterV2";
 import { NavV2 } from "@/components/v2/NavV2";
 import { Eyebrow } from "@/components/v2/parts";
+import { StaggerGroup, StaggerItem } from "@/components/v2/Stagger";
 import { StickyNav } from "@/components/v2/StickyNav";
 import { GROUPS } from "@/content/features";
 
@@ -38,23 +39,33 @@ export default function Page() {
       <main id="main" className="flex flex-col gap-[26px]">
         {/* The lane is on the copy, not on the section, because the chip rows have to reach the
             band's own edges — the band's 26px corner is what clips them. */}
-        <section className={`flex flex-col items-center gap-[22px] overflow-hidden rounded-[26px] bg-surface ${PAD}`}>
-          <div className="flex flex-col items-center gap-[22px] lane">
-            <Eyebrow>FEATURES</Eyebrow>
-            <h1 className="max-w-[900px] text-center text-display font-bold leading-[1.12] tracking-[-0.032em] text-text">
+        {/* The page's own hero: the copy builds line by line and the chip rows follow it, the same
+            shape the home page opens with. Above the fold, so it runs on load. */}
+        <StaggerGroup
+          as="section"
+          stagger={0.42}
+          className={`flex flex-col items-center gap-[22px] overflow-hidden rounded-[26px] bg-surface ${PAD}`}
+        >
+          <StaggerGroup className="flex flex-col items-center gap-[22px] lane">
+            <StaggerItem>
+              <Eyebrow>FEATURES</Eyebrow>
+            </StaggerItem>
+            <StaggerItem as="h1" className="max-w-[900px] text-center text-display font-bold leading-[1.12] tracking-[-0.032em] text-text">
               Simple, secure records management
-            </h1>
-            <p className="max-w-[680px] text-center text-copy leading-copy text-muted">
+            </StaggerItem>
+            <StaggerItem as="p" className="max-w-[680px] text-center text-copy leading-copy text-muted">
               One place for everything. Easy to find. Nothing expires by surprise. And it never leaves your house.
-            </p>
-          </div>
-          <div className="flex w-full flex-col items-center gap-[18px] pt-[26px]">
+            </StaggerItem>
+          </StaggerGroup>
+          {/* One item rather than a group: the marquee is already moving under its own power, and
+              staggering its label against it would be two clocks on one row. */}
+          <StaggerItem className="flex w-full flex-col items-center gap-[18px] pt-[26px]">
             <DocumentMarquee />
             <p className="lane text-center font-mono text-label font-medium leading-[18px] tracking-mono text-faint">
               AND EVERYTHING ELSE THE HOUSEHOLD KEEPS
             </p>
-          </div>
-        </section>
+          </StaggerItem>
+        </StaggerGroup>
 
         {/* Same behaviour as the home page: the pill arrives as the opening band's floor passes the
             top of the viewport. The negative margin cancels the gap this sentinel would otherwise
@@ -65,15 +76,15 @@ export default function Page() {
           <FeatureBand key={g.id} group={g} tone={tone(i + 1)} />
         ))}
 
-        <section className={`flex flex-col items-center gap-[30px] rounded-[26px] lane bg-surface ${PAD}`}>
-          <div className="flex max-w-[720px] flex-col items-center gap-[12px]">
+        <StaggerGroup as="section" stagger={0.2} className={`flex flex-col items-center gap-[30px] rounded-[26px] lane bg-surface ${PAD}`}>
+          <StaggerItem className="flex max-w-[720px] flex-col items-center gap-[12px]">
             <Eyebrow>ONE DOCUMENT, EVERYTHING ABOUT IT</Eyebrow>
             <p className="text-center text-copy leading-copy text-muted">
               The page exactly as it arrived, the summary Harbor wrote, the tags it pulled out, the expiry it is
               watching, and the note your spouse left last March.
             </p>
-          </div>
-          <div className="w-full max-w-[1000px] overflow-hidden rounded-[16px] border border-border">
+          </StaggerItem>
+          <StaggerItem className="w-full max-w-[1000px] overflow-hidden rounded-[16px] border border-border">
             <Image
               src="/mock/slide-document@2x.png"
               alt="A document in Harbor: the scanned original beside its summary, tags, notes and expiry date."
@@ -82,8 +93,8 @@ export default function Page() {
               sizes="(min-width: 1100px) 1000px, calc(100vw - 48px)"
               className="block h-auto w-full"
             />
-          </div>
-        </section>
+          </StaggerItem>
+        </StaggerGroup>
 
         {GROUPS.slice(3).map((g, i) => (
           <FeatureBand key={g.id} group={g} tone={tone(i + 5)} />
