@@ -1,3 +1,5 @@
+import { StaggerGroup, StaggerItem } from "./Stagger";
+
 /*
  * The FAQ, in the position that answers the last objections before the final call to action.
  *
@@ -29,7 +31,7 @@ const QUESTIONS: { q: string; a: string }[] = [
 
 export function Faq() {
   return (
-    <section id="faq" data-reveal-group className="flex flex-col items-center gap-[56px] bg-ground lane py-[60px] md:py-[88px]">
+    <section id="faq" className="flex flex-col items-center gap-[56px] bg-ground lane py-[60px] md:py-[88px]">
       <div className="flex w-full flex-col items-center gap-[18px]">
         <span className="font-mono text-label font-medium leading-[14px] tracking-mono text-faint">FAQ</span>
         <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text">
@@ -37,19 +39,17 @@ export function Faq() {
         </h2>
       </div>
 
-      <dl className="flex w-full max-w-[860px] flex-col">
+      <StaggerGroup as="dl" className="flex w-full max-w-[860px] flex-col">
         {QUESTIONS.map((item, i) => (
-          <div
+          <StaggerItem
             key={item.q}
-            data-reveal-item
-            style={{ ["--reveal-delay" as string]: `${i * 70}ms` }}
             className={`flex flex-col gap-[10px] py-[28px] ${i > 0 ? "border-t border-border" : "pt-0"}`}
           >
             <dt className="text-section font-bold leading-[26px] tracking-snug text-text">{item.q}</dt>
             <dd className="text-[15.5px] leading-[26px] text-muted">{item.a}</dd>
-          </div>
+          </StaggerItem>
         ))}
-      </dl>
+      </StaggerGroup>
     </section>
   );
 }

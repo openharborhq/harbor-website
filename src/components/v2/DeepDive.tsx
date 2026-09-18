@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { StaggerGroup, StaggerItem } from "./Stagger";
 
 /*
  * The two deep dives: what the vault does, and how a copy leaves it for an adviser.
@@ -77,7 +78,6 @@ export function DeepDives() {
     <>
       {DIVES.map((d) => (
         <section
-      data-reveal
           key={d.id}
           id={d.id}
           className={`flex flex-col gap-[56px] lane py-[60px] md:py-[88px] ${
@@ -112,14 +112,14 @@ export function DeepDives() {
             </div>
           </div>
 
-          <ul className="grid gap-[20px] md:grid-cols-3">
+          <StaggerGroup as="ul" className="grid gap-[20px] md:grid-cols-3">
             {d.claims.map((c) => (
-              <li key={c.head} className="flex flex-col gap-[8px] border-t border-border pt-[18px]">
+              <StaggerItem as="li" key={c.head} className="flex flex-col gap-[8px] border-t border-border pt-[18px]">
                 <h3 className="text-section font-bold leading-section tracking-snug text-text">{c.head}</h3>
                 <p className="text-[15.5px] leading-[25px] text-muted">{c.copy}</p>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </StaggerGroup>
         </section>
       ))}
     </>

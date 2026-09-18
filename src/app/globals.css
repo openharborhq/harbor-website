@@ -1178,57 +1178,8 @@ html[data-theme="dark"] .docs-root .doc-copy:hover { color: #ffffff; }
   38%, 58%      { background-position: calc(100% + var(--shiny-width)) 0; }
 }
 
-/* ---- Build on entry, after MagicUI's BlurFade ------------------------------------------------
- *
- * Blur, a few pixels of rise and a fade, once, when the thing first comes into view.
- *
- * Armed by the pre-paint script in the layout rather than by this sheet, and that is the whole
- * safety argument: with scripting off the attribute is never written, the rule below never
- * matches, and every section renders exactly as it does today. A stylesheet that hid content and
- * waited for JavaScript to reveal it would take the page with it when the JavaScript failed.
- *
- * `translate` rather than `transform`, because Tailwind v4 compiles its translate utilities to the
- * standalone property and writing `transform` here would fight anything that uses one.
- */
-html[data-reveal="armed"] [data-reveal],
-html[data-reveal="armed"] [data-reveal-group] [data-reveal-item] {
-  opacity: 0;
-  translate: 0 20px;
-  filter: blur(8px);
-}
-/*
- * A section is either a plain reveal or a group whose items stagger, never both: two blurs over
- * the same pixels at once is mud, and the second one starts before the first has finished.
- */
-html[data-reveal="armed"] [data-reveal][data-shown],
-html[data-reveal="armed"] [data-reveal-group][data-shown] [data-reveal-item] {
-  opacity: 1;
-  translate: none;
-  filter: blur(0);
-  /*
-   * A gentler curve than the sticky nav's, and deliberately so.
-   *
-   * This first shipped on cubic-bezier(0.16, 1, 0.3, 1), which is right for a bar dropping into
-   * place and wrong for a build: it front-loads the whole move into the opening quarter. Measured
-   * at 140ms of 560 it was already 83% opaque with 1.7px of travel and 1px of blur left, over a
-   * 10px distance — finished before the eye that triggered it had arrived, which reads as nothing
-   * happening at all.
-   *
-   * Spread across the duration instead, over twice the distance.
-   */
-  transition:
-    opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    translate 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    filter 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .shiny-text { animation: none; }
-  /* Belt as well as braces: the script does not arm under reduced motion, and if it ever did,
-     nothing here would move. */
-  html[data-reveal="armed"] [data-reveal],
-  html[data-reveal="armed"] [data-reveal-group] [data-reveal-item] { opacity: 1; translate: none; filter: none; }
 }
 
 /*

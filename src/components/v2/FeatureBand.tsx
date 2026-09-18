@@ -21,7 +21,6 @@ import { Eyebrow } from "./parts";
 export function FeatureBand({ group, tone }: { group: FeatureGroup; tone: "ground" | "surface" }) {
   return (
     <section
-      data-reveal
       id={group.id}
       className={`flex scroll-mt-[96px] flex-col gap-[48px] rounded-[26px] lane py-[60px] md:py-[80px] lg:flex-row lg:gap-[80px] ${
         tone === "surface" ? "bg-surface" : "bg-ground"

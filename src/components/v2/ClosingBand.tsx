@@ -11,7 +11,7 @@ import { doc } from "./routes";
  */
 export function ClosingBand() {
   return (
-    <section data-reveal className="flex flex-col items-start justify-between gap-[48px] rounded-[26px] bg-surface lane py-[60px] md:py-[88px] lg:flex-row lg:items-center lg:gap-[80px]">
+    <section className="flex flex-col items-start justify-between gap-[48px] rounded-[26px] bg-surface lane py-[60px] md:py-[88px] lg:flex-row lg:items-center lg:gap-[80px]">
       {/* Wide enough for the headline to hold one line at desktop — the old 680px column and the
           600px cap on the h2 broke it across two, which turned three short clauses into a block. */}
       <div className="flex max-w-[860px] flex-col gap-[20px]">
