@@ -47,9 +47,19 @@ const clock = (t: number) => `0:${String(Math.floor(t)).padStart(2, "0")}`;
  * lands to the right of it at another. Pinning the design size makes every coordinate inside
  * absolute, and a single transform handles every viewport.
  *
- * 750 × 455 gives 1.6× at the hero's real width of ~1200px, which is the zoom level that reads
- * right. The design size is the only lever on that: the scale is width ÷ STAGE_W, so a smaller
- * box magnifies more. An earlier 550 was taken from an 881px-wide measuring session and blew the
+ * There are two independent levers here and they are worth keeping apart.
+ *
+ * The frame's width scales the whole thing uniformly and costs nothing: the pointer's positions
+ * are percentages of the stage and the stage is a single transform, so the track survives any
+ * width. The frame is capped at 960 rather than the column's 1200 for exactly that reason — it
+ * was a third larger than anything else on the page.
+ *
+ * STAGE_W is the other lever, and it is not free. It decides how much app fits in the frame
+ * rather than how big the frame is, so changing it reflows every fixed-pixel element inside and
+ * invalidates all thirteen pointer coordinates — which is how an earlier 880 and 550 produced
+ * eight straight misses. Raise it only with a re-measure.
+ *
+ * 750 × 455 puts the stage at 1.28× in a 960 frame. An earlier 550 was taken from an 881px-wide measuring session and blew the
  * app up 2.18× on a real page. The aspect matches the screenshot the window is sized from
  * (2640 × 1600).
  */
@@ -73,7 +83,7 @@ export function HeroDemo() {
   return (
     <div
       ref={root}
-      className="hd-root relative w-full overflow-hidden rounded-[14px] bg-panel shadow-[0_2px_6px_-2px_rgba(13,22,34,0.12),0_28px_64px_-24px_rgba(13,22,34,0.34)]"
+      className="hd-root relative mx-auto w-full max-w-[960px] overflow-hidden rounded-[14px] bg-panel shadow-[0_2px_6px_-2px_rgba(13,22,34,0.12),0_28px_64px_-24px_rgba(13,22,34,0.34)]"
     >
       <Image
         src="/mock/hero-home@2x.png"
