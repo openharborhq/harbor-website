@@ -44,7 +44,7 @@ const REASONS = [
 
 export function WhyHarbor() {
   return (
-    <section className="gutter flex flex-col gap-[56px] py-[104px]">
+    <section className="gutter flex flex-col gap-[56px] py-[88px]">
       <SectionHead
         eyebrow="Why Harbor"
         title="Every claim on this page is a mechanism"

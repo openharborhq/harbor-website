@@ -29,10 +29,10 @@ const QUESTIONS: { q: string; a: string }[] = [
 
 export function Faq() {
   return (
-    <section id="faq" className="flex flex-col items-center gap-[56px] bg-ground lane py-[72px] md:py-[104px]">
+    <section id="faq" className="flex flex-col items-center gap-[56px] bg-ground lane py-[60px] md:py-[88px]">
       <div className="flex w-full flex-col items-center gap-[18px]">
         <span className="font-mono text-label font-medium leading-[14px] tracking-mono text-faint">FAQ</span>
-        <h2 className="max-w-[860px] text-center text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-tight text-text">
+        <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text">
           Questions? We&rsquo;ve got answers.
         </h2>
       </div>

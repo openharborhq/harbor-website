@@ -22,8 +22,8 @@ export function FeatureSection({ group, tone }: { group: FeatureGroup; tone: "gr
   return (
     <section
       id={group.id}
-      className={`gutter flex scroll-mt-[80px] flex-col gap-12 py-[96px] lg:flex-row lg:gap-[80px] ${
-        dark ? "bg-terminal py-[104px]" : `${surface} border-t border-border`
+      className={`gutter flex scroll-mt-[80px] flex-col gap-12 py-[80px] lg:flex-row lg:gap-[80px] ${
+        dark ? "bg-terminal py-[88px]" : `${surface} border-t border-border`
       }`}
     >
       <div className="flex shrink-0 flex-col gap-[18px] lg:w-[360px]">
@@ -36,7 +36,7 @@ export function FeatureSection({ group, tone }: { group: FeatureGroup; tone: "gr
           </span>
         </div>
         <h2
-          className={`text-[clamp(28px,3vw,36px)] font-bold leading-[1.17] tracking-tight ${dark ? "text-on-band" : "text-text"}`}
+          className={`text-subhead font-bold leading-[1.17] tracking-tight ${dark ? "text-on-band" : "text-text"}`}
         >
           {group.title}
         </h2>

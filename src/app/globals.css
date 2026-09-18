@@ -47,16 +47,36 @@
      Body copy stays on Inter. */
   --font-display: var(--font-geist), Geist, Inter, system-ui, sans-serif;
 
-  --text-display: 40px;
+  /*
+   * The display end of the scale, and the one knob that moves it.
+   *
+   * `--text-hero`, `--text-display` and `--text-section-head` were defined here and used exactly
+   * nowhere: all thirteen large headings on the site wrote their own `text-[clamp(...)]`, so
+   * changing the site's scale meant finding every one of them by grep. They are real tokens now,
+   * and `--display-scale` moves the whole display end together.
+   *
+   * The clamp floor is deliberately NOT scaled. It is the phone's readable minimum, and a knob
+   * aimed at desktop should not be able to shrink it away. Above roughly 1180px it is the ceiling
+   * that binds, which is what made the site read as zoomed in: every heading sat pinned at its
+   * maximum on any ordinary desktop, and nothing responded to width above a laptop.
+   *
+   * `--text-subhead` rather than `--text-band-head`: `--color-band` exists, and a `text-band-*`
+   * utility has two namespaces to resolve against. That collision has cost this sheet a day once
+   * already (`--color-label` against `--text-label`).
+   */
+  --display-scale: 1;
+  --text-hero: clamp(36px, calc(5.4vw * var(--display-scale)), calc(64px * var(--display-scale)));
+  --text-display: clamp(30px, calc(3.5vw * var(--display-scale)), calc(44px * var(--display-scale)));
+  --text-section-head: clamp(27px, calc(3.1vw * var(--display-scale)), calc(38px * var(--display-scale)));
+  --text-subhead: clamp(25px, calc(2.6vw * var(--display-scale)), calc(32px * var(--display-scale)));
+
   --text-title: 30px;
   --text-section: 19px;
   --text-body: 15px;
   --text-row: 14px;
   --text-small: 13px;
   --text-label: 11px;
-  --text-hero: 76px;
-  --text-section-head: 44px;
-  --text-lead: 21px;
+  --text-lead: 19px;
   --text-copy: 17px;
 
   --tracking-tight: -0.03em;
@@ -66,14 +86,12 @@
   --tracking-hero: -0.035em;
   --tracking-mono: 0.1em;
 
-  --leading-display: 42px;
-  --leading-title: 34px;
+  /* The display headings set their own leading as a ratio in the markup, which is why there is no
+     --leading-hero here any more: the four that existed were as unused as the sizes were. */
   --leading-section: 26px;
   --leading-body: 22px;
   --leading-row: 20px;
-  --leading-hero: 76px;
-  --leading-section-head: 48px;
-  --leading-lead: 32px;
+  --leading-lead: 30px;
   --leading-copy: 28px;
 
   --breakpoint-mobile: 390px;

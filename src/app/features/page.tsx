@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const tone = (i: number): "surface" | "ground" => (i % 2 === 0 ? "surface" : "ground");
 
 /** One value for every band's vertical padding, so "consistent spacing" is one number. */
-const PAD = "py-[72px] md:py-[96px]";
+const PAD = "py-[60px] md:py-[80px]";
 
 export default function Page() {
   return (
@@ -41,7 +41,7 @@ export default function Page() {
         <section className={`flex flex-col items-center gap-[22px] overflow-hidden rounded-[26px] bg-surface ${PAD}`}>
           <div className="flex flex-col items-center gap-[22px] lane">
             <Eyebrow>FEATURES</Eyebrow>
-            <h1 className="max-w-[900px] text-center text-[clamp(34px,4vw,52px)] font-bold leading-[1.12] tracking-[-0.032em] text-text">
+            <h1 className="max-w-[900px] text-center text-display font-bold leading-[1.12] tracking-[-0.032em] text-text">
               Simple, secure records management
             </h1>
             <p className="max-w-[680px] text-center text-copy leading-copy text-muted">

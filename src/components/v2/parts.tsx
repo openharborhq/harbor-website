@@ -37,7 +37,7 @@ export function SectionHead({
     <div className={`flex flex-col gap-[18px] ${centered ? "items-center text-center" : "items-start"}`}>
       <Eyebrow>{eyebrow}</Eyebrow>
       <h2
-        className={`text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-tight text-text ${centered ? "max-w-[860px]" : "max-w-[620px]"}`}
+        className={`text-section-head font-bold leading-[1.1] tracking-tight text-text ${centered ? "max-w-[860px]" : "max-w-[620px]"}`}
       >
         {title}
       </h2>

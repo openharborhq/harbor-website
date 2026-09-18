@@ -79,7 +79,7 @@ export function DeepDives() {
         <section
           key={d.id}
           id={d.id}
-          className={`flex flex-col gap-[56px] lane py-[72px] md:py-[104px] ${
+          className={`flex flex-col gap-[56px] lane py-[60px] md:py-[88px] ${
             d.tint ? "rounded-[26px] bg-surface-2" : "bg-ground"
           }`}
         >
@@ -88,7 +88,7 @@ export function DeepDives() {
               <span className="font-mono text-label font-medium uppercase leading-[14px] tracking-mono text-faint">
                 {d.eyebrow}
               </span>
-              <h2 className="text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-tight text-text">
+              <h2 className="text-section-head font-bold leading-[1.1] tracking-tight text-text">
                 {d.title}
               </h2>
               <p className="text-lead leading-copy text-muted">{d.lead}</p>

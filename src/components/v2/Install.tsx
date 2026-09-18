@@ -31,11 +31,11 @@ const YOURS = [
 
 export function Install() {
   return (
-    <section id="install" className="gutter flex flex-col gap-[52px] border-t border-border bg-surface py-[104px]">
+    <section id="install" className="gutter flex flex-col gap-[52px] border-t border-border bg-surface py-[88px]">
       <div className="flex flex-col items-start gap-[48px] lg:flex-row lg:gap-[72px]">
         <div className="flex w-full flex-col gap-[18px] lg:w-[44%]">
           <Eyebrow>Install</Eyebrow>
-          <h2 className="text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-tight text-text">
+          <h2 className="text-section-head font-bold leading-[1.1] tracking-tight text-text">
             Three lines, three questions, eight containers
           </h2>
           <p className="text-lead leading-copy text-muted">

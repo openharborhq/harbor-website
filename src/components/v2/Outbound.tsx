@@ -27,10 +27,10 @@ const CONTAINERS = [
 
 export function Outbound() {
   return (
-    <section id="what-leaves" className="gutter flex flex-col gap-[52px] bg-terminal py-[104px]">
+    <section id="what-leaves" className="gutter flex flex-col gap-[52px] bg-terminal py-[88px]">
       <div className="flex flex-col gap-[18px]">
         <Eyebrow>What leaves the house</Eyebrow>
-        <h2 className="max-w-[820px] text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-tight text-[#ffffff]">
+        <h2 className="max-w-[820px] text-section-head font-bold leading-[1.1] tracking-tight text-[#ffffff]">
           Three of the eight containers talk to the internet. Here they are.
         </h2>
         <p className="max-w-[700px] text-lead leading-copy text-on-dark">

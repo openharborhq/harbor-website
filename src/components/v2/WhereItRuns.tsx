@@ -34,7 +34,7 @@ const HOSTS = [
 
 export function WhereItRuns() {
   return (
-    <section className="gutter flex flex-col gap-[56px] border-y border-border bg-surface py-[104px]">
+    <section className="gutter flex flex-col gap-[56px] border-y border-border bg-surface py-[88px]">
       <SectionHead
         eyebrow="Where it runs"
         title="A Linux machine with Docker, and that is the requirement"

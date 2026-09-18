@@ -22,7 +22,7 @@ export function FeatureBand({ group, tone }: { group: FeatureGroup; tone: "groun
   return (
     <section
       id={group.id}
-      className={`flex scroll-mt-[96px] flex-col gap-[48px] rounded-[26px] lane py-[72px] md:py-[96px] lg:flex-row lg:gap-[80px] ${
+      className={`flex scroll-mt-[96px] flex-col gap-[48px] rounded-[26px] lane py-[60px] md:py-[80px] lg:flex-row lg:gap-[80px] ${
         tone === "surface" ? "bg-surface" : "bg-ground"
       }`}
     >
@@ -31,7 +31,7 @@ export function FeatureBand({ group, tone }: { group: FeatureGroup; tone: "groun
           <span className="font-mono text-label font-medium leading-[14px] tracking-mono text-accent">{group.number}</span>
           <Eyebrow>{group.label}</Eyebrow>
         </span>
-        <h2 className="text-[clamp(28px,3vw,36px)] font-bold leading-[1.17] tracking-tight text-text">{group.title}</h2>
+        <h2 className="text-subhead font-bold leading-[1.17] tracking-tight text-text">{group.title}</h2>
         <p className="text-[16px] leading-section text-muted">{group.lead}</p>
       </div>
 

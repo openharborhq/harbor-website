@@ -22,11 +22,11 @@ const NOTES = [
 
 export function Operating() {
   return (
-    <section className="gutter flex flex-col gap-[48px] py-[104px]">
+    <section className="gutter flex flex-col gap-[48px] py-[88px]">
       <div className="flex flex-col items-start gap-[48px] lg:flex-row lg:items-center lg:gap-[72px]">
         <div className="flex w-full flex-col gap-[18px] lg:w-[44%]">
           <Eyebrow>Operating it</Eyebrow>
-          <h2 className="text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-tight text-text">
+          <h2 className="text-section-head font-bold leading-[1.1] tracking-tight text-text">
             After the install there is one command
           </h2>
           <p className="text-lead leading-copy text-muted">

@@ -154,10 +154,10 @@ export function Boxes() {
   return (
     <section
       id="features"
-      className="flex flex-col items-center gap-[56px] rounded-[26px] bg-ground lane py-[72px] md:py-[104px]"
+      className="flex flex-col items-center gap-[56px] rounded-[26px] bg-ground lane py-[60px] md:py-[88px]"
     >
       <div className="flex w-full flex-col items-center gap-[18px]">
-        <h2 className="max-w-[860px] text-center text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-tight text-text">
+        <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text">
           Ditch the filing cabinet
         </h2>
         <p className="max-w-[660px] text-center text-lead leading-copy text-muted">

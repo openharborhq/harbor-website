@@ -45,7 +45,7 @@ const WAYS = [
 
 export function WaysIn() {
   return (
-    <section id="how" className="gutter flex flex-col gap-[56px] border-b border-border bg-surface py-[104px]">
+    <section id="how" className="gutter flex flex-col gap-[56px] border-b border-border bg-surface py-[88px]">
       <SectionHead
         eyebrow="Three ways in"
         title="Paperwork arrives the way it already reaches the house"

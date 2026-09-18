@@ -43,7 +43,7 @@ export async function Hero() {
               </Link>
             )}
 
-            <h1 className="font-display text-[clamp(40px,6.4vw,76px)] font-bold leading-[1.03] tracking-hero text-text">
+            <h1 className="font-display text-hero font-bold leading-[1.03] tracking-hero text-text">
               Bring sanity to your household paperwork
             </h1>
 
