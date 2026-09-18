@@ -125,8 +125,9 @@ export function HeroDemo() {
  * writing the same `currentTime` to all of them lands an exact composite frame — which is what
  * makes scrubbing possible without rebuilding any of this in JavaScript.
  *
- * `hd-clock` is an empty 24s animation used only as the thing to read the time off, so the
- * readout never depends on whichever animation happens to come back first.
+ * `hd-clock` is an empty animation the full length of the run, used only as the thing to read
+ * the time off, so the readout never depends on whichever animation happens to come back first.
+ * It is also the authority when resuming — see `toggle`.
  */
 function Walkthrough() {
   const stage = useRef<HTMLDivElement>(null);
@@ -159,16 +160,51 @@ function Walkthrough() {
     [all],
   );
 
+  /** The clock is the authority on where the run is, not React state a frame behind it. */
+  const now = useCallback(() => {
+    const a = clockEl.current?.getAnimations()[0];
+    return typeof a?.currentTime === "number" ? Math.min(a.currentTime / 1000, DURATION) : time;
+  }, [time]);
+
   const toggle = useCallback(() => {
     const next = !playing;
     // Restart from the top if the run already finished, so the button is never a no-op.
-    if (next && time >= DURATION) seek(0);
+    const from = next && now() >= DURATION ? 0 : now();
+
     for (const a of all()) {
-      if (next) a.play();
-      else a.pause();
+      if (!next) {
+        a.pause();
+        continue;
+      }
+      /*
+       * play() first, then the time again after it — not the other way round.
+       *
+       * Almost every animation here is a short one parked at a long `animation-delay`, so anywhere
+       * past the opening seconds most of them have already finished. The Web Animations API
+       * rewinds a finished animation to zero when you play() it, and that put 73 of 83 back at the
+       * start while the clock — as long as the whole run, so never finished, so never rewound —
+       * carried on reporting the right time. The readout stayed correct and the picture did not:
+       * pausing at 40s and pressing play brought the sign-in screen back over the app.
+       *
+       * Re-asserting the time after play() costs nothing and cannot drift: an animation set past
+       * its own end simply reports finished again, which is what it was.
+       */
+      a.play();
+      a.currentTime = from * 1000;
     }
+
+    setTime(from);
     setPlaying(next);
-  }, [all, playing, time, seek]);
+  }, [all, playing, now]);
+
+  /*
+   * Stepping is relative to the clock, not to `time`.
+   *
+   * `time` is React state refreshed once per frame, so two key presses inside one frame both read
+   * the same base and the second overwrites the first instead of adding to it: eight presses of
+   * shift-right moved the run five seconds rather than forty.
+   */
+  const nudge = useCallback((delta: number) => seek(now() + delta), [seek, now]);
 
   const scene = [...SCENES].reverse().find((s) => time >= s.at)?.label ?? SCENES[0].label;
 
@@ -188,7 +224,7 @@ function Walkthrough() {
           <Cursor />
         </div>
       </div>
-      <Transport playing={playing} time={time} scene={scene} onToggle={toggle} onSeek={seek} />
+      <Transport playing={playing} time={time} scene={scene} onToggle={toggle} onSeek={seek} onNudge={nudge} />
     </>
   );
 }
@@ -199,12 +235,14 @@ function Transport({
   scene,
   onToggle,
   onSeek,
+  onNudge,
 }: {
   playing: boolean;
   time: number;
   scene: string;
   onToggle: () => void;
   onSeek: (t: number) => void;
+  onNudge: (delta: number) => void;
 }) {
   const track = useRef<HTMLDivElement>(null);
 
@@ -256,8 +294,8 @@ function Transport({
         onPointerMove={(e) => e.currentTarget.hasPointerCapture(e.pointerId) && seekFromPointer(e.clientX)}
         onKeyDown={(e) => {
           const step = e.shiftKey ? 5 : 1;
-          if (e.key === "ArrowRight") { e.preventDefault(); onSeek(time + step); }
-          if (e.key === "ArrowLeft") { e.preventDefault(); onSeek(time - step); }
+          if (e.key === "ArrowRight") { e.preventDefault(); onNudge(step); }
+          if (e.key === "ArrowLeft") { e.preventDefault(); onNudge(-step); }
           if (e.key === "Home") { e.preventDefault(); onSeek(0); }
           if (e.key === "End") { e.preventDefault(); onSeek(DURATION); }
           if (e.key === " " || e.key === "Enter") { e.preventDefault(); onToggle(); }
