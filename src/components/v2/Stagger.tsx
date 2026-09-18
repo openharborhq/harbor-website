@@ -10,11 +10,13 @@ import { useRef, type CSSProperties, type ReactNode } from "react";
  * `staggerChildren` spaces the children, so the timing is one number in one place instead of a
  * delay computed per item and handed down.
  *
- * **No fade, and no blur.** The items travel and that is all. Opacity is switched, not
- * transitioned — an item is solid the instant its turn arrives and then moves — because the point
- * is the movement, and a blur-and-fade over the top of it reads as mush. It is only here at all
- * because an item resting 26px below its place while it waits its turn is not "hidden", it is
- * "misaligned", and on a section that is already on screen at load it would look broken.
+ * **A fade, but no blur.** The blur was the weak part: softening the edges of something that is
+ * already moving and already changing opacity leaves nothing crisp to read the motion against, and
+ * three overlapping effects at once average out to mush. So the item travels and fades, and its
+ * edges stay sharp the whole way.
+ *
+ * The fade is shorter than the travel on purpose — it is up to full opacity while the spring is
+ * still settling, so what you watch is the movement arriving rather than the item resolving.
  */
 type Tag = "div" | "section" | "ul" | "ol" | "dl" | "li";
 
@@ -39,7 +41,7 @@ const child: Variants = {
     opacity: 1,
     transition: {
       y: { type: "spring", stiffness: 280, damping: 26, mass: 0.9 },
-      opacity: { duration: 0.001 },
+      opacity: { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] },
     },
   },
 };
@@ -54,9 +56,16 @@ type Common = {
 
 export function StaggerGroup({ as = "div", children, className, id, style }: Common) {
   const ref = useRef<HTMLElement>(null);
-  // `once`: an entrance, not a tic that fires every time the section is scrolled past. The margin
-  // holds it back from the very bottom edge so the build happens where it can be seen.
-  const inView = useInView(ref, { once: true, margin: "0px 0px -15% 0px" });
+  /*
+   * `amount` rather than `margin`.
+   *
+   * `once`, because an entrance that replayed every time the section was scrolled past would be a
+   * tic. The trigger is a plain threshold: a sixth of the group has to be on screen. A negative
+   * `margin` did the same job in principle and did not fire at all in practice — a group sitting
+   * at 407px in a 905px viewport stayed at rest indefinitely — and Motion documents that margin is
+   * ignored in some embedding contexts. A threshold has no such caveat.
+   */
+  const inView = useInView(ref, { once: true, amount: 0.16 });
   const reduced = useReducedMotion();
   const Comp = TAGS[as];
 
