@@ -592,38 +592,6 @@ body {
   .doc-note, .doc-prove { padding: 16px 16px 18px; }
 }
 
-/* ---- Dark theme ---- */
-/* The dark palette, derived from the landing page's terminal and on-dark tokens. It lands on the
-   root, so the landing page and the docs alike are repainted by the same redefinition. */
-html[data-theme="dark"] {
-  color-scheme: dark;
-  --color-ground: #0f1723;
-  --color-panel: #0f1723;
-  --color-surface: #162031;
-  --color-surface-2: #1a2536;
-  --color-border: #243349;
-  --color-border-strong: #34475f;
-  --color-muted: #a7b4c6;
-  --color-faint: #7d8a9c;
-  --color-text: #e6ecf5;
-  --color-ink: #e6ecf5;
-  --color-accent: #7ea6ff;
-  --color-accent-soft: #1c2c4d;
-  --color-terminal: #0a111b;
-  --color-hairline-dark: #2b3b52;
-  --color-green: #5cc79d;
-  --color-green-soft: #122e24;
-  --color-violet: #b3a1ff;
-  --color-violet-soft: #251c47;
-  --color-on-dark: #a7b4c6;
-  background: var(--color-ground);
-  color: var(--color-text);
-}
-html[data-theme="dark"] ::selection { background: #1c2c4d; color: #c3d2f5; }
-/* Docs-only: on dark the code slab needs an edge, and the copy control keeps its white hover. */
-html[data-theme="dark"] .docs-root .doc-prose figure[data-rehype-pretty-code-figure] { border: 1px solid var(--color-border); }
-html[data-theme="dark"] .docs-root .doc-copy:hover { color: #ffffff; }
-
 /* ---- Sketch variant of the upload tile: the drawn drop zone takes the highlight that the
    bordered one carried on its border and background. Every other upl-* keyframe is shared. ---- */
 .upl-zone-sketch {

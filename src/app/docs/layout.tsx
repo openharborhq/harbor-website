@@ -7,14 +7,12 @@ import "./docs-v2.css";
 /*
  * Docs under the v2 chrome.
  *
- * `docs-root` is kept on the wrapper because two dark-theme rules in `globals.css` are scoped to
- * it; drop the class and the code figures lose their border at night. The 24px inset and NavV2
- * are the rest of the site's, so a reader crossing from the home page into the docs does not
- * cross a seam.
+ * The 24px inset and NavV2 are the rest of the site's, so a reader crossing from the home page
+ * into the docs does not cross a seam.
  */
 export default function V2DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="docs-root px-[24px]">
+    <div className="px-[24px]">
       <NavV2 />
       {/* The pill arrives as the header leaves, the same as the home and features pages. A zero
           height sentinel because this wrapper is plain block flow — a pixel here would push the

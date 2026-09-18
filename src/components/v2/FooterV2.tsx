@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getLatestRelease, GITHUB, REPO } from "@/lib/github";
 import { Wordmark } from "../Logo";
-import { ThemeToggle } from "../ThemeToggle";
 import { HOME, doc } from "./routes";
 
 /*
@@ -78,12 +77,9 @@ export async function FooterV2() {
         <span className="text-[13.5px] leading-[18px] text-muted">
           © {year} The Harbor project · AGPL-3.0 · github.com/{REPO}
         </span>
-        <div className="flex items-center gap-[20px]">
-          <span className="font-mono text-[12px] leading-[16px] tracking-[0.06em] text-faint">
-            {release ? `${release.tag} · ` : ""}SELF-HOSTED SINCE DAY ONE
-          </span>
-          <ThemeToggle />
-        </div>
+        <span className="font-mono text-[12px] leading-[16px] tracking-[0.06em] text-faint">
+          {release ? `${release.tag} · ` : ""}SELF-HOSTED SINCE DAY ONE
+        </span>
       </div>
     </footer>
   );
