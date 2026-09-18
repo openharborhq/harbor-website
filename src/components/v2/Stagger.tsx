@@ -61,6 +61,31 @@ const variantsFor = (stagger: number, delay: number): Variants => ({
 
 const group = variantsFor(STAGGER, DELAY);
 
+/**
+ * The same build, entering from a chosen edge.
+ *
+ * Exported because not every list can be wrapped: the how-it-works tabs are `role="tab"` children
+ * of a `role="tablist"`, and putting a wrapper element between the two breaks the relationship
+ * that makes the whole control work for a screen reader. Those buttons take these variants
+ * directly instead.
+ */
+export const itemVariants = (from: "bottom" | "right" = "bottom"): Variants => ({
+  hidden: from === "right" ? { x: 40, opacity: 0, scale: 0.96 } : { y: 40, opacity: 0, scale: 0.96 },
+  visible: {
+    ...(from === "right" ? { x: 0 } : { y: 0 }),
+    opacity: 1,
+    scale: 1,
+    transition: {
+      [from === "right" ? "x" : "y"]: { duration: 0.62, ease: EASE },
+      scale: { duration: 0.62, ease: EASE },
+      opacity: { duration: 0.4, ease: EASE },
+    },
+  },
+});
+
+/** The group's own variant, for the same reason. */
+export const groupVariants = variantsFor;
+
 const child: Variants = {
   hidden: { y: 40, opacity: 0, scale: 0.96 },
   visible: {

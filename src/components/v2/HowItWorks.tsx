@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useInView, useReducedMotion } from "motion/react";
+import { groupVariants, itemVariants } from "./Stagger";
 
 /*
  * Four things Harbor does, with a stage on the left showing whichever is selected.
@@ -349,9 +350,14 @@ const OPTIONS: { head: string; copy: string; tint: Tint; glyph: ReactNode; stage
   },
 ];
 
+/** The tabs enter from the right rather than from below. */
+const FROM_RIGHT = itemVariants("right");
+
 export function HowItWorks() {
   const [active, setActive] = useState(0);
   const still = useReducedMotion();
+  const tabList = useRef<HTMLDivElement>(null);
+  const tabsInView = useInView(tabList, { once: true, amount: 0.12 });
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
 
   /* A vertical tablist, so Up and Down move between options and the panel follows. Without this a
@@ -402,21 +408,30 @@ export function HowItWorks() {
           </motion.div>
         </div>
 
-        <div
+        {/* The tabs come in from the right, one after another. The variants are applied to the
+            tablist and its buttons directly rather than through a wrapper component: anything
+            between a tablist and its tabs breaks the relationship that control depends on. */}
+        <motion.div
+          ref={tabList}
           role="tablist"
           aria-orientation="vertical"
           aria-label="What Harbor does"
           onKeyDown={onKey}
           className="flex w-full shrink-0 flex-col gap-[10px] lg:w-[430px]"
+          variants={still ? undefined : groupVariants(0.09, 0.06)}
+          initial={still ? false : "hidden"}
+          animate={still ? false : tabsInView ? "visible" : "hidden"}
         >
           {OPTIONS.map((o, i) => {
             const on = i === active;
             return (
-              <button
+              <motion.button
                 key={o.head}
                 ref={(el) => {
                   tabs.current[i] = el;
                 }}
+                data-motion
+                variants={still ? undefined : FROM_RIGHT}
                 type="button"
                 role="tab"
                 id={`how-tab-${i}`}
@@ -437,10 +452,10 @@ export function HowItWorks() {
                   <span className={`text-section font-bold leading-[26px] tracking-snug ${on ? "text-text" : "text-muted"}`}>{o.head}</span>
                   <span className={`text-[15.5px] leading-[25px] ${on ? "text-muted" : "text-faint"}`}>{o.copy}</span>
                 </span>
-              </button>
+              </motion.button>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
