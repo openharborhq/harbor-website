@@ -3,6 +3,7 @@ import { getLatestRelease, GITHUB } from "@/lib/github";
 import { Arrow } from "./parts";
 import { HeroDemo } from "./HeroDemo";
 import { HeroCta } from "./HeroCta";
+import { StaggerGroup, StaggerItem } from "./Stagger";
 
 /*
  * A tinted band with a 26px corner, and the app rising out of its floor.
@@ -24,8 +25,15 @@ export async function Hero() {
   return (
     <section className="flex flex-col pb-[26px]">
       <div className="flex flex-col items-center overflow-hidden rounded-[26px] bg-surface-2 px-[20px] pb-[56px] pt-[64px] md:px-[40px] md:pb-[88px] md:pt-[96px]">
-        <div className="flex w-full max-w-[1200px] flex-col items-center gap-[48px]">
-          <div className="flex max-w-[860px] flex-col items-center gap-[26px] text-center">
+        {/*
+          Two nested groups, so the copy builds line by line and the window arrives after it.
+          Motion propagates a variant down through nested motion components, so the inner group
+          both receives "visible" from the outer one and runs its own stagger against its own
+          children. The outer step is wide because it only has two children and the second of them
+          should not start until the copy has largely landed.
+        */}
+        <StaggerGroup className="flex w-full max-w-[1200px] flex-col items-center gap-[48px]" stagger={0.62}>
+          <StaggerGroup className="flex max-w-[860px] flex-col items-center gap-[26px] text-center">
             {/* Only rendered when GitHub answered. A version stamp that is wrong is worse than
                 none, and this page has no hardcoded number anywhere. */}
             {release && (
@@ -33,32 +41,42 @@ export async function Hero() {
                  chip with dark type at night rather than staying a black hole in a dark page —
                  the same pair the nav's "Get started" button uses. The version keeps the mono
                  face to stay distinct now that it no longer has a fill of its own. */
-              <Link
-                href={release.url}
-                className="flex items-center gap-[10px] rounded-pill bg-text px-[14px] py-[7px] text-ground"
-              >
-                <span className="font-mono text-label font-medium leading-[14px] tracking-mono">{release.tag}</span>
-                <span className="shiny-text text-row leading-[18px] text-ground/75">What&rsquo;s new</span>
-                <Arrow size={13} />
-              </Link>
+              <StaggerItem>
+                <Link
+                  href={release.url}
+                  className="flex items-center gap-[10px] rounded-pill bg-text px-[14px] py-[7px] text-ground"
+                >
+                  <span className="font-mono text-label font-medium leading-[14px] tracking-mono">{release.tag}</span>
+                  <span className="shiny-text text-row leading-[18px] text-ground/75">What&rsquo;s new</span>
+                  <Arrow size={13} />
+                </Link>
+              </StaggerItem>
             )}
 
-            <h1 className="font-display text-hero font-bold leading-[1.03] tracking-hero text-text">
+            <StaggerItem as="h1" className="font-display text-hero font-bold leading-[1.03] tracking-hero text-text">
               Bring sanity to your household paperwork
-            </h1>
+            </StaggerItem>
 
-            <p className="max-w-[680px] text-lead leading-copy text-muted">
+            <StaggerItem as="p" className="max-w-[680px] text-lead leading-copy text-muted">
               Harbor is your open source document vault that transforms record management in your home. Connect your
               inbox or upload files and see Harbor work to tag, sort, and retrieve.
-            </p>
+            </StaggerItem>
 
-            <HeroCta github={GITHUB} />
+            <StaggerItem>
+              <HeroCta github={GITHUB} />
+            </StaggerItem>
 
-            <SwitchingFrom />
-          </div>
+            <StaggerItem>
+              <SwitchingFrom />
+            </StaggerItem>
+          </StaggerGroup>
 
-          <HeroDemo />
-        </div>
+          {/* `w-full`, because the column centres its children and the demo sizes itself from its
+              parent: a wrapper that shrank to its content would take the window down with it. */}
+          <StaggerItem className="w-full">
+            <HeroDemo />
+          </StaggerItem>
+        </StaggerGroup>
       </div>
     </section>
   );

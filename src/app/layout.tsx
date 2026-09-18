@@ -52,6 +52,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${geist.variable} ${plexMono.variable}`} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/*
+          Motion serialises its initial variant as inline styles, so every element that builds in
+          arrives as opacity:0 in the HTML and is revealed by JavaScript. With scripting off that
+          is a blank hero above a blank page. This puts them all back.
+        */}
+        <noscript>
+          <style>{`[data-motion]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <a href="#main" className="skip-link">
           Skip to content
         </a>

@@ -18,7 +18,7 @@ import { useRef, type CSSProperties, type ReactNode } from "react";
  * The fade is shorter than the travel on purpose — it is up to full opacity while the item is
  * still moving, so what you watch is the movement arriving rather than the item resolving.
  */
-type Tag = "div" | "section" | "ul" | "ol" | "dl" | "li";
+type Tag = "div" | "section" | "ul" | "ol" | "dl" | "li" | "h1" | "p";
 
 const TAGS = {
   div: motion.div,
@@ -27,6 +27,8 @@ const TAGS = {
   ol: motion.ol,
   dl: motion.dl,
   li: motion.li,
+  h1: motion.h1,
+  p: motion.p,
 } as const;
 
 /*
@@ -43,10 +45,15 @@ const TAGS = {
  */
 const EASE = [0.22, 0.61, 0.36, 1] as const;
 
-const group: Variants = {
+const STAGGER = 0.12;
+const DELAY = 0.08;
+
+const variantsFor = (stagger: number, delay: number): Variants => ({
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.08 } },
-};
+  visible: { transition: { staggerChildren: stagger, delayChildren: delay } },
+});
+
+const group = variantsFor(STAGGER, DELAY);
 
 const child: Variants = {
   hidden: { y: 26, opacity: 0 },
@@ -70,7 +77,17 @@ type Common = {
   style?: CSSProperties;
 };
 
-export function StaggerGroup({ as = "div", children, className, id, style }: Common) {
+export function StaggerGroup({
+  as = "div",
+  children,
+  className,
+  id,
+  style,
+  /** Seconds between children. Widen it where a group's children are big enough to need room. */
+  stagger = STAGGER,
+  /** Seconds before the first child moves. */
+  delay = DELAY,
+}: Common & { stagger?: number; delay?: number }) {
   const ref = useRef<HTMLElement>(null);
   /*
    * `amount` rather than `margin`.
@@ -101,7 +118,7 @@ export function StaggerGroup({ as = "div", children, className, id, style }: Com
       id={id}
       className={className}
       style={style}
-      variants={group}
+      variants={stagger === STAGGER && delay === DELAY ? group : variantsFor(stagger, delay)}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
     >
@@ -123,7 +140,10 @@ export function StaggerItem({ as = "div", children, className, id, style }: Comm
   }
 
   return (
-    <Comp id={id} className={className} style={style} variants={child}>
+    // `data-motion` is what the layout's <noscript> rule targets. Motion renders its initial
+    // variant as inline styles on the server, so without it a scripting-off visitor gets a hero
+    // that is there in the markup and invisible on the screen.
+    <Comp data-motion id={id} className={className} style={style} variants={child}>
       {children}
     </Comp>
   );
