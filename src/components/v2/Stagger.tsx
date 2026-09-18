@@ -15,8 +15,8 @@ import { useRef, type CSSProperties, type ReactNode } from "react";
  * three overlapping effects at once average out to mush. So the item travels and fades, and its
  * edges stay sharp the whole way.
  *
- * The fade is shorter than the travel on purpose — it is up to full opacity while the spring is
- * still settling, so what you watch is the movement arriving rather than the item resolving.
+ * The fade is shorter than the travel on purpose — it is up to full opacity while the item is
+ * still moving, so what you watch is the movement arriving rather than the item resolving.
  */
 type Tag = "div" | "section" | "ul" | "ol" | "dl" | "li";
 
@@ -29,9 +29,23 @@ const TAGS = {
   li: motion.li,
 } as const;
 
+/*
+ * Eased rather than sprung, and slow enough to be watched.
+ *
+ * The spring this replaced was quick and slightly bouncy: it overshot its mark and settled in
+ * under half a second, which on a marketing page reads as a flinch rather than an entrance. An
+ * explicit duration and curve are also simply easier to reason about — two numbers, no physics.
+ *
+ * The curve is a moderate ease-out, deliberately not one of the dramatic ones. A curve like
+ * (0.16, 1, 0.3, 1) spends almost the whole move in its opening quarter, and past that point
+ * there is nothing left to see however long the duration says it runs — which is how an earlier
+ * version of this effect managed to look like it was not running at all.
+ */
+const EASE = [0.22, 0.61, 0.36, 1] as const;
+
 const group: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.075, delayChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.08 } },
 };
 
 const child: Variants = {
@@ -40,8 +54,10 @@ const child: Variants = {
     y: 0,
     opacity: 1,
     transition: {
-      y: { type: "spring", stiffness: 280, damping: 26, mass: 0.9 },
-      opacity: { duration: 0.28, ease: [0.22, 0.61, 0.36, 1] },
+      y: { duration: 0.8, ease: EASE },
+      // Still shorter than the travel, so what you watch is the movement arriving rather than the
+      // item resolving.
+      opacity: { duration: 0.5, ease: EASE },
     },
   },
 };
