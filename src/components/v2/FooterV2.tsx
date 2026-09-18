@@ -53,8 +53,7 @@ export async function FooterV2() {
         <div className="flex max-w-[360px] flex-col gap-[14px]">
           <Wordmark mark={24} text="text-[18px] leading-body" />
           <p className="text-body leading-[24px] text-muted">
-            Everything that matters, safely together, on a machine you own. Built in the open by people who wanted it
-            for their own households.
+            The open source document vault for busy households. File automatically. Find instantly. Share securely.
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-[64px] gap-y-10" aria-label="Footer">
