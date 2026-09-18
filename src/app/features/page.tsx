@@ -6,6 +6,7 @@ import { FeatureBand } from "@/components/v2/FeatureBand";
 import { FooterV2 } from "@/components/v2/FooterV2";
 import { NavV2 } from "@/components/v2/NavV2";
 import { Eyebrow } from "@/components/v2/parts";
+import { StickyNav } from "@/components/v2/StickyNav";
 import { GROUPS } from "@/content/features";
 
 /*
@@ -54,6 +55,11 @@ export default function Page() {
             </p>
           </div>
         </section>
+
+        {/* Same behaviour as the home page: the pill arrives as the opening band's floor passes the
+            top of the viewport. The negative margin cancels the gap this sentinel would otherwise
+            add between the band and what follows. */}
+        <StickyNav sentinelClassName="h-0 w-full -mt-[26px]" />
 
         {GROUPS.slice(0, 3).map((g, i) => (
           <FeatureBand key={g.id} group={g} tone={tone(i + 1)} />

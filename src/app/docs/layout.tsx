@@ -1,6 +1,7 @@
 import { DocsNav } from "@/components/docs/DocsNav";
 import { FooterV2 } from "@/components/v2/FooterV2";
 import { NavV2 } from "@/components/v2/NavV2";
+import { StickyNav } from "@/components/v2/StickyNav";
 import "./docs-v2.css";
 
 /*
@@ -15,6 +16,10 @@ export default function V2DocsLayout({ children }: { children: React.ReactNode }
   return (
     <div className="docs-root px-[24px]">
       <NavV2 />
+      {/* The pill arrives as the header leaves, the same as the home and features pages. A zero
+          height sentinel because this wrapper is plain block flow — a pixel here would push the
+          band down by one. */}
+      <StickyNav sentinelClassName="h-0 w-full" />
       <div className="v2docs-band">
         <div className="v2docs-shell">
           <DocsNav />

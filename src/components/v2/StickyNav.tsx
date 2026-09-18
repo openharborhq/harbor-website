@@ -12,6 +12,12 @@ import { DOCS, FEATURES, HOME } from "./routes";
  * Trigger: the position of a one-pixel sentinel left where this component sits in the flow — drop
  * it after the hero and the bar appears as the hero's floor passes the top of the viewport.
  *
+ * `sentinelClassName` exists because the sentinel is a real box in the flow, and in a flex column
+ * with a `gap` it collects one gap on each side — 27px of space the layout never asked for. The
+ * features page hands it `h-0 ... -mt-[26px]` to cancel its own gap, which leaves the rhythm of
+ * the bands untouched and puts the sentinel exactly on the first band's floor. The pill itself is
+ * `fixed`, so it is out of flow already and costs nothing wherever it is rendered.
+ *
  * This deliberately does NOT use an IntersectionObserver, which was the first attempt. An observer
  * only fires when the intersection ratio crosses a threshold, and a 1px sentinel jumped clean over
  * — by a fast flick, an anchor link, or a restored scroll position — goes from ratio 0 to ratio 0
@@ -32,7 +38,7 @@ const LINKS = [
   { label: "Docs", href: DOCS },
 ];
 
-export function StickyNav() {
+export function StickyNav({ sentinelClassName = "h-px w-full" }: { sentinelClassName?: string } = {}) {
   const sentinel = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 
@@ -58,7 +64,7 @@ export function StickyNav() {
 
   return (
     <>
-      <div ref={sentinel} aria-hidden="true" className="h-px w-full" />
+      <div ref={sentinel} aria-hidden="true" className={sentinelClassName} />
 
       <div
         // Hidden from the tab order and from assistive tech while it is off screen: the links in
