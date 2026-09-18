@@ -25,7 +25,7 @@ export function ClosingBand() {
       </div>
       <Link
         href={doc("install")}
-        className="flex shrink-0 items-center gap-[10px] rounded-pill bg-accent px-[30px] py-[17px] text-copy font-bold leading-body tracking-[-0.01em] text-ground"
+        className="flex shrink-0 items-center gap-[10px] rounded-pill bg-accent px-[26px] py-[13px] text-copy font-bold leading-body tracking-[-0.01em] text-ground"
       >
         Install Harbor
         <Arrow />

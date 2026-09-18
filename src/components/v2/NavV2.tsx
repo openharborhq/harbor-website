@@ -22,7 +22,7 @@ const LINKS = [
 
 export function NavV2() {
   return (
-    <header className="flex items-center justify-center bg-ground px-[24px] py-[26px] md:px-[60px]">
+    <header className="flex items-center justify-center bg-ground px-[24px] py-[16px] md:px-[60px]">
       <div className="flex w-full items-center justify-between gap-[24px]">
         <div className="flex items-center gap-[24px] md:gap-[44px]">
           <Link href={HOME} aria-label="Harbor home">
