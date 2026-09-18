@@ -153,6 +153,7 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
 export function Boxes() {
   return (
     <section
+      data-reveal-group
       id="features"
       className="flex flex-col items-center gap-[56px] rounded-[26px] bg-ground lane py-[60px] md:py-[88px]"
     >
@@ -169,8 +170,13 @@ export function Boxes() {
       {/* Two rows of four on desktop, collapsing to two and then one. A grid rather than two flex
           rows, so a long box in the top row does not set the height of the bottom one. */}
       <ul className="grid w-full gap-[20px] sm:grid-cols-2 lg:grid-cols-4">
-        {BOXES.map((b) => (
-          <li key={b.head} className="flex flex-col gap-[18px] rounded-[20px] bg-surface p-[28px]">
+        {BOXES.map((b, i) => (
+          <li
+            key={b.head}
+            data-reveal-item
+            style={{ ["--reveal-delay" as string]: `${i * 55}ms` }}
+            className="flex flex-col gap-[18px] rounded-[20px] bg-surface p-[28px]"
+          >
             <Glyph tint={b.tint}>{b.glyph}</Glyph>
             <h3 className="text-section font-bold leading-[26px] tracking-snug text-text">{b.head}</h3>
             <p className="text-body leading-[24px] text-muted">{b.copy}</p>

@@ -29,7 +29,7 @@ const QUESTIONS: { q: string; a: string }[] = [
 
 export function Faq() {
   return (
-    <section id="faq" className="flex flex-col items-center gap-[56px] bg-ground lane py-[60px] md:py-[88px]">
+    <section id="faq" data-reveal-group className="flex flex-col items-center gap-[56px] bg-ground lane py-[60px] md:py-[88px]">
       <div className="flex w-full flex-col items-center gap-[18px]">
         <span className="font-mono text-label font-medium leading-[14px] tracking-mono text-faint">FAQ</span>
         <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text">
@@ -41,6 +41,8 @@ export function Faq() {
         {QUESTIONS.map((item, i) => (
           <div
             key={item.q}
+            data-reveal-item
+            style={{ ["--reveal-delay" as string]: `${i * 55}ms` }}
             className={`flex flex-col gap-[10px] py-[28px] ${i > 0 ? "border-t border-border" : "pt-0"}`}
           >
             <dt className="text-section font-bold leading-[26px] tracking-snug text-text">{item.q}</dt>

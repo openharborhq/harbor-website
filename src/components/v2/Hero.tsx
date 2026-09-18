@@ -38,7 +38,7 @@ export async function Hero() {
                 className="flex items-center gap-[10px] rounded-pill bg-text px-[14px] py-[7px] text-ground"
               >
                 <span className="font-mono text-label font-medium leading-[14px] tracking-mono">{release.tag}</span>
-                <span className="text-row leading-[18px]">What&rsquo;s new</span>
+                <span className="shiny-text text-row leading-[18px] text-ground/75">What&rsquo;s new</span>
                 <Arrow size={13} />
               </Link>
             )}

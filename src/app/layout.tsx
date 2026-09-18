@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Reveal } from "@/components/v2/Reveal";
 import { Geist, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -43,8 +44,13 @@ export const metadata: Metadata = {
  * logic lives in ThemeToggle for changes made after load. The key is written out here rather than
  * imported: THEME_KEY lives in a "use client" module, and a server file that imports a plain value
  * from one gets a client reference, not the string. Keep it in step with THEME_KEY by hand.
+ *
+ * It also arms the build-on-entry effect, and does it here for two reasons: before paint, so
+ * nothing is seen in its built state and then hidden; and from JavaScript, so that with scripting
+ * off — or if this script throws — the attribute is absent, the CSS that hides sections never
+ * matches, and the page renders whole. Reduced motion never arms it at all.
  */
-const themeScript = `(function(){try{var c=localStorage.getItem("harbor-theme");var d=c==="dark"||(c!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light";}catch(e){}})();`;
+const themeScript = `(function(){try{var c=localStorage.getItem("harbor-theme");var d=c==="dark"||(c!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light";if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.dataset.reveal="armed";}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -56,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
+        <Reveal />
       </body>
     </html>
   );

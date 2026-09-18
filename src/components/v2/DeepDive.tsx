@@ -77,6 +77,7 @@ export function DeepDives() {
     <>
       {DIVES.map((d) => (
         <section
+      data-reveal
           key={d.id}
           id={d.id}
           className={`flex flex-col gap-[56px] lane py-[60px] md:py-[88px] ${

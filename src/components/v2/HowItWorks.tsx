@@ -366,7 +366,7 @@ export function HowItWorks() {
   }
 
   return (
-    <section className="flex flex-col gap-[56px] rounded-[26px] bg-surface-2 lane py-[60px] md:py-[88px]">
+    <section data-reveal className="flex flex-col gap-[56px] rounded-[26px] bg-surface-2 lane py-[60px] md:py-[88px]">
       <div className="flex flex-col gap-[18px]">
         <span className={`${MONO} text-faint`}>HOW IT WORKS</span>
         <h2 className="max-w-[820px] text-section-head font-bold leading-[1.1] tracking-tight text-text">
