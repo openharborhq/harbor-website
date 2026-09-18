@@ -27,21 +27,50 @@ export function Reveal() {
     const targets = document.body.querySelectorAll<HTMLElement>("[data-reveal], [data-reveal-group]");
     if (!targets.length) return;
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          (entry.target as HTMLElement).dataset.shown = "";
-          io.unobserve(entry.target);
-        }
-      },
-      // A little short of the bottom edge, so a section builds as it arrives rather than the
-      // instant its first pixel appears.
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.01 },
-    );
+    let io: IntersectionObserver | undefined;
+    let raf = 0;
 
-    for (const el of targets) io.observe(el);
-    return () => io.disconnect();
+    const observe = () => {
+      io = new IntersectionObserver(
+        (entries, self) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            (entry.target as HTMLElement).dataset.shown = "";
+            self.unobserve(entry.target);
+          }
+        },
+        // A little short of the bottom edge, so a section builds as it arrives rather than the
+        // instant its first pixel appears.
+        { rootMargin: "0px 0px -12% 0px", threshold: 0.01 },
+      );
+      for (const el of targets) io.observe(el);
+    };
+
+    /*
+     * Nothing is observed until the page has finished loading.
+     *
+     * Every position this depends on is only meaningful once the layout has settled. Observe while
+     * images are still reserving their space and the webfont has yet to swap, and the sections are
+     * all still stacked near the top of a much shorter document: they intersect together, they are
+     * all marked shown together, and not one of them ever animates. The effect does not fail
+     * loudly when that happens — it silently does nothing, permanently, which is the worst way for
+     * it to fail and the hardest to tell apart from "the animation is too subtle".
+     *
+     * A frame after `load`, so what gets measured is the final layout rather than the last one
+     * before it.
+     */
+    const start = () => {
+      raf = requestAnimationFrame(observe);
+    };
+
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+
+    return () => {
+      window.removeEventListener("load", start);
+      if (raf) cancelAnimationFrame(raf);
+      io?.disconnect();
+    };
   }, []);
 
   return null;
