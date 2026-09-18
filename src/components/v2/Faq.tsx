@@ -42,7 +42,7 @@ export function Faq() {
           <div
             key={item.q}
             data-reveal-item
-            style={{ ["--reveal-delay" as string]: `${i * 55}ms` }}
+            style={{ ["--reveal-delay" as string]: `${i * 70}ms` }}
             className={`flex flex-col gap-[10px] py-[28px] ${i > 0 ? "border-t border-border" : "pt-0"}`}
           >
             <dt className="text-section font-bold leading-[26px] tracking-snug text-text">{item.q}</dt>

@@ -174,7 +174,7 @@ export function Boxes() {
           <li
             key={b.head}
             data-reveal-item
-            style={{ ["--reveal-delay" as string]: `${i * 55}ms` }}
+            style={{ ["--reveal-delay" as string]: `${i * 70}ms` }}
             className="flex flex-col gap-[18px] rounded-[20px] bg-surface p-[28px]"
           >
             <Glyph tint={b.tint}>{b.glyph}</Glyph>

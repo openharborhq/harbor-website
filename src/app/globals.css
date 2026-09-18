@@ -1193,8 +1193,8 @@ html[data-theme="dark"] .docs-root .doc-copy:hover { color: #ffffff; }
 html[data-reveal="armed"] [data-reveal],
 html[data-reveal="armed"] [data-reveal-group] [data-reveal-item] {
   opacity: 0;
-  translate: 0 10px;
-  filter: blur(6px);
+  translate: 0 20px;
+  filter: blur(8px);
 }
 /*
  * A section is either a plain reveal or a group whose items stagger, never both: two blurs over
@@ -1205,10 +1205,21 @@ html[data-reveal="armed"] [data-reveal-group][data-shown] [data-reveal-item] {
   opacity: 1;
   translate: none;
   filter: blur(0);
+  /*
+   * A gentler curve than the sticky nav's, and deliberately so.
+   *
+   * This first shipped on cubic-bezier(0.16, 1, 0.3, 1), which is right for a bar dropping into
+   * place and wrong for a build: it front-loads the whole move into the opening quarter. Measured
+   * at 140ms of 560 it was already 83% opaque with 1.7px of travel and 1px of blur left, over a
+   * 10px distance — finished before the eye that triggered it had arrived, which reads as nothing
+   * happening at all.
+   *
+   * Spread across the duration instead, over twice the distance.
+   */
   transition:
-    opacity 560ms cubic-bezier(0.16, 1, 0.3, 1),
-    translate 560ms cubic-bezier(0.16, 1, 0.3, 1),
-    filter 560ms cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    translate 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
   transition-delay: var(--reveal-delay, 0ms);
 }
 

@@ -22,7 +22,9 @@ export function Reveal() {
   useEffect(() => {
     if (document.documentElement.dataset.reveal !== "armed") return;
 
-    const targets = document.querySelectorAll<HTMLElement>("[data-reveal], [data-reveal-group]");
+    // Scoped to the body: <html> carries data-reveal="armed" to arm the effect, so an unscoped
+    // query matches the document element itself and hands the observer the whole page as a target.
+    const targets = document.body.querySelectorAll<HTMLElement>("[data-reveal], [data-reveal-group]");
     if (!targets.length) return;
 
     const io = new IntersectionObserver(
