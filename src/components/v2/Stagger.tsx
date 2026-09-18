@@ -32,21 +32,27 @@ const TAGS = {
 } as const;
 
 /*
- * Eased rather than sprung, and slow enough to be watched.
+ * Numbers taken from 21st.dev's Stagger Reveal Grid, which does this for a living.
  *
- * The spring this replaced was quick and slightly bouncy: it overshot its mark and settled in
- * under half a second, which on a marketing page reads as a flinch rather than an entrance. An
- * explicit duration and curve are also simply easier to reason about — two numbers, no physics.
+ * Theirs: 40px of travel, a 0.9 scale, 0.5s, 0.08s apart. Mine had been 26px, no scale, 0.8s,
+ * 0.12s apart — two thirds the distance over one and a half times the duration, with nothing
+ * changing but position and opacity. That is what made it read as odd: a slow drift is not a
+ * slower version of a build, it is a different and worse thing. Distance and scale are what make
+ * it land; duration on its own only makes it float.
  *
- * The curve is a moderate ease-out, deliberately not one of the dramatic ones. A curve like
- * (0.16, 1, 0.3, 1) spends almost the whole move in its opening quarter, and past that point
- * there is nothing left to see however long the duration says it runs — which is how an earlier
- * version of this effect managed to look like it was not running at all.
+ * So the distance and the scale come from the reference and the timing stays a little softer than
+ * it: 0.62s rather than 0.5, 0.09s apart rather than 0.08. Their `back.out(1.2)` overshoots, and
+ * that stays out — the spring version of this was already rejected for flinching.
+ *
+ * The curve is a moderate ease-out, deliberately not one of the dramatic ones. Something like
+ * (0.16, 1, 0.3, 1) spends almost the whole move in its opening quarter, and past that there is
+ * nothing left to see however long the duration claims — which is how an earlier version of this
+ * managed to look like it was not running at all.
  */
 const EASE = [0.22, 0.61, 0.36, 1] as const;
 
-const STAGGER = 0.12;
-const DELAY = 0.08;
+const STAGGER = 0.09;
+const DELAY = 0.06;
 
 const variantsFor = (stagger: number, delay: number): Variants => ({
   hidden: {},
@@ -56,15 +62,17 @@ const variantsFor = (stagger: number, delay: number): Variants => ({
 const group = variantsFor(STAGGER, DELAY);
 
 const child: Variants = {
-  hidden: { y: 26, opacity: 0 },
+  hidden: { y: 40, opacity: 0, scale: 0.96 },
   visible: {
     y: 0,
     opacity: 1,
+    scale: 1,
     transition: {
-      y: { duration: 0.8, ease: EASE },
+      y: { duration: 0.62, ease: EASE },
+      scale: { duration: 0.62, ease: EASE },
       // Still shorter than the travel, so what you watch is the movement arriving rather than the
       // item resolving.
-      opacity: { duration: 0.5, ease: EASE },
+      opacity: { duration: 0.4, ease: EASE },
     },
   },
 };
@@ -98,7 +106,7 @@ export function StaggerGroup({
    * at 407px in a 905px viewport stayed at rest indefinitely — and Motion documents that margin is
    * ignored in some embedding contexts. A threshold has no such caveat.
    */
-  const inView = useInView(ref, { once: true, amount: 0.16 });
+  const inView = useInView(ref, { once: true, amount: 0.12 });
   const reduced = useReducedMotion();
   const Comp = TAGS[as];
 
