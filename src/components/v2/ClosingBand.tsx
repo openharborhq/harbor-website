@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TrackedLink } from "@/components/TrackedLink";
 import { Arrow } from "./parts";
 import { doc } from "./routes";
 import { StaggerGroup, StaggerItem } from "./Stagger";
@@ -21,13 +21,15 @@ export function ClosingBand() {
         </h2>
       </StaggerItem>
       <StaggerItem className="shrink-0">
-      <Link
+      <TrackedLink
         href={doc("install")}
+        analyticsEvent="installation_guide_opened"
+        analyticsProperties={{ placement: "closing_band" }}
         className="flex shrink-0 items-center gap-[10px] rounded-pill bg-accent px-[26px] py-[13px] text-copy font-bold leading-body tracking-[-0.01em] text-ground"
       >
         Install Harbor
         <Arrow />
-      </Link>
+      </TrackedLink>
       </StaggerItem>
     </StaggerGroup>
   );

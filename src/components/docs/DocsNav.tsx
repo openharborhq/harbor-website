@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import posthog from "posthog-js";
 import { useState } from "react";
 import { ALL_PAGES, NAV, hrefFor } from "@/content/docs/nav";
 
@@ -38,7 +39,20 @@ export function DocsNav({ base = "/docs", className = "" }: { base?: string; cla
                 const active = href === pathname;
                 return (
                   <li key={p.slug}>
-                    <Link href={href} aria-current={active ? "page" : undefined} className="docs-nav-link">
+                    <Link
+                      href={href}
+                      aria-current={active ? "page" : undefined}
+                      className="docs-nav-link"
+                      onClick={() => {
+                        if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+                          posthog.capture("documentation_page_selected", {
+                            page_slug: p.slug,
+                            section: s.section,
+                            navigation_surface: "docs_sidebar",
+                          });
+                        }
+                      }}
+                    >
                       {p.title}
                     </Link>
                   </li>

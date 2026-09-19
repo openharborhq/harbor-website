@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
+import { TrackedLink } from "@/components/TrackedLink";
 import { Arrow, GitHubIcon } from "./parts";
 import { doc } from "./routes";
 
-const MotionLink = motion.create(Link);
+const MotionLink = motion.create(TrackedLink);
 
 /* The system's two curves: the standard ease for anything that travels a distance, and the one
    overshoot reserved for a thing arriving. The mark gets the overshoot; the scale and the label
@@ -50,23 +50,49 @@ export function HeroCta({ github }: { github: string }) {
   if (still) {
     return (
       <Row>
-        <Link href={doc("install")} className={`flex items-center gap-[9px] ${PRIMARY}`}>
+        <TrackedLink
+          href={doc("install")}
+          analyticsEvent="installation_guide_opened"
+          analyticsProperties={{ placement: "hero" }}
+          className={`flex items-center gap-[9px] ${PRIMARY}`}
+        >
           Get Started
           <Arrow />
-        </Link>
-        <Link href={github} className={`${SECONDARY} transition-colors duration-150 ease-out hover:bg-surface`}>
+        </TrackedLink>
+        <TrackedLink
+          href={github}
+          analyticsEvent="github_repository_opened"
+          analyticsProperties={{ placement: "hero" }}
+          className={`${SECONDARY} transition-colors duration-150 ease-out hover:bg-surface`}
+        >
           Go to repo
-        </Link>
+        </TrackedLink>
       </Row>
     );
   }
 
   return (
     <Row>
-      <Button href={doc("install")} className={PRIMARY} mask="bg-accent" gap="ml-[9px]" mark={<Arrow />}>
+      <Button
+        href={doc("install")}
+        analyticsEvent="installation_guide_opened"
+        placement="hero"
+        className={PRIMARY}
+        mask="bg-accent"
+        gap="ml-[9px]"
+        mark={<Arrow />}
+      >
         Get Started
       </Button>
-      <Button href={github} className={SECONDARY} mask="bg-ground" gap="ml-[8px]" mark={<GitHubIcon />}>
+      <Button
+        href={github}
+        analyticsEvent="github_repository_opened"
+        placement="hero"
+        className={SECONDARY}
+        mask="bg-ground"
+        gap="ml-[8px]"
+        mark={<GitHubIcon />}
+      >
         Go to repo
       </Button>
     </Row>
@@ -88,6 +114,8 @@ function Row({ children }: { children: React.ReactNode }) {
  */
 function Button({
   href,
+  analyticsEvent,
+  placement,
   className,
   mask,
   gap,
@@ -95,6 +123,8 @@ function Button({
   children,
 }: {
   href: string;
+  analyticsEvent: "installation_guide_opened" | "github_repository_opened";
+  placement: string;
   className: string;
   mask: string;
   gap: string;
@@ -104,6 +134,8 @@ function Button({
   return (
     <MotionLink
       href={href}
+      analyticsEvent={analyticsEvent}
+      analyticsProperties={{ placement }}
       initial="rest"
       animate="rest"
       whileHover="hover"

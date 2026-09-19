@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrackedLink } from "@/components/TrackedLink";
 import { getLatestRelease, GITHUB } from "@/lib/github";
 import { Arrow } from "./parts";
 import { HeroDemo } from "./HeroDemo";
@@ -42,14 +43,16 @@ export async function Hero() {
                  the same pair the nav's "Get started" button uses. The version keeps the mono
                  face to stay distinct now that it no longer has a fill of its own. */
               <StaggerItem>
-                <Link
+                <TrackedLink
                   href={release.url}
+                  analyticsEvent="release_notes_opened"
+                  analyticsProperties={{ placement: "hero_release_badge" }}
                   className="flex items-center gap-[10px] rounded-pill bg-text px-[14px] py-[7px] text-ground"
                 >
                   <span className="font-mono text-label font-medium leading-[14px] tracking-mono">{release.tag}</span>
                   <span className="shiny-text text-row leading-[18px] text-ground/75">What&rsquo;s new</span>
                   <Arrow size={13} />
-                </Link>
+                </TrackedLink>
               </StaggerItem>
             )}
 

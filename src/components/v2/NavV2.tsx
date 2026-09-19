@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrackedLink } from "@/components/TrackedLink";
 import { GITHUB } from "@/lib/github";
 import { Wordmark } from "../Logo";
 import { GitHubIcon } from "./parts";
@@ -42,16 +43,24 @@ export function NavV2() {
         </div>
 
         <div className="flex items-center gap-[18px] md:gap-[26px]">
-          <Link href={GITHUB} className="flex items-center gap-[8px] text-text" aria-label="Harbor on GitHub">
+          <TrackedLink
+            href={GITHUB}
+            analyticsEvent="github_repository_opened"
+            analyticsProperties={{ placement: "header" }}
+            className="flex items-center gap-[8px] text-text"
+            aria-label="Harbor on GitHub"
+          >
             <GitHubIcon />
             <span className="hidden font-mono text-row font-medium leading-[18px] sm:block">GitHub</span>
-          </Link>
-          <Link
+          </TrackedLink>
+          <TrackedLink
             href={`${GITHUB}#install`}
+            analyticsEvent="github_repository_opened"
+            analyticsProperties={{ placement: "header_get_started" }}
             className="rounded-pill bg-text px-[22px] py-[12px] text-body font-semibold leading-[20px] tracking-[-0.01em] text-ground"
           >
             Get started
-          </Link>
+          </TrackedLink>
         </div>
       </div>
     </header>

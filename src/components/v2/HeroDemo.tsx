@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import Image from "next/image";
+import posthog from "posthog-js";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /*
@@ -98,7 +99,12 @@ export function HeroDemo() {
       {!started && (
         <button
           type="button"
-          onClick={() => setStarted(true)}
+          onClick={() => {
+            if (process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+              posthog.capture("product_walkthrough_started", { placement: "homepage_hero" });
+            }
+            setStarted(true);
+          }}
           aria-label="Play a walkthrough of Harbor"
           className="hd-play absolute inset-0 flex items-center justify-center"
         >

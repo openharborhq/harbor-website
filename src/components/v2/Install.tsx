@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TrackedLink } from "@/components/TrackedLink";
 import { GITHUB } from "@/lib/github";
 import { Arrow, Cmd, Eyebrow, Terminal } from "./parts";
 import { doc } from "./routes";
@@ -44,19 +44,23 @@ export function Install() {
             there are no default credentials.
           </p>
           <div className="flex flex-wrap items-center gap-[12px] pt-[8px]">
-            <Link
+            <TrackedLink
               href={doc("install")}
+              analyticsEvent="installation_guide_opened"
+              analyticsProperties={{ placement: "install_section" }}
               className="flex items-center gap-[9px] rounded-pill bg-accent px-[26px] py-[14px] text-body font-semibold leading-[18px] text-ground"
             >
               The install guide
               <Arrow size={15} />
-            </Link>
-            <Link
+            </TrackedLink>
+            <TrackedLink
               href={`${GITHUB}/blob/main/install.sh`}
+              analyticsEvent="github_repository_opened"
+              analyticsProperties={{ placement: "install_script" }}
               className="rounded-pill border border-border-strong px-[26px] py-[14px] text-body font-semibold leading-[18px] text-text"
             >
               Read install.sh
-            </Link>
+            </TrackedLink>
           </div>
         </div>
 

@@ -46,3 +46,4 @@ next-env.d.ts
 
 # local MCP server config: carries a personal API key
 /.mcp.json
+.env.local
