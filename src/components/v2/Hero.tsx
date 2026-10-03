@@ -61,8 +61,8 @@ export async function Hero() {
             </StaggerItem>
 
             <StaggerItem as="p" className="max-w-[680px] text-lead leading-copy text-muted">
-              Harbor is your open source document vault that transforms record management in your home. Connect your
-              inbox or upload files and see Harbor work to tag, sort, and retrieve.
+              Harbor is an open-source document vault you host yourself. Connect your inbox or upload files to
+              organize your household records, keep track of important dates, and find what you need.
             </StaggerItem>
 
             <StaggerItem>
@@ -70,7 +70,7 @@ export async function Hero() {
             </StaggerItem>
 
             <StaggerItem>
-              <SwitchingFrom />
+              <SetupGuide />
             </StaggerItem>
           </StaggerGroup>
 
@@ -86,13 +86,9 @@ export async function Hero() {
 }
 
 /**
- * The line under the buttons, for someone arriving from a hosted vault.
- *
- * `See how` points at the comparison rather than at a migration guide: there is no Trustworthy
- * importer in the repository, and a link promising one would be the only thing on this page the
- * product cannot actually do.
+ * The setup guide helps visitors understand what they need before installing.
  */
-function SwitchingFrom() {
+function SetupGuide() {
   return (
     <div className="flex flex-wrap items-center justify-center gap-[9px]">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" className="shrink-0" aria-hidden="true">
@@ -103,12 +99,12 @@ function SwitchingFrom() {
           strokeLinecap="round"
         />
       </svg>
-      <span className="text-body leading-[22px] text-muted">Switching from Trustworthy?</span>
+      <span className="text-body leading-[22px] text-muted">New to self-hosting?</span>
       <Link
-        href="/#comparison"
+        href="/docs/prerequisites"
         className="flex items-center gap-[7px] border-b border-border-strong pb-[2px] text-body font-medium leading-[22px] text-text"
       >
-        See how
+        Read the setup guide
         <Arrow size={14} />
       </Link>
     </div>

@@ -321,29 +321,29 @@ function ShareStage() {
 
 const OPTIONS: { head: string; copy: string; tint: Tint; glyph: ReactNode; stage: ReactNode }[] = [
   {
-    head: "Monitor your inbox",
-    copy: "Documents arrive by email and land in the Inbox, tagged before you have opened them.",
+    head: "Bring paperwork together",
+    copy: "Connect a mailbox or forward documents to Harbor. Review new arrivals in your Inbox.",
     tint: "accent",
     glyph: MAIL,
     stage: <InboxStage />,
   },
   {
-    head: "Automatic tagging and summarization",
-    copy: "Every file is scanned, read, and given a title, a category and the dates inside it.",
+    head: "Review the suggestions",
+    copy: "Harbor suggests a title, category, tags, and important dates. Review them before filing.",
     tint: "violet",
     glyph: SPARK,
     stage: <ReadingStage />,
   },
   {
-    head: "For people, things, and your pets",
-    copy: "File against the person, the house, the car — or the dog, and the bill from the vet.",
+    head: "Organize by person or thing",
+    copy: "Keep records with the person, home, car, or pet they belong to, from passports to vet bills.",
     tint: "green",
     glyph: PAWS,
     stage: <ItemsStage />,
   },
   {
-    head: "Sharing made easy",
-    copy: "Tick a few documents, set an expiry, and send one link that stops working afterwards.",
+    head: "Share a copy",
+    copy: "Select documents, set an expiration date, and send a link. Revoke access whenever you need to.",
     tint: "warn",
     glyph: SHARE,
     stage: <ShareStage />,
@@ -379,7 +379,7 @@ export function HowItWorks() {
           See how Harbor works
         </h2>
         <p className="max-w-[700px] text-lead leading-copy text-muted">
-          Four things it does all day, from the moment paperwork arrives to the moment someone else needs a copy.
+          From a bill arriving in your inbox to a copy shared with your accountant.
         </p>
       </div>
 

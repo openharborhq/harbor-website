@@ -56,7 +56,7 @@ export function HeroCta({ github }: { github: string }) {
           analyticsProperties={{ placement: "hero" }}
           className={`flex items-center gap-[9px] ${PRIMARY}`}
         >
-          Get Started
+          Get started
           <Arrow />
         </TrackedLink>
         <TrackedLink
@@ -65,7 +65,7 @@ export function HeroCta({ github }: { github: string }) {
           analyticsProperties={{ placement: "hero" }}
           className={`${SECONDARY} transition-colors duration-150 ease-out hover:bg-surface`}
         >
-          Go to repo
+          View on GitHub
         </TrackedLink>
       </Row>
     );
@@ -82,7 +82,7 @@ export function HeroCta({ github }: { github: string }) {
         gap="ml-[9px]"
         mark={<Arrow />}
       >
-        Get Started
+        Get started
       </Button>
       <Button
         href={github}
@@ -93,7 +93,7 @@ export function HeroCta({ github }: { github: string }) {
         gap="ml-[8px]"
         mark={<GitHubIcon />}
       >
-        Go to repo
+        View on GitHub
       </Button>
     </Row>
   );

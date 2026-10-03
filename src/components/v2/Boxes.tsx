@@ -51,7 +51,7 @@ function Glyph({ tint, children }: { tint: Tint; children: ReactNode }) {
 const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
   {
     head: "Connect your inbox",
-    copy: "Connect your inbox and Harbor decides which documents are worth keeping.",
+    copy: "Connect a mailbox or forward email. Choose which senders Harbor should file automatically.",
     tint: "accent",
     glyph: (
       <>
@@ -62,7 +62,7 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
   },
   {
     head: "Upload files and photos",
-    copy: "Upload images and documents with automatic OCR and text indexing.",
+    copy: "Add PDFs, scans, and photos. Harbor reads the text so you can search their contents.",
     tint: "violet",
     glyph: (
       <>
@@ -73,8 +73,8 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "AI Summaries",
-    copy: "Files get auto-tagged and categorized. Use your own LLM or API key.",
+    head: "AI summaries",
+    copy: "Get summaries and suggested tags and categories. Choose a local model or connect an AI provider.",
     tint: "green",
     glyph: (
       <>
@@ -84,8 +84,8 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Automatic Backups",
-    copy: "Pick your backup provider and make daily backups. Supports Backblaze and S3 API.",
+    head: "Automatic backups",
+    copy: "Back up nightly to Backblaze B2, an SFTP server, or a second disk. Harbor tests a restore each month.",
     tint: "warn",
     glyph: (
       <>
@@ -96,8 +96,8 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "For all your things",
-    copy: "Store documents like passports, id cards, bills, deeds, wills, utility bills, expenses and more.",
+    head: "For the whole household",
+    copy: "Keep passports, bills, deeds, and more together, organized by the people and things they belong to.",
     tint: "violet",
     glyph: (
       <>
@@ -111,8 +111,8 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Best-in-class security",
-    copy: "Your own fort knox in your basement. Comes with your own virtual security guards.",
+    head: "Built-in protection",
+    copy: "Protect your records with document encryption, multi-factor authentication, and device access you can revoke.",
     tint: "accent",
     glyph: (
       <>
@@ -123,8 +123,8 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Open Source",
-    copy: "Community driven but hosted by you. Get the updates you want, only when you want, and no one else has access.",
+    head: "Open source",
+    copy: "Read the code, host your own vault, and choose when to update. Your records stay under your control.",
     tint: "warn",
     glyph: (
       <>
@@ -137,8 +137,8 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Secure Sharing",
-    copy: "Up your accountant's game by sending files securely. Set expiration dates, max downloads and more.",
+    head: "Secure sharing",
+    copy: "Send documents through a shared link. Set an expiration date and download limit, or revoke access early.",
     tint: "green",
     glyph: (
       <>
@@ -162,8 +162,8 @@ export function Boxes() {
           Ditch the filing cabinet
         </h2>
         <p className="max-w-[660px] text-center text-lead leading-copy text-muted">
-          Harbor was designed from the ground up to tame your document chaos. Full-text search, automatic tagging and
-          summarization, plus powerful sharing features means you stay in control.
+          Give your household paperwork a home. Search the text inside your documents, review suggested tags and
+          summaries, and share a copy when someone needs one.
         </p>
       </div>
 

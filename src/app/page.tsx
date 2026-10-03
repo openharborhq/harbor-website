@@ -18,9 +18,9 @@ import { StickyNav } from "@/components/v2/StickyNav";
  * two places the design opens a gap (under the hero, and before the FAQ) are explicit.
  */
 export const metadata: Metadata = {
-  title: "Harbor: a document vault for a household, on a machine you own",
+  title: "Harbor: your household document vault",
   description:
-    "Open source, self-hosted. Paperwork arrives by email or upload; Harbor reads it, files it against the person or thing it belongs to, and puts the dates inside it on a list.",
+    "An open-source document vault you host yourself. Organize household paperwork, search your records, track important dates, and share documents on your terms.",
 };
 
 export default function Page() {

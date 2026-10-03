@@ -22,9 +22,9 @@ type Dive = {
 const DIVES: Dive[] = [
   {
     id: "management",
-    eyebrow: "Turn-key document management",
-    title: "Complete, secure document management",
-    lead: "Harbor means turn-key document management with a robust feature set and best-in-class security. Perfect for your household.",
+    eyebrow: "Your household vault",
+    title: "Keep your records under your control",
+    lead: "Run Harbor on your own hardware, control who has access, and keep encrypted backups ready for recovery.",
     image: {
       src: "/mock/slide-inbox@2x.png",
       alt: "Documents waiting in Harbor's Inbox, each with a summary and a suggested filing.",
@@ -32,24 +32,24 @@ const DIVES: Dive[] = [
     side: "right",
     claims: [
       {
-        head: "Access security",
-        copy: "With MFA out of the box, and revocable device tokens, Harbor provides best-in-class security to keep you in and everyone else out. A full audit trail shows who has accessed from where.",
+        head: "Control access",
+        copy: "Multi-factor authentication protects sign-in. Revoke access for a lost device and use the audit trail to review access to your vault.",
       },
       {
-        head: "Full device encryption",
-        copy: "Harbor encrypts your storage volume to protect you in case your device gets stolen. Drives are encrypted and require unlock after each reboot so no one can access your data.",
+        head: "Encrypted storage",
+        copy: "Harbor encrypts each document and requires an encrypted data volume, which you set up before installing. By default, the volume stays locked after a reboot until you unlock it.",
       },
       {
-        head: "S3 compatible backup",
-        copy: "Choose your favorite backup provider such as Backblaze, Wasabi, or Amazon S3 to store data encrypted at rest. This also ensures easy recovery should your device ever fail.",
+        head: "Backups you can check",
+        copy: "Send encrypted nightly backups to Backblaze B2, an SFTP server, or a second disk. Monthly restore tests check that your backups can be read and your documents decrypted.",
       },
     ],
   },
   {
     id: "sharing",
     eyebrow: "Secure sharing",
-    title: "Secure sharing with your tax advisors",
-    lead: "Too many tax professionals don't use proper security when handling your documents. Harbor puts you in charge by letting you define how long files are shared for, with whom, and how many times they can be downloaded.",
+    title: "Share documents on your terms",
+    lead: "Send records to your accountant, advisor, or anyone else who needs a copy. Choose the documents, set a download limit, and decide when the link expires.",
     image: {
       src: "/mock/slide-home@2x.png",
       alt: "Harbor's Home page: family members and items, each with a record count and what expires next.",
@@ -58,16 +58,16 @@ const DIVES: Dive[] = [
     tint: true,
     claims: [
       {
-        head: "No firewalls to configure",
-        copy: "Harbor configures your Tailscale access so you don't have to open or forward ports to share data. Isolated resources handle sharing securely without you having to lift a finger.",
+        head: "Share through Tailscale",
+        copy: "Use Tailscale to share documents without opening ports on your router. A separate sharing service handles access to the shared files.",
       },
       {
         head: "Choose how you share",
-        copy: "Optionally share using an external bucket. Files are encrypted and require a signing key which you provide. Harbor manages the entire lifecycle without anyone accessing your Harbor instance.",
+        copy: "You can also share through an external storage bucket. Recipients retrieve the shared files without connecting to your Harbor instance.",
       },
       {
-        head: "Audit your files",
-        copy: "See who viewed, downloaded, and how many times. Delivery receipts give you peace of mind that files were delivered. Remove access to shared links any time.",
+        head: "Track shared access",
+        copy: "Review views and downloads in the sharing history. Revoke a link at any time to prevent further access through it.",
       },
     ],
   },

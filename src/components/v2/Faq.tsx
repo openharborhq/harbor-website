@@ -9,23 +9,23 @@ import { StaggerGroup, StaggerItem } from "./Stagger";
 const QUESTIONS: { q: string; a: string }[] = [
   {
     q: "What does Harbor cost?",
-    a: "Harbor is free and open source. You host it on your own hardware. We are working on ways to make it easy to deploy Harbor to a cloud platform of your choice. We may also in the future introduce a hosted version, which we may charge for.",
+    a: "Harbor is free and open source. You provide the hardware or hosting. Backup storage and a hosted AI provider may have their own charges, depending on what you choose.",
   },
   {
-    q: "How does it work?",
-    a: "You install Harbor on your hardware. It runs on a Raspberry Pi or small form factor computers. Heck, you can even repurpose that old Mac mini and put it to good use. Install is easy — even if you're not technical. Within minutes, you have your own instance running.",
+    q: "What do I need to get started?",
+    a: "You need a Linux machine with Docker, an encrypted data volume, and somewhere to keep backups. The setup guide walks you through preparing the machine, running the installer, and creating your household vault. Setup involves using the command line.",
   },
   {
-    q: "How does backup work?",
-    a: "Harbor lets you configure different backup providers. We currently support Backblaze B2, which has a generous free tier to get started. Future versions will add support for S3 compatible storage such as Wasabi, Amazon S3, or any number of vendors following the open object storage standard.",
+    q: "How do backups work?",
+    a: "Once configured, Harbor makes encrypted nightly backups to Backblaze B2, an SFTP server, or a second disk. It tests a restore each month and shows the results in Settings. Keep your recovery keys somewhere safe, separate from the machine: you need them to recover your records if it fails.",
   },
   {
-    q: "Is my data secure?",
-    a: "The overall premise of Harbor is that you should be able to manage your data, not someone else. If you use a cloud provider, do you really know your data is secure? Employees often have access to hosted systems without your knowledge. Data in those systems often flows through third party providers with different security postures. Data breaches happen in the cloud, which is why Harbor can be hosted inside your four walls. With drive encryption, MFA access, and device tokens, Harbor is more secure out of the box than the vast majority of services you can subscribe to.",
+    q: "How does Harbor protect my data?",
+    a: "Harbor encrypts your documents, requires an encrypted data volume, and protects sign-in with multi-factor authentication. You control access to the vault and remain responsible for the machine and its backups. If you choose a hosted AI provider, Harbor sends it text from your documents to generate suggestions. You can use a local model instead.",
   },
   {
-    q: "Can you recommend inexpensive hardware to run Harbor on?",
-    a: "Yes, sure. Harbor is tested on a Raspberry Pi running Ubuntu, and on small form factor servers like the Protectli Vault.",
+    q: "What hardware can I use?",
+    a: "A Raspberry Pi 5 with an SSD or a small Linux PC can run Harbor. Plan for at least 100 GB of available storage. The setup guide uses Debian 12; check the prerequisites before preparing your machine.",
   },
 ];
 
@@ -35,7 +35,7 @@ export function Faq() {
       <div className="flex w-full flex-col items-center gap-[18px]">
         <span className="font-mono text-label font-medium leading-[14px] tracking-mono text-faint">FAQ</span>
         <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text">
-          Questions? We&rsquo;ve got answers.
+          A few things to know before you start
         </h2>
       </div>
 
