@@ -138,16 +138,13 @@ function PricingPage({ enabled }: { enabled: boolean }) {
             ))}
           </StaggerGroup>
 
-          <StaggerGroup delay={0.5} className="flex w-full flex-col items-center gap-[24px]">
+          <StaggerGroup delay={0.5} className="w-full">
             <StaggerItem className="flex w-full flex-col items-start gap-[14px] rounded-[20px] border border-border p-[22px] sm:px-[28px] sm:py-[24px] md:flex-row md:items-center md:justify-between md:gap-[32px]">
               <div className="flex flex-col gap-[6px]">
                 <h3 className="text-section font-bold leading-[26px] tracking-snug text-text">Planning further ahead?</h3>
                 <p className="text-body leading-[24px] text-muted">Get five years of Backup + Legacy for €299 upfront, with fewer renewals to manage.</p>
               </div>
               <Status live={false}>Coming soon</Status>
-            </StaggerItem>
-            <StaggerItem as="p" className="max-w-[680px] text-balance text-center text-small leading-[20px] text-muted">
-              Paid plans are coming soon. Subscriptions open at launch, with service terms and applicable taxes shown before you pay.
             </StaggerItem>
           </StaggerGroup>
         </section>
