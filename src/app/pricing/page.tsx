@@ -83,6 +83,10 @@ function PricingPage({ enabled }: { enabled: boolean }) {
   return (
     <div className="px-[24px]">
       <NavV2 pricingEnabled={enabled} />
+      {/* The pill arrives as the header leaves, as in the docs, rather than at the floor of the
+          opening band: with the plans inside that band, a phone scrolls past all three cards
+          before it ends, and the way to the other pages would be gone the whole time. */}
+      <StickyNav sentinelClassName="h-0 w-full" pricingEnabled={enabled} />
       <main id="main" className="flex flex-col gap-[26px]">
         <section className={`flex flex-col items-center gap-[56px] rounded-[26px] bg-surface lane ${PAD}`}>
           <StaggerGroup className="flex flex-col items-center gap-[22px]">
@@ -147,10 +151,6 @@ function PricingPage({ enabled }: { enabled: boolean }) {
             </StaggerItem>
           </StaggerGroup>
         </section>
-
-        {/* The pill arrives as the opening band's floor passes the top of the viewport, as on the
-            features page; the negative margin cancels the gap the sentinel would add. */}
-        <StickyNav sentinelClassName="h-0 w-full -mt-[26px]" pricingEnabled={enabled} />
 
         <ServiceBand
           id="backup"

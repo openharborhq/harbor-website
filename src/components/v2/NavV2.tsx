@@ -3,6 +3,7 @@ import { siteConfig } from "@/lib/site-config";
 import { TrackedLink } from "@/components/TrackedLink";
 import { GITHUB } from "@/lib/github";
 import { Wordmark } from "../Logo";
+import { MobileMenu } from "./MobileMenu";
 import { GitHubIcon } from "./parts";
 import { DOCS, FEATURES, HOME, PRICING } from "./routes";
 
@@ -23,15 +24,18 @@ const LINKS = [
 ];
 
 export function NavV2({ pricingEnabled = siteConfig.pricingEnabled }: { pricingEnabled?: boolean } = {}) {
+  const links = [...LINKS, ...(pricingEnabled ? [{ label: "Harbor Cloud", href: PRICING }] : [])];
+
   return (
-    <header className="flex items-center justify-center bg-ground px-[24px] py-[16px] md:px-[60px]">
+    // `relative` so the phone menu's panel hangs from the bar.
+    <header className="relative flex items-center justify-center bg-ground px-[24px] py-[16px] md:px-[60px]">
       <div className="flex w-full items-center justify-between gap-[24px]">
         <div className="flex items-center gap-[24px] md:gap-[44px]">
           <Link href={HOME} aria-label="Harbor home">
             <Wordmark />
           </Link>
           <nav className="hidden items-center gap-[32px] md:flex" aria-label="Primary">
-            {[...LINKS, ...(pricingEnabled ? [{ label: "Harbor Cloud", href: PRICING }] : [])].map((l) => (
+            {links.map((l) => (
               <Link
                 key={l.label}
                 href={l.href}
@@ -43,7 +47,10 @@ export function NavV2({ pricingEnabled = siteConfig.pricingEnabled }: { pricingE
           </nav>
         </div>
 
-        <div className="flex items-center gap-[18px] md:gap-[26px]">
+        {/* On a phone the burger stands in for both: the hero carries its own "Get started", and
+            GitHub is a footer link away. */}
+        <MobileMenu links={links} />
+        <div className="hidden items-center gap-[26px] md:flex">
           <TrackedLink
             href={GITHUB}
             analyticsEvent="github_repository_opened"
