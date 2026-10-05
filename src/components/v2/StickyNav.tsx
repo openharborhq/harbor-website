@@ -81,7 +81,7 @@ export function StickyNav({ sentinelClassName = "h-px w-full", pricingEnabled = 
         </Link>
 
         <nav className="hidden items-center gap-[16px] md:flex" aria-label="Primary">
-          {[...LINKS, ...(pricingEnabled ? [{ label: "Pricing", href: PRICING }] : [])].map((l) => (
+          {[...LINKS, ...(pricingEnabled ? [{ label: "Harbor Cloud", href: PRICING }] : [])].map((l) => (
             <Link
               key={l.label}
               href={l.href}

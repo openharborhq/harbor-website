@@ -87,10 +87,10 @@ function PricingPage({ enabled }: { enabled: boolean }) {
         <section className={`flex flex-col items-center gap-[56px] rounded-[26px] bg-surface lane ${PAD}`}>
           <StaggerGroup className="flex flex-col items-center gap-[22px]">
             <StaggerItem>
-              <Eyebrow>PRICING · HARBOR CLOUD</Eyebrow>
+              <Eyebrow>PRICING</Eyebrow>
             </StaggerItem>
-            <StaggerItem as="h1" className="max-w-[900px] text-center text-display font-bold leading-[1.12] tracking-[-0.032em] text-text">
-              Your records, there when they’re needed.
+            <StaggerItem as="h1" className="max-w-[900px] text-balance text-center text-display font-bold leading-[1.12] tracking-[-0.032em] text-text">
+              Backup and emergency access with Harbor&nbsp;Cloud
             </StaggerItem>
             <StaggerItem as="p" className="max-w-[680px] text-center text-copy leading-copy text-muted">
               Harbor stays free and self-hosted. Encrypted offsite backup and emergency access are coming soon, helping you and your household recover what matters.
