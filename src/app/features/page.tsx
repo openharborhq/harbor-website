@@ -21,7 +21,7 @@ import { GROUPS } from "@/content/features";
 export const metadata: Metadata = {
   title: "Features · Harbor",
   description:
-    "One place for everything. Easy to find. Nothing expires by surprise. And it never leaves your house. Harbor is an open-source, self-hosted vault for a household's documents.",
+    "Organize household paperwork, search document contents, track important dates, and share selected records with an open-source vault you host yourself.",
 };
 
 /** Grey on the evens, white on the odds, counting the hero as nought. */
@@ -51,10 +51,10 @@ export default function Page() {
               <Eyebrow>FEATURES</Eyebrow>
             </StaggerItem>
             <StaggerItem as="h1" className="max-w-[900px] text-center text-display font-bold leading-[1.12] tracking-[-0.032em] text-text">
-              Simple, secure records management
+              Your household paperwork, organized
             </StaggerItem>
             <StaggerItem as="p" className="max-w-[680px] text-center text-copy leading-copy text-muted">
-              One place for everything. Easy to find. Nothing expires by surprise. And it never leaves your house.
+              Bring documents together from uploads and email. Search their contents, track important dates, and share selected records—all from a vault you host yourself.
             </StaggerItem>
           </StaggerGroup>
           {/* One item rather than a group: the marquee is already moving under its own power, and
@@ -80,8 +80,8 @@ export default function Page() {
           <StaggerItem className="flex max-w-[720px] flex-col items-center gap-[12px]">
             <Eyebrow>ONE DOCUMENT, EVERYTHING ABOUT IT</Eyebrow>
             <p className="text-center text-copy leading-copy text-muted">
-              The page exactly as it arrived, the summary Harbor wrote, the tags it pulled out, the expiry it is
-              watching, and the note your spouse left last March.
+              View a document alongside its summary, tags, expiration date, and household notes.
+              Keep the original and the details you need together.
             </p>
           </StaggerItem>
           <StaggerItem className="w-full max-w-[1000px] overflow-hidden rounded-[16px] border border-border">

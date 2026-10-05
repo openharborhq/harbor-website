@@ -1,9 +1,9 @@
 export const meta = {
   title: "Install",
-  description: "One shell script, three questions, and about ten minutes, most of it pulling images.",
+  description: "Install Harbor on a prepared Linux machine and configure storage, access, and backups.",
 };
 
-You need a Linux machine with Docker and an encrypted volume mounted at `/data`. If you have not got those yet, [Prerequisites](/docs/prerequisites) and [The data volume](/docs/data-volume) are short.
+You need a Linux machine with Docker and an encrypted volume mounted at `/data`. If you have not got those yet, [Prerequisites](/docs/prerequisites) and [The data volume](/docs/data-volume) explain how to prepare them.
 
 ## Run the installer
 
@@ -21,7 +21,7 @@ It asks three questions:
 2. **How you want to reach it.** Over a Tailscale tailnet, or on an address of your own network, which also covers a VPN you already run. Tailscale is optional. See [Reaching your vault](/docs/reaching-your-vault).
 3. **Where backups should go.** A bucket, an SFTP host, or a second disk. See [Backups](/docs/backups).
 
-Then it does everything else: compose files, secrets, configuration, images, and starting the eight containers. When it finishes it prints the address of your vault. Open it and continue with [First run](/docs/first-run).
+The installer creates the Compose files, secrets, and configuration, downloads the images, and starts the services. When it finishes it prints the address of your vault. Open it and continue with [First run](/docs/first-run).
 
 ## Unattended install
 
@@ -42,7 +42,7 @@ Every variable is described in [Configuration](/docs/configuration).
 
 ## What the installer checks and will not do for you
 
-It refuses to continue if `HARBOR_DATA_DIR` is not on an encrypted volume. It generates two secrets that exist nowhere else, the master key that decrypts every document and the password that encrypts every backup; they belong on [the break-glass envelope](/docs/break-glass) and nowhere else. And it cannot give your backups somewhere to go unless you tell it.
+It refuses to continue if `HARBOR_DATA_DIR` is not on an encrypted volume. It generates two secrets that exist nowhere else, the master key that decrypts every document and the password that encrypts every backup; keep a recovery copy on [the break-glass sheet](/docs/break-glass), separate from the server. And it cannot give your backups somewhere to go unless you tell it.
 
 ## Releases
 

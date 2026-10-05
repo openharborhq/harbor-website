@@ -1,15 +1,15 @@
 export const meta = {
   title: "Restore from a backup",
-  description: "For the day the disk dies, the box is stolen, or you move to new hardware. From the envelope to a signed-in vault, about an hour plus the download.",
+  description: "For the day the disk dies, the box is stolen, or you move to new hardware. Recover documents and settings on a replacement Linux machine using your backup and recovery keys.",
 };
 
-Nothing here needs the old machine.
+This procedure uses a backup and your recovery information. You do not need access to the old machine. Restore the same Harbor release first, then upgrade after verifying recovery.
 
 ## What you need
 
 From [the envelope](/docs/break-glass):
 
-1. **The master key.** Without it the documents in the backup are noise.
+1. **The master key.** It is required to decrypt the documents.
 2. **The backup password.**
 3. **Where the repository is**, and its credentials.
 4. **The recovery codes**, if your authenticator app is gone too.
@@ -27,7 +27,7 @@ printf '%s\n' '<backup password from the envelope>' > /data/secrets/restic-passw
 chmod 600 /data/secrets/kek /data/secrets/restic-password
 ```
 
-Set the repository and its credentials in `/data/harbor.env` as they were. A key typed wrong fails loudly in the next step, not silently later.
+Set the repository and its credentials in `/data/harbor.env` as they were. Check each value carefully. Repository access verifies the backup password; opening restored documents also verifies the document master key.
 
 Do **not** start the stack yet. Two shortcuts for what follows:
 
@@ -54,7 +54,7 @@ dc run --rm backup pg_restore --no-owner --exit-on-error \
   --dbname=postgres://harbor:harbor@postgres:5432/harbor /data/dumps/harbor.dump
 ```
 
-This is the same command the monthly test runs against a scratch database. The dump includes the migrations table, so the API starts without running migrations again.
+This is the same command the monthly test runs against a scratch database. The dump includes migration history. Use the matching Harbor release to avoid introducing a schema upgrade during recovery.
 
 ## 4. Start and sign in
 
@@ -67,11 +67,11 @@ Sign in at the new address with your password and authenticator. The authenticat
 
 <Note label="If the old box might still be running">
 
-Mail connections come back **enabled**. Disable them under Settings, Email first, so two vaults do not read the same mailbox.
+Mail connections are restored with their saved settings. Stop the old instance before starting the restored stack so both instances do not process the same mailbox.
 
 </Note>
 
-## 5. Prove it
+## 5. Verify recovery
 
 <Prove id="restore" items={[
   "Open a document from before the loss and read a page of it.",

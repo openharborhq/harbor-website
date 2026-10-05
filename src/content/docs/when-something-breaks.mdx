@@ -1,11 +1,11 @@
 export const meta = {
   title: "When something breaks",
-  description: "The two cases that do not need a new box: an upgrade that went wrong, and a database that is gone while the disk is fine.",
+  description: "Troubleshoot upgrades, database recovery, locked storage, failed scans, and email connections.",
 };
 
 ## An upgrade went wrong
 
-Rolling back is restoring, because migrations only run forward. There are no down migrations, on purpose: a half-reversed schema is worse than a restore from ten minutes ago. `harbor upgrade` takes a backup immediately before it pulls, and that is the one you want.
+Rolling back is restoring, because migrations only run forward. An older release may not work with an upgraded database schema. `harbor upgrade` takes a backup immediately before it pulls, and that is the one you want.
 
 ```sh
 harbor config                  # set HARBOR_IMAGE_TAG back to the release you were on
@@ -16,7 +16,13 @@ If the older code cannot read the newer schema, `harbor logs api` will say so. T
 
 ## Only the database is gone
 
-The disk is fine and Postgres is not, after a bad upgrade or a wrong `rm`. With the `dc` alias from the restore page:
+Use this procedure only when you intend to replace the database with the saved dump. Confirm that `/data/dumps/harbor.dump` exists and is the backup you want. Follow [Restore from a backup](/docs/restore) for the deployment directory and `dc` alias.
+
+<Note label="This replaces the current database">
+
+The commands below drop the existing database. Changes made after the selected dump will not be restored. Preserve the current database if it contains records you may need.
+
+</Note>
 
 ```sh
 dc stop api web worker mailfetch suggester backup
@@ -26,16 +32,16 @@ dc run --rm backup pg_restore --no-owner --exit-on-error \
 dc up -d
 ```
 
-`/data/dumps/harbor.dump` is last night's. For an older one, restore just that file from the snapshot you want first.
+Check the timestamp of `/data/dumps/harbor.dump`; a failed backup may leave an older dump. For an older one, restore just that file from the snapshot you want first.
 
 ## The vault will not start after a reboot
 
-The data volume is still locked. `harbor unlock`, type the passphrase, and the containers start on their own. While the volume is locked the mount point is write-protected, so nothing has written to the wrong disk in the meantime.
+Check whether the data volume is still locked. `harbor unlock`, type the passphrase, and the containers start on their own. While the volume is locked the mount point is write-protected, so nothing has written to the wrong disk in the meantime.
 
 ## A scan failed
 
-The Inbox card says so and offers Retry. A failed scan degrades to "filed but not searchable", never to lost paperwork: the original bytes were stored before anything else happened. `harbor logs worker` shows every scan with its engine, pages and time.
+The Inbox card says so and offers Retry. The original is stored before text extraction. A failed scan can leave its contents unsearchable until processing succeeds. `harbor logs worker` shows every scan with its engine, pages and time.
 
 ## A mail connection stopped
 
-A broken connection is never a silent one: Settings, Email shows its status and a banner says why. Credentials get revoked and providers rate-limit; reconnecting is the fix.
+Open **Settings → Email** and read the connection error. Check the mailbox credentials and provider availability. Update revoked credentials and reconnect; for a rate limit, follow the provider’s retry guidance.

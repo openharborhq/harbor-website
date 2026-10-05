@@ -1,19 +1,20 @@
 export const meta = {
   title: "The break-glass envelope",
-  description: "One printed sheet that can rebuild the vault from nothing. What goes on it, where it goes, and when to reprint it.",
+  description: "Keep the keys, credentials, and instructions needed to recover your vault from a backup.",
 };
 
-The envelope is the whole of your disaster plan on one sheet of paper. Nobody else holds a copy of these keys, which is the point of running this yourself, and also why losing the sheet and the disk together means the documents are gone.
+Keep a printed recovery sheet separate from the server. Recovering from an encrypted backup requires both the backup and the correct keys; Harbor cannot replace lost keys for you. Anyone with this information and access to your backup may be able to recover your records.
 
 ## What goes on it
 
-`harbor break-glass` prints all of it. By hand:
+Use `harbor break-glass` to display the recovery information. Review the output and complete the following checklist before storing the sheet:
 
 1. **The passphrase** that unlocks the data volume at boot.
 2. **The master key**, which decrypts every document and every sealed secret, including the authenticator secrets and mail passwords: `cat /data/secrets/kek`
 3. **The backup password**, which decrypts the snapshots: `cat /data/secrets/restic-password`
 4. **Where the backups are**, and the credential that reaches them: the `RESTIC_REPOSITORY` line and the B2 key, the SFTP login, or which disk.
-5. **The address of [Restore from a backup](/docs/restore)**.
+5. **Your account recovery codes**, saved during first run, if your authenticator becomes unavailable. Keep these with the sheet; do not assume the command includes them.
+6. **The address of [Restore from a backup](/docs/restore)** and the Harbor release you are running.
 
 ## Where it goes
 
@@ -21,4 +22,4 @@ In a safe, or with someone you trust in another house. Not on the box, and not i
 
 ## When to reprint it
 
-Whenever any line changes: a new backup target, a rotated key, a new volume after a restore. A sheet that is out of date is the same as no sheet on the day it matters.
+Whenever any line changes: a new backup target, a rotated key, a new volume after a restore. Replace outdated copies so the information matches your current setup.

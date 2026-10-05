@@ -1,6 +1,6 @@
 export const meta = {
   title: "Categories, tags, and search",
-  description: "Categories say what kind of paper something is. Tags are yours. Both are searchable, alongside every word inside every document.",
+  description: "Categories say what kind of paper something is. Tags are yours. Search categories, tags, and extracted document text.",
 };
 
 ## Categories
@@ -13,7 +13,7 @@ Up to three are suggested per document, again only from tags you have already us
 
 ## What search covers
 
-The text of every document, its title, its tags, its summary, the notes you added, and the names of the people and things it is about. The matching line shows in the results before you open anything, and you can narrow by person, thing, category, or date.
+The text successfully extracted from supported documents, its title, its tags, its summary, the notes you added, and the names of the people and things it is about. The matching line shows in the results before you open anything, and you can narrow by person, thing, category, or date.
 
 ## Languages
 
@@ -21,4 +21,4 @@ Text is indexed in English and German at once, so a query stemmed either way mat
 
 ## Reindexing
 
-Change a title, a tag, a note, or an item and the document is reindexed in the same moment, so a name you removed stops matching immediately. The index is a cache, rebuilt from the documents at any time, never the only copy of anything.
+Change a title, a tag, a note, or an item and the document is reindexed in the same moment, so a name you removed stops matching immediately. The search index can be rebuilt from stored records.

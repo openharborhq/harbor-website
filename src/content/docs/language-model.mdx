@@ -9,36 +9,30 @@ The summary, the proposed title, category, dates, tags and reminders on each Inb
 
 | Provider | Covers | You give it |
 | --- | --- | --- |
-| Anthropic | Claude, through the official SDK. The primary path, and the one the summaries were written against. | An API key. |
+| Anthropic | Claude, through the official SDK. Requires a provider account and API key. | An API key. |
 | OpenAI-compatible | OpenAI, Groq, Mistral, DeepSeek, OpenRouter, and anything else that speaks the same chat endpoint, including Ollama, llama.cpp and LM Studio on your own network. | A base URL, a model name, and a key if the service wants one. |
 | None | Heuristics only: the sender becomes the item, a date in the filename becomes the document date. Cards arrive without a summary. | Nothing. |
 
 The commercial services are presets: choosing one fills in the base URL and a model name and asks for a key.
 
-Fully local is a first-class configuration: point the OpenAI-compatible provider at Ollama on your network and no part of the stack talks to the internet at all. The trade is quality. A small local model gives noticeably weaker summaries and misses categories a frontier model gets right. That is the operator's call, which is the point of offering it.
+To keep AI processing on your network, connect a local provider such as Ollama. This keeps suggestion requests local; email connections, offsite backups, and other configured services may still use the internet. Summary quality and processing speed depend on the model and hardware. Test it with representative documents and review the results.
 
 ## What leaves the house, per document
 
-The filename, the sender's address if it came by email, the page count, the first four thousand characters of its text, and your list of category names and item labels, which includes people's first names. Nothing else: no images, no whole documents. The item list can be withheld with `SUGGEST_SEND_PEOPLE=false`, at the cost of the "who is this about" prefill.
+The filename, the sender's address if it came by email, the page count, the first four thousand characters of its text, and your list of category names and item labels, which includes people's first names. Harbor sends extracted text rather than the original file or page images. For a short document, that text may include its entire contents. The item list can be withheld with `SUGGEST_SEND_PEOPLE=false`, at the cost of the "who is this about" prefill.
 
 What was sent is reconstructible from the document's text and the recorded model, prompt version and character range; it is not stored twice.
 
 ## What never leaves
 
-The OCR container has no route to the internet under any configuration. Each container that talks outside is allowed one destination and nothing else: the suggester to your chosen provider, the mail fetcher to your IMAP hosts, backup to your backup target. There is no telemetry. See [What runs](/docs/what-runs).
+The OCR worker has no direct internet access. Other services connect as needed: the suggester to your model provider, the mail fetcher to your email hosts, and the backup service to your backup destination. See [What runs](/docs/what-runs) for the service layout.
 
 ## What it costs
 
-At Anthropic's list prices in September 2026, a document is roughly 2,500 tokens in and 200 out:
+Hosted providers charge separately from Harbor. Costs depend on the model, document length, number of requests, and any reprocessing you initiate. Check your provider’s current pricing and usage dashboard before processing a large collection.
 
-| Model | Per document | Backfill of 500 documents | A month of 30 |
-| --- | --- | --- | --- |
-| Claude Opus 5 | about $0.018 | about $4.50 | about $0.55 |
-| Claude Sonnet 5 | about $0.007 | about $1.75 | about $0.21 |
-| Claude Haiku 4.5 | about $0.0035 | about $0.90 | about $0.10 |
-
-Backfills of a whole vault go through the batch API at half price. Cost is not the reason to skip this; exposure is the only real decision, and it is yours rather than the project's.
+A local model avoids hosted API charges but uses your own hardware and electricity. You can also choose **None** and organize documents without AI summaries.
 
 ## Changing the model later
 
-A change of model, or a new release's prompt, never re-reads your documents on its own, because at a hosted provider that spends per document. The suggester tells you how many are behind, and re-reading them is a command you run: see [The harbor command](/docs/harbor-command#after-an-update). Documents whose suggestion you already accepted or rejected are skipped.
+Changing the model or updating a prompt does not automatically regenerate existing suggestions. Reprocessing with a hosted provider may incur charges. To review and reprocess eligible documents, see [The harbor command](/docs/harbor-command#after-an-update). Documents whose suggestion you already accepted or rejected are skipped.

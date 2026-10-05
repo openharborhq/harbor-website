@@ -1,13 +1,13 @@
 export const meta = {
   title: "The harbor command",
-  description: "Everything you do to the box day to day goes through one command the installer leaves behind.",
+  description: "Use the harbor command to check services, manage backups, update releases, and unlock storage.",
 };
 
 ```sh
 harbor status          # what is running
 harbor logs worker     # follow one service
 harbor backup          # back up now
-harbor restore-test    # prove the backup can be read back
+harbor restore-test    # test restoring a backup
 harbor break-glass     # the keys to print and keep
 harbor config          # change a setting
 harbor start           # apply it
@@ -22,14 +22,16 @@ Installs pin to a release tag. `harbor config` sets `HARBOR_IMAGE_TAG` to the re
 
 ## After an update
 
-A release can change what the model is asked about each document. The suggester says at boot how many documents still answer the older question. Re-reading them is never automatic, because with a hosted model it spends per document:
+A release can change what the model is asked about each document. The suggester reports how many documents have suggestions from an earlier prompt version. Re-reading them is never automatic, because with a hosted model it spends per document:
+
+Run these commands from the deployment directory:
 
 ```sh
-docker compose … exec suggester node dist/suggester.js rerun --dry-run   # how many
-docker compose … exec suggester node dist/suggester.js rerun --limit 50  # re-read that many
+docker compose --env-file /data/harbor.env -f compose.yml -f compose.prod.yml exec suggester node dist/suggester.js rerun --dry-run   # how many
+docker compose --env-file /data/harbor.env -f compose.yml -f compose.prod.yml exec suggester node dist/suggester.js rerun --limit 50  # re-read that many
 ```
 
-Documents whose suggestion you already accepted or rejected are skipped; your judgement is the answer.
+Documents whose suggestion you already accepted or rejected are skipped; your previous decisions are preserved.
 
 ## The long form
 

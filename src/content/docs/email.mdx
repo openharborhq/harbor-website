@@ -3,21 +3,21 @@ export const meta = {
   description: "Harbor reads mail the way a mail client does: over IMAP, from your box, with a password you issued it. Two ways to set it up, and the trade each one makes.",
 };
 
-No company's servers ever touch your mailbox, which is why no OAuth sign-in is involved. Your box reads your mail the way Thunderbird does. The choice below is per connection, and both can be used at once.
+Harbor connects from your server to your email provider over IMAP. You provide mailbox credentials rather than signing in through OAuth. Choose a dedicated forwarding mailbox or connect an existing inbox; each connection can use a different approach.
 
 ## A forwarding mailbox
 
-A dedicated address, `vault@` something, that you forward paperwork to. Harbor holds a credential to a throwaway mailbox and nothing else. This is the zero-risk option, the path for a phone's own scanner, and the answer for any provider Harbor cannot connect to directly. You forward each document yourself. Mail Harbor has processed is removed from this mailbox after thirty days.
+A dedicated address, `vault@` something, that you forward paperwork to. Harbor holds a credential to that dedicated mailbox and nothing else. This avoids giving Harbor credentials to your primary inbox. It also works for documents sent from a phone scanner or forwarded from a provider Harbor cannot connect to directly. You forward each document yourself. Mail Harbor has processed is removed from this mailbox after thirty days.
 
 ## A connected inbox
 
-Point Harbor at a mailbox you already use. It first scans the last two months, read only, and shows the result grouped by sender: "142 candidates from 23 senders." You approve senders in bulk, and each approval becomes a standing rule, so the next bill from your electricity company files itself, correctly and silently. Rules are visible and editable; nothing is learned invisibly.
+Point Harbor at a mailbox you already use. It first scans the last two months, read only, and shows the result grouped by sender: "142 candidates from 23 senders." You approve senders in bulk, and each approval becomes a standing rule, so the next bill from your electricity company can be filed automatically under that rule. Rules are visible and editable; nothing is learned invisibly.
 
 Mail from anyone you did not approve is **held** for you to look at, never dropped and never filed on its own. Held mail and candidates are visible only to the person who connected the mailbox, until they file something. See [The household](/docs/household).
 
 <Note label="The trade-off, stated plainly">
 
-An IMAP app password is a broader grant than an OAuth sign-in would be. Gmail's app password can read the whole mailbox and send mail as you. Harbor chooses it for deployment friction, not because it is safer. Two things narrow it: the default *folder* mode reads only one folder, which a filter you import into Gmail fills; and a forwarding mailbox holds no credential to your real inbox at all. The setup page says this at the point of choice.
+An app password may grant access beyond the folder you ask Harbor to read. Selecting a folder limits Harbor’s configured behavior; it does not necessarily limit what the credential permits. Use a dedicated forwarding mailbox if you do not want Harbor to hold credentials for your primary inbox. Revoke the credential at your email provider when you remove a connection.
 
 </Note>
 
@@ -37,7 +37,7 @@ Plaintext IMAP is refused, with no override.
 
 ## What Harbor never does to your mailbox
 
-Nothing is marked read, moved, or deleted, unless you turn that on per connection. Mail is deleted after thirty days only from a forwarding mailbox the vault owns. Held mail is not copied into the vault or its backups; Harbor keeps the envelope and fetches the body when you open it.
+For connected inboxes, Harbor does not mark mail read, move it, or delete it unless you enable that behavior for the connection. Mail is deleted after thirty days only from a forwarding mailbox the vault owns. Held mail is not copied into the vault or its backups; Harbor keeps the envelope and fetches the body when you open it.
 
 ## Invoices with no attachment
 

@@ -15,7 +15,7 @@ export const GROUPS: FeatureGroup[] = [
     number: "01",
     label: "CAPTURE",
     title: "File upload and email monitoring",
-    lead: "Connect the mailbox it already comes to, or drop a decade of scans in at once. Either way it lands read.",
+    lead: "Connect a mailbox, forward email, or upload files. Harbor extracts readable text and brings new documents into your Inbox.",
     items: [
       {
         icon: (
@@ -24,8 +24,8 @@ export const GROUPS: FeatureGroup[] = [
             <path d="M2.5 5.5L11 12l8.5-6.5" strokeLinejoin="round" />
           </>
         ),
-        title: "Connect your Gmail",
-        copy: "Point Harbor at a label or the whole mailbox. It takes the bills, the policies and the school letters, and leaves the rest alone.",
+        title: "Connect your inbox",
+        copy: "Connect a supported mailbox over IMAP. Approve senders for automatic filing and review mail from other senders.",
       },
       {
         icon: (
@@ -35,12 +35,12 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "One address for the household",
-        copy: "Forward anything to your vault’s own address. It is waiting, already read and filed, when you get home.",
+        copy: "Set up a dedicated mailbox for forwarded documents. Harbor collects them so you can review and file them in one place.",
       },
       {
         icon: <path d="M11 15.5V3.5M6.5 8L11 3.5 15.5 8M3.5 13.5v4a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-4" strokeLinecap="round" strokeLinejoin="round" />,
-        title: "Upload anything",
-        copy: "Harbor reads every common file format, converts what it takes in to PDF, and analyses it for what comes next.",
+        title: "Upload files and scans",
+        copy: "Extract text from PDFs, scans, and photos, or upload a ZIP of documents. Word and Excel files can be stored, but their contents are not searchable.",
       },
       {
         icon: (
@@ -50,7 +50,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "OCR text recognition",
-        copy: "Crooked phone shots and forty-page contracts alike are read by the OCR, so every word on every page can be found later.",
+        copy: "Harbor extracts text from scans and photos using optical character recognition. Search the extracted text without opening each file.",
       },
     ],
   },
@@ -59,7 +59,7 @@ export const GROUPS: FeatureGroup[] = [
     number: "02",
     label: "ANALYZE",
     title: "File analysis and summarization",
-    lead: "Every document is summarized, tagged from its own words, and attached to the person or the thing it belongs to. You confirm with one click.",
+    lead: "Connect a language model to get summaries and suggested categories, tags, people, and dates. Review the suggestions and correct them before accepting.",
     items: [
       {
         icon: (
@@ -68,8 +68,8 @@ export const GROUPS: FeatureGroup[] = [
             <path d="M6.8 12.5h8M6.8 15.5h5" strokeLinecap="round" />
           </>
         ),
-        title: "Plain-English summaries",
-        copy: "A few lines under every document saying what it is, what it covers, what it costs and when it renews.",
+        title: "Document summaries",
+        copy: "See a short summary of a document and its key details. Check amounts and dates against the original before acting on them.",
       },
       {
         icon: (
@@ -79,7 +79,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "Tags from the document itself",
-        copy: "The insurer, the address, the policy number, the year, tax-deductible. A filter finds what a folder never could.",
+        copy: "Use tags for details such as the insurer, year, or address. Harbor suggests existing tags; you can add or change them.",
       },
       {
         icon: <path d="M3.5 6.5h6v6h-6z M12.5 6.5h6v6h-6z M3.5 15.5h6v3h-6z M12.5 15.5h6v3h-6z" strokeLinejoin="round" />,
@@ -95,7 +95,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "People and things",
-        copy: "Papers belong to people, and to things. The house, the car, the joint account, the dog. Open any of them and the whole file is there.",
+        copy: "Link records to household members, properties, vehicles, and accounts. Open an item to see the documents associated with it.",
       },
     ],
   },
@@ -103,8 +103,8 @@ export const GROUPS: FeatureGroup[] = [
     id: "find",
     number: "03",
     label: "FIND",
-    title: "Plain text search you wish you had IRL",
-    lead: "Not the filename. The insurer, the year, the half sentence you remember from the middle of page three.",
+    title: "Search inside your documents",
+    lead: "Find a document by its title, tags, notes, or extracted text—even when you cannot remember the filename.",
     items: [
       {
         icon: (
@@ -113,8 +113,8 @@ export const GROUPS: FeatureGroup[] = [
             <path d="M14.8 14.8L19 19" strokeLinecap="round" />
           </>
         ),
-        title: "Full text search",
-        copy: "Every word of every page, scans included. The matching line shows in the result, before you open anything.",
+        title: "Full-text search",
+        copy: "Search text extracted from documents, including scans. Results show the matching text to help you find the right record.",
       },
       {
         icon: (
@@ -123,13 +123,13 @@ export const GROUPS: FeatureGroup[] = [
             <path d="M3.5 11h15M11 3.5c2 2.2 3 4.8 3 7.5s-1 5.3-3 7.5c-2-2.2-3-4.8-3-7.5s1-5.3 3-7.5z" strokeLinejoin="round" />
           </>
         ),
-        title: "Works in your languages",
-        copy: "A German lease and a Spanish invoice are indexed in their own language, and the summary comes back in yours.",
+        title: "Language-aware search",
+        copy: "Configure OCR for the languages in your documents. Search supports English and German word forms, and a connected model can provide translated summaries.",
       },
       {
         icon: <path d="M3.5 5h15l-5.8 6.6v5.2l-3.4 2v-7.2z" strokeLinejoin="round" />,
         title: "Narrow it to one person or one thing",
-        copy: "Filter by person, property, category, tag or date. Open the car and every paper the car has ever had is there.",
+        copy: "Filter by person, property, category, tag, or date. Open a vehicle to see its linked receipts, policies, and other records.",
       },
       {
         icon: (
@@ -140,16 +140,16 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "The original, plus what it means",
-        copy: "Every page kept exactly as it arrived, beside its summary, tags, notes, earlier versions and a record of who changed what.",
+        copy: "View the original document alongside its summary, tags, notes, versions, and change history.",
       },
     ],
   },
   {
     id: "get-notified",
     number: "04",
-    label: "GET NOTIFIED",
-    title: "Get notifications when it matters",
-    lead: "A date inside a document is a date Harbor keeps. The bill, the renewal, the passport that runs out the week before the holiday.",
+    label: "TRACK DEADLINES",
+    title: "Keep track of important dates",
+    lead: "Review upcoming expirations and tasks in Harbor. Reminders stay in the app; there is no email digest or calendar feed.",
     items: [
       {
         icon: (
@@ -159,7 +159,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "Invoices and bills that are due",
-        copy: "A due date and an amount in a document become a to-do with both attached, linked back to the page they came from.",
+        copy: "Accept a suggested payment task with its due date and amount, or add one yourself. Each linked task leads back to its document.",
       },
       {
         icon: (
@@ -169,7 +169,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "Passports, licences and ID cards",
-        copy: "Expiry dates are read off the document itself. Everyone in the household shows their next date on the home page.",
+        copy: "Review expiration dates suggested from your documents. Home shows upcoming expirations for the people and things in your vault.",
       },
       {
         icon: (
@@ -178,8 +178,8 @@ export const GROUPS: FeatureGroup[] = [
             <path d="M13.4 8.2c-.6-.7-1.5-1.1-2.4-1.1-1.7 0-3.1 1.3-3.1 2.9s1.4 2.9 3.1 2.9 3.1 1.3 3.1 2.9M11 5.6v10.8" strokeLinecap="round" />
           </>
         ),
-        title: "Amounts in any currency",
-        copy: "A bill in euros stays in euros. Each to-do keeps the currency it was written in, and the totals add up per currency.",
+        title: "Keep payment details together",
+        copy: "Keep a payment amount and its currency with the task, so the details stay alongside the deadline.",
       },
       {
         icon: (
@@ -190,7 +190,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "One list, in the order it is due",
-        copy: "Today, this week, later. Tick it off and it stays on the record, because someone will ask when it was paid.",
+        copy: "See overdue tasks, what is due today, and what comes next. Completed tasks remain in the record so you can check them later.",
       },
     ],
   },
@@ -199,7 +199,7 @@ export const GROUPS: FeatureGroup[] = [
     number: "05",
     label: "SHARE",
     title: "Secure sharing on your terms",
-    lead: "A vault only one person can open is a single point of failure. Harbor is built for a household, and for the adviser who needs fourteen documents in March.",
+    lead: "Invite household members to your vault or share selected documents with someone outside it, such as your accountant.",
     items: [
       {
         icon: (
@@ -210,7 +210,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "The whole household",
-        copy: "Everyone who should be able to find the policy has their own way in, from their own phone, without asking you for it.",
+        copy: "Give household members their own sign-in. Everyone you invite can see every filed document; use a shared link to send only selected records.",
       },
       {
         icon: (
@@ -220,7 +220,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "Links that expire on their own",
-        copy: "Send the tax adviser exactly the documents they need. You set whether they can download, and when the link dies.",
+        copy: "Send selected documents through a shared link. Set an expiration date and download limit, or revoke access early.",
       },
       {
         icon: (
@@ -231,7 +231,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "Break-glass access",
-        copy: "A sealed envelope for the person who will need all of it if you cannot be asked. Printed once, opened once, and you are told when it is.",
+        copy: "Keep a printed recovery sheet somewhere safe, separate from the server. It holds the keys and backup details needed to recover the vault.",
       },
       {
         icon: (
@@ -241,7 +241,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "A record of who did what",
-        copy: "Every upload, edit, share and opened link is written down, so the question of who changed the policy has an answer.",
+        copy: "Review document changes and sharing activity to see how records have been updated and accessed.",
       },
     ],
   },
@@ -249,13 +249,13 @@ export const GROUPS: FeatureGroup[] = [
     id: "open-source",
     number: "06",
     label: "OPEN SOURCE",
-    title: "Your data. Your Harbor. Self-hosted all the way.",
-    lead: "No account on anyone else’s server, no tier to upgrade, and no way for us to read a single page of it. If you stop using Harbor tomorrow, the files are still plain files on your disk.",
+    title: "An open-source vault you control",
+    lead: "Run Harbor on hardware or hosting you control. Choose your backup destination and AI provider, and keep the recovery keys for your encrypted records.",
     items: [
       {
         icon: <path d="M8 14.5L4.5 11 8 7.5M14 7.5L17.5 11 14 14.5M12.4 5.4l-2.8 11.2" strokeLinecap="round" strokeLinejoin="round" />,
         title: "Open source, AGPL-3.0",
-        copy: "Every line of code, every issue and the roadmap are public. Read it before you trust it, fork it if we disappear.",
+        copy: "Read the source, follow development, and contribute changes. Harbor is available under the AGPL-3.0 license.",
       },
       {
         icon: (
@@ -265,7 +265,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "Fully self-hostable",
-        copy: "One compose file and five containers on a mini-PC, a NAS, an old laptop or a small VPS with your name on the invoice.",
+        copy: "Run Harbor on a Linux machine with Docker and an encrypted data volume. The setup guide explains the hardware and storage requirements.",
       },
       {
         icon: (
@@ -275,7 +275,7 @@ export const GROUPS: FeatureGroup[] = [
           </>
         ),
         title: "Backups you have actually restored",
-        copy: "Encrypted snapshots on a schedule to a second disk or a bucket you own, plus a restore drill Harbor reminds you to run.",
+        copy: "Configure encrypted nightly backups to Backblaze B2, an SFTP server, or a second disk. Harbor runs a monthly restore test and shows the result in Settings.",
       },
       {
         icon: (
@@ -284,8 +284,8 @@ export const GROUPS: FeatureGroup[] = [
             <path d="M4.5 9.5h13v9h-13z" strokeLinejoin="round" />
           </>
         ),
-        title: "Nothing phones home",
-        copy: "No telemetry, no vendor account. The language model that writes the summaries is your choice: one on your own box, or a hosted API only if you switch it on.",
+        title: "Choose your AI provider",
+        copy: "Use a local model or connect a hosted provider, which receives document text for suggestions. Harbor also works without AI summaries.",
       },
     ],
   },

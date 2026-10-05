@@ -1,24 +1,24 @@
 export const meta = {
   title: "Harbor documentation",
-  description: "Harbor is a self-hosted document vault for a household. These pages take you from a blank Linux box to a vault your family uses every day, and back from a dead disk.",
+  description: "Harbor is a self-hosted document vault for a household. Learn how to install Harbor, organize household records, and recover from a backup.",
 };
 
-Harbor runs as a small stack of containers on one Linux machine, with everything it stores on one encrypted volume. Your household reaches it over a Tailscale tailnet, your own network, or a VPN you already run; Tailscale is the easiest path, not a requirement. Paperwork gets in by upload or by email. Harbor reads it, makes every word searchable, proposes where it belongs and who it is about, and keeps the deadlines it contains on a short list. Nightly encrypted backups go wherever you point them, and once a month Harbor proves it can restore one.
+Harbor runs as a small stack of containers on one Linux machine, with everything it stores on one encrypted volume. Your household reaches it over a Tailscale tailnet, your own network, or a VPN you already run; Tailscale is the easiest path, not a requirement. Paperwork gets in by upload or by email. Harbor extracts searchable text and, with a language model configured, suggests how to organize documents and track their dates. Configure nightly encrypted backups and review the monthly restore-test results in Settings.
 
 ## Start here
 
-1. [Prerequisites](/docs/prerequisites): the box, the disk, and the accounts you need. Five minutes.
-2. [Install](/docs/install): one script, three questions, about ten minutes plus pulling images.
-3. [First run](/docs/first-run): create the first owner and prove the vault works.
+1. [Prerequisites](/docs/prerequisites): prepare your Linux machine, encrypted storage, and access method.
+2. [Install](/docs/install): run the installer once the prerequisites are ready.
+3. [First run](/docs/first-run): create your account, add a test document, and check backups.
 
-Then, before you trust it with anything: [Backups](/docs/backups) and [The break-glass envelope](/docs/break-glass).
+Before adding important records, configure [Backups](/docs/backups) and [The break-glass envelope](/docs/break-glass).
 
 ## What you are building
 
 <BoxDiagram />
 
-Two of those containers are worth knowing by name. The **worker** is the only process that ever opens a document, and it has no route to the internet at all. The **suggester** is the one that talks to a language model, and it sends text, never files. [The language model](/docs/language-model) says exactly what it sends, and [What runs](/docs/what-runs) describes every container.
+Two of those containers are worth knowing by name. The **worker** extracts text and creates previews, without direct internet access. The **suggester** is the one that talks to a language model, and it sends text, never files. [The language model](/docs/language-model) says exactly what it sends, and [What runs](/docs/what-runs) describes every container.
 
 ## Where these pages come from
 
-They are written from the repository's own docs: [deploy.md](https://github.com/openharborhq/harbor/blob/main/docs/deploy.md), [restore.md](https://github.com/openharborhq/harbor/blob/main/docs/restore.md), and the [design spec](https://github.com/openharborhq/harbor/blob/main/docs/spec/00-overview.md). Where they disagree, the repository is right and this page is behind.
+They are written from the repository's own docs: [deploy.md](https://github.com/openharborhq/harbor/blob/main/docs/deploy.md), [restore.md](https://github.com/openharborhq/harbor/blob/main/docs/restore.md), and the [design spec](https://github.com/openharborhq/harbor/blob/main/docs/spec/00-overview.md). When troubleshooting a version-specific issue, use the repository documentation for the release you have installed.

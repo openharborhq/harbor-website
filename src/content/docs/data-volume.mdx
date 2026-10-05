@@ -9,7 +9,13 @@ The data directory holds the documents, the database, the queues and the secrets
 
 ## Format the volume
 
-These steps use LUKS, which every Debian install ships with. Replace the device with your free partition or second disk. Everything runs as root.
+These steps use LUKS on Debian and require root access. Identify an unused partition or disk before continuing. The device path below is an example, not a device to select automatically.
+
+<Note label="Formatting erases the selected volume">
+
+The `cryptsetup luksFormat` and `mkfs.ext4` commands erase existing data on the selected volume. Confirm the device path and back up anything you need before running them. Do not select your system partition.
+
+</Note>
 
 ```sh
 apt update && apt install -y cryptsetup
@@ -28,12 +34,12 @@ Reboot once and confirm the machine asks for the passphrase and comes up with `/
 
 - **A second disk is simpler than a partition.** If the machine has a spare NVMe or SATA slot, give the vault a disk of its own and you never have to resize anything.
 - **ext4 is enough.** Harbor stores documents as files and the database as files; there is nothing here that needs a fancier filesystem.
-- **Size for the scans, not the PDFs.** Born-digital PDFs are small. Phone photos and scans of long contracts are not. 100 GB holds a household's paperwork for years; a decade of scans in one ZIP may want more.
+- **Size for the scans, not the PDFs.** Born-digital PDFs are small. Phone photos and scans of long contracts are not. Storage needs depend on the number, resolution, and size of your documents. Large scan collections may need more than 100 GB.
 - **Leave the system disk alone.** The operating system and Docker stay on the unencrypted system disk, which is what lets the box boot far enough to ask for the passphrase.
 
 ## A power cut
 
-A power cut means the vault is down until someone types the passphrase. That is the trade for a disk that is useless to a burglar. A small UPS is strongly recommended.
+A power cut means the vault is down until someone types the passphrase. Plan how you will unlock it after an outage. An uninterruptible power supply can help avoid downtime during short interruptions.
 
 When power returns the box comes back with SSH working, but the vault stays closed until `harbor unlock` and the passphrase. While it is closed the mount point is write-protected, so a container that starts early fails loudly instead of quietly building a second, empty database on the system disk.
 
