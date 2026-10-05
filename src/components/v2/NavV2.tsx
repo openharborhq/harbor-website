@@ -5,7 +5,7 @@ import { GITHUB } from "@/lib/github";
 import { Wordmark } from "../Logo";
 import { MobileMenu } from "./MobileMenu";
 import { GitHubIcon } from "./parts";
-import { DOCS, FEATURES, HOME, PRICING } from "./routes";
+import { DOCS, FEATURES, HOME, PRICING, doc } from "./routes";
 
 /*
  * The v2 bar: brand and links together on the left, account on the right.
@@ -62,9 +62,9 @@ export function NavV2({ pricingEnabled = siteConfig.pricingEnabled }: { pricingE
             <span className="hidden font-mono text-row font-medium leading-[18px] sm:block">GitHub</span>
           </TrackedLink>
           <TrackedLink
-            href={`${GITHUB}#install`}
-            analyticsEvent="github_repository_opened"
-            analyticsProperties={{ placement: "header_get_started" }}
+            href={doc("install")}
+            analyticsEvent="installation_guide_opened"
+            analyticsProperties={{ placement: "header" }}
             className="rounded-pill bg-text px-[22px] py-[12px] text-body font-semibold leading-[20px] tracking-[-0.01em] text-ground"
           >
             Get started

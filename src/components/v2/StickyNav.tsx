@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
+import { TrackedLink } from "@/components/TrackedLink";
 import { useEffect, useRef, useState } from "react";
 import { GITHUB } from "@/lib/github";
 import { Wordmark } from "../Logo";
 import { MobileMenu } from "./MobileMenu";
-import { DOCS, FEATURES, HOME, PRICING } from "./routes";
+import { DOCS, FEATURES, HOME, PRICING, doc } from "./routes";
 
 /*
  * The bar that arrives once the hero is behind you.
@@ -105,12 +106,14 @@ export function StickyNav({ sentinelClassName = "h-px w-full", pricingEnabled = 
           </svg>
         </Link>
 
-        <Link
-          href={`${GITHUB}#install`}
+        <TrackedLink
+          href={doc("install")}
+          analyticsEvent="installation_guide_opened"
+          analyticsProperties={{ placement: "sticky_nav" }}
           className="hidden rounded-pill bg-text px-[14px] py-[6px] md:block text-small font-semibold leading-[16px] tracking-[-0.01em] text-ground transition-[filter] duration-150 hover:brightness-[1.15]"
         >
           Get started
-        </Link>
+        </TrackedLink>
       </div>
     </>
   );
