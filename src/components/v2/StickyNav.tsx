@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { siteConfig } from "@/lib/site-config";
 import { useEffect, useRef, useState } from "react";
 import { GITHUB } from "@/lib/github";
 import { Wordmark } from "../Logo";
-import { DOCS, FEATURES, HOME } from "./routes";
+import { DOCS, FEATURES, HOME, PRICING } from "./routes";
 
 /*
  * The bar that arrives once the hero is behind you.
@@ -38,7 +39,7 @@ const LINKS = [
   { label: "Docs", href: DOCS },
 ];
 
-export function StickyNav({ sentinelClassName = "h-px w-full" }: { sentinelClassName?: string } = {}) {
+export function StickyNav({ sentinelClassName = "h-px w-full", pricingEnabled = siteConfig.pricingEnabled }: { sentinelClassName?: string; pricingEnabled?: boolean } = {}) {
   const sentinel = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 
@@ -80,7 +81,7 @@ export function StickyNav({ sentinelClassName = "h-px w-full" }: { sentinelClass
         </Link>
 
         <nav className="hidden items-center gap-[16px] md:flex" aria-label="Primary">
-          {LINKS.map((l) => (
+          {[...LINKS, ...(pricingEnabled ? [{ label: "Pricing", href: PRICING }] : [])].map((l) => (
             <Link
               key={l.label}
               href={l.href}

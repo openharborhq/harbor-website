@@ -46,6 +46,15 @@ export function SectionHead({
   );
 }
 
+/**
+ * The site's one button size, filled or hairline. Here rather than in HeroCta because a module
+ * marked "use client" hands a server component a reference, not the string, so a server page
+ * importing them from there would get no classes at all.
+ */
+export const PILL = "rounded-pill px-[24px] py-[12px] text-body font-semibold leading-body tracking-[-0.01em]";
+export const PRIMARY = `${PILL} bg-accent text-ground`;
+export const SECONDARY = `${PILL} border border-border-strong bg-ground text-text`;
+
 export function Arrow({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" className="shrink-0" aria-hidden="true">

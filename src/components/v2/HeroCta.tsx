@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { TrackedLink } from "@/components/TrackedLink";
-import { Arrow, GitHubIcon } from "./parts";
+import { Arrow, GitHubIcon, PRIMARY, SECONDARY } from "./parts";
 import { doc } from "./routes";
 
 const MotionLink = motion.create(TrackedLink);
@@ -21,10 +21,6 @@ const LIFT = { rest: { scale: 1 }, hover: { scale: 1.02 }, press: { scale: 0.99 
    pair of numbers serves both buttons. */
 const SHIFT = { rest: { x: 0 }, hover: { x: -12.5 }, press: { x: -12.5 } };
 const REVEAL = { rest: { opacity: 0, x: -14 }, hover: { opacity: 1, x: 0 }, press: { opacity: 1, x: 0 } };
-
-const PILL = "rounded-pill px-[24px] py-[12px] text-body font-semibold leading-body tracking-[-0.01em]";
-const PRIMARY = `${PILL} bg-accent text-ground`;
-const SECONDARY = `${PILL} border border-border-strong bg-ground text-text`;
 
 /*
  * The hero's two buttons, and the only client island above the fold.

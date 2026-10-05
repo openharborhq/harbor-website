@@ -29,18 +29,28 @@ const QUESTIONS: { q: string; a: string }[] = [
   },
 ];
 
-export function Faq() {
+/**
+ * The pricing page asks its own questions in the same shape, so the words are props and the
+ * home page's are the defaults.
+ */
+export function Faq({
+  title = "A few things to know before you start",
+  questions = QUESTIONS,
+}: {
+  title?: string;
+  questions?: { q: string; a: string }[];
+} = {}) {
   return (
     <section id="faq" className="flex flex-col items-center gap-[56px] bg-ground lane py-[60px] md:py-[88px]">
       <div className="flex w-full flex-col items-center gap-[18px]">
         <span className="font-mono text-label font-medium leading-[14px] tracking-mono text-faint">FAQ</span>
         <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text">
-          A few things to know before you start
+          {title}
         </h2>
       </div>
 
       <StaggerGroup as="dl" className="flex w-full max-w-[860px] flex-col">
-        {QUESTIONS.map((item, i) => (
+        {questions.map((item, i) => (
           <StaggerItem
             key={item.q}
             className={`flex flex-col gap-[10px] py-[28px] ${i > 0 ? "border-t border-border" : "pt-0"}`}

@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { siteConfig } from "@/lib/site-config";
 import { TrackedLink } from "@/components/TrackedLink";
 import { GITHUB } from "@/lib/github";
 import { Wordmark } from "../Logo";
 import { GitHubIcon } from "./parts";
-import { DOCS, FEATURES, HOME } from "./routes";
+import { DOCS, FEATURES, HOME, PRICING } from "./routes";
 
 /*
  * The v2 bar: brand and links together on the left, account on the right.
@@ -21,7 +22,7 @@ const LINKS = [
   { label: "Docs", href: DOCS },
 ];
 
-export function NavV2() {
+export function NavV2({ pricingEnabled = siteConfig.pricingEnabled }: { pricingEnabled?: boolean } = {}) {
   return (
     <header className="flex items-center justify-center bg-ground px-[24px] py-[16px] md:px-[60px]">
       <div className="flex w-full items-center justify-between gap-[24px]">
@@ -30,7 +31,7 @@ export function NavV2() {
             <Wordmark />
           </Link>
           <nav className="hidden items-center gap-[32px] md:flex" aria-label="Primary">
-            {LINKS.map((l) => (
+            {[...LINKS, ...(pricingEnabled ? [{ label: "Pricing", href: PRICING }] : [])].map((l) => (
               <Link
                 key={l.label}
                 href={l.href}

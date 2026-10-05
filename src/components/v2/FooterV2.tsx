@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { siteConfig } from "@/lib/site-config";
 import { getLatestRelease, GITHUB, REPO } from "@/lib/github";
 import { Wordmark } from "../Logo";
-import { HOME, doc } from "./routes";
+import { HOME, PRICING, doc } from "./routes";
 
 /*
  * The v2 footer. Same columns as the live one, plus the theme control, which moved out of the
@@ -43,7 +44,7 @@ const COLUMNS: { head: string; width: string; links: { label: string; href: stri
   },
 ];
 
-export async function FooterV2() {
+export async function FooterV2({ pricingEnabled = siteConfig.pricingEnabled }: { pricingEnabled?: boolean } = {}) {
   const release = await getLatestRelease();
   const year = new Date().getFullYear();
 
@@ -62,7 +63,7 @@ export async function FooterV2() {
               <span className="pb-[4px] font-mono text-label font-medium leading-[14px] tracking-mono text-faint">
                 {c.head}
               </span>
-              {c.links.map((l) => (
+              {[...c.links, ...(pricingEnabled && c.head === "PRODUCT" ? [{ label: "Pricing", href: PRICING }] : [])].map((l) => (
                 <Link key={l.label} href={l.href} className="self-start text-body leading-[18px] text-text hover:text-accent">
                   {l.label}
                 </Link>

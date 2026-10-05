@@ -10,5 +10,6 @@
 export const HOME = "/";
 export const DOCS = "/docs";
 export const FEATURES = "/features";
+export const PRICING = "/pricing";
 
 export const doc = (path: string) => `${DOCS}/${path}`;
