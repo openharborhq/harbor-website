@@ -1,0 +1,70 @@
+export const meta = {
+  title: "Another cloud provider",
+  description: "Harbor on any cloud server that runs Debian: Vultr, Akamai (Linode), OVHcloud, Scaleway, AWS Lightsail and others.",
+};
+
+Every cloud provider sells the same three things under different names: a server, an extra disk you attach to it, and a firewall in front of it. That is all Harbor needs. The [DigitalOcean](/docs/install-digitalocean) and [Hetzner Cloud](/docs/install-hetzner) guides walk through two of them screen by screen; this one works for the rest.
+
+<Note label="What you take on">
+
+The documents are encrypted at rest, so a copied disk or a leaked snapshot reads as noise. But the server unlocks the volume to work with it, and the provider runs that machine. If that matters for your paperwork, [your own hardware](/docs/install-at-home) keeps all of it in your house.
+
+</Note>
+
+## What things are called
+
+| Provider | The server | The extra disk | The firewall |
+| --- | --- | --- | --- |
+| Vultr | Cloud Compute instance | Block Storage | Firewall |
+| Akamai (Linode) | Linode | Block Storage Volume | Cloud Firewall |
+| OVHcloud | VPS or Public Cloud instance | Additional disk, or Block Storage on Public Cloud | Network firewall |
+| Scaleway | Instance | Block Storage volume | Security group |
+| AWS Lightsail | Instance | Block storage disk | Networking tab of the instance |
+
+## 1. Create the server
+
+- **Image:** Debian 12.
+- **Size:** at least 2 vCPUs and 4 GB of memory. x86 and Arm both work.
+- **Network:** a public IPv4 address. Harbor's images come from GitHub's container registry, which cannot be reached over IPv6 alone.
+- **Access:** your SSH key.
+
+## 2. Attach an extra disk for the documents
+
+100 GB or more, attached to the server. If the provider offers to format or mount it, decline: the Harbor installer encrypts and formats it itself, and would erase anything put there first.
+
+**No extra disk on your plan?** Some small plans cannot attach one. The installer then asks whether to continue with the documents on the system disk, unencrypted. That works, but a copy of that disk is a readable copy of your paperwork. A plan with an attachable disk is worth it.
+
+## 3. Decide how you will reach it
+
+**At your own domain, over HTTPS.** Point an **A record** for your domain at the server's IPv4 address, and allow inbound TCP **22**, **80** and **443** in the firewall.
+
+**Privately, through Tailscale.** Allow inbound TCP **22** only.
+
+Do not choose the installer's third option, *on your own network*, on a cloud server: the server's own address is on the internet, so it would serve the vault over plain HTTP to anyone.
+
+## 4. Run the installer
+
+Over SSH:
+
+```sh
+curl -fsSL https://get.docker.com | sudo sh
+curl -fsSLO https://raw.githubusercontent.com/openharborhq/harbor/main/install.sh
+less install.sh
+sudo sh install.sh
+```
+
+What to answer:
+
+- **Where should that live?** Press enter for `/data`.
+- **How should you reach Harbor?** `2` for your domain, or `1` for Tailscale.
+- **Backup repository.** Ideally somewhere other than this provider, or leave it empty for now.
+- **Set up an encrypted volume now?** Yes. Pick the disk whose size matches the one you attached; the server's own disk is not offered. Type its name to confirm.
+- **How should it unlock after a reboot?** `1`, you unlock it.
+
+The volume's passphrase is written to `/root/harbor-luks-passphrase`. Copy it onto [the break-glass envelope](/docs/break-glass), then delete that file.
+
+## 5. Create your account
+
+On the domain path, open the setup link the installer printed, `https://your-domain/setup?token=…`. The vault creates its first account only through that link. On the Tailscale path, open the tailnet address it printed. Then continue with [First run](/docs/first-run).
+
+After the server restarts, the vault stays closed until you SSH in and run `sudo harbor unlock`. The provider's web console works as a keyboard and screen if SSH does not answer.

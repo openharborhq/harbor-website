@@ -3,7 +3,7 @@
  * talk to which outside thing. Drawn in HTML so it reads as text as well as it looks.
  */
 const OUTSIDE = [
-  { id: "you", label: "Your laptop or phone", via: "over your tailnet, your own network, or a VPN" },
+  { id: "you", label: "Your laptop or phone", via: "through Tailscale, at your domain, or on your own network" },
   { id: "mail", label: "Your mailbox", via: "IMAP, read only" },
   { id: "model", label: "The model you chose", via: "text of each document" },
   { id: "backup", label: "Your backup target", via: "encrypted snapshots, nightly" },
@@ -11,6 +11,7 @@ const OUTSIDE = [
 
 const CONTAINERS: { name: string; does: string; talks: string | null }[] = [
   { name: "tailscale", does: "optional: serves the app on your tailnet", talks: "you" },
+  { name: "caddy", does: "optional: serves the app at your domain, over HTTPS", talks: "you" },
   { name: "web", does: "the app", talks: null },
   { name: "api", does: "HTTP API, sessions, migrations", talks: null },
   { name: "worker", does: "OCR and text extraction; the only process that opens a document", talks: "none" },
@@ -56,7 +57,8 @@ export function BoxDiagram() {
         </p>
       </div>
       <figcaption className="doc-box-legend">
-        Nothing on the box listens on the public internet. Each container that talks outside talks to one thing.
+        Nothing on the box listens on the public internet unless you serve it at a domain, and then only Caddy does. Each
+        container that talks outside talks to one thing.
       </figcaption>
     </figure>
   );

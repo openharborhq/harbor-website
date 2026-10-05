@@ -27,7 +27,18 @@ const page = (slug: string, title: string): NavPage => ({ slug, title, href: hre
 export const NAV: NavSection[] = [
   {
     section: "Getting started",
-    pages: [page("overview", "Overview"), page("prerequisites", "Prerequisites"), page("install", "Install"), page("first-run", "First run")],
+    pages: [page("overview", "Overview"), page("install", "Install"), page("first-run", "First run")],
+  },
+  {
+    section: "Where it runs",
+    pages: [
+      page("install-at-home", "Your own hardware"),
+      page("install-digitalocean", "DigitalOcean"),
+      page("install-hetzner", "Hetzner Cloud"),
+      page("install-vps", "Another cloud provider"),
+      page("install-existing-server", "A server you already run"),
+      page("install-trial", "Try it on your computer"),
+    ],
   },
   {
     section: "Set up",
@@ -57,6 +68,7 @@ export const NAV: NavSection[] = [
   {
     section: "Reference",
     pages: [
+      page("installer", "The installer"),
       page("harbor-command", "The harbor command"),
       page("configuration", "Configuration"),
       page("language-model", "The language model"),

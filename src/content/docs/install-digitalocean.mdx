@@ -1,0 +1,100 @@
+export const meta = {
+  title: "DigitalOcean",
+  description: "Harbor on a DigitalOcean Droplet, with its data on an encrypted Volume, reached at your own domain or through Tailscale.",
+};
+
+A Droplet runs Harbor, and a DigitalOcean Volume, a separate disk you attach to it, holds the documents, encrypted. No hardware to buy, and you can reach it from anywhere.
+
+<Note label="What you take on">
+
+The documents are encrypted at rest, so a copied disk or a leaked snapshot reads as noise. But the Droplet unlocks the volume to work with it, and DigitalOcean runs that machine. If that matters for your paperwork, [your own hardware](/docs/install-at-home) keeps all of it in your house.
+
+</Note>
+
+## What you need
+
+- A DigitalOcean account.
+- **For the internet path:** a domain you can add a DNS record to, such as `harbor.example.com`. **For the Tailscale path:** a Tailscale account instead.
+- Somewhere for backups to go, ideally not DigitalOcean: a Backblaze B2 bucket or an SFTP host. See [Backups](/docs/backups).
+
+## 1. Create the Droplet
+
+In the control panel, **Create → Droplets**:
+
+- **Region:** near you.
+- **Image:** Debian 12 x64.
+- **Size:** at least 2 vCPUs and 4 GB of memory.
+- **Authentication:** an SSH key.
+
+## 2. Add a Volume for the documents
+
+**Create → Volumes**, attached to the Droplet:
+
+- **Size:** 100 GB or more. Size for scans, not PDFs.
+- **Configuration:** choose **Manually Format & Mount**. The Harbor installer encrypts and formats the volume itself; anything DigitalOcean puts on it would be erased.
+
+DigitalOcean's Droplet backups do not include Volumes. Harbor's own nightly backups are what you restore from.
+
+## 3. Decide how you will reach it
+
+Pick one now; the rest of this step depends on it.
+
+**At your own domain, over HTTPS.** Anyone with a browser, no app needed.
+
+1. Create an **A record** for your domain pointing at the Droplet's IPv4 address, at your domain registrar or under **Networking → Domains**.
+2. Create a **Cloud Firewall** for the Droplet, allowing inbound TCP **22** (SSH), **80** and **443**. Port 80 is only used to obtain and renew the certificate.
+
+**Privately, through Tailscale.** Only your own devices, nothing open to the internet. Create a Cloud Firewall that allows inbound TCP **22** only, so you can still reach the Droplet over SSH.
+
+<Note label="Not on a cloud server">
+
+The installer's third choice, *on your own network*, publishes the vault on the machine's own address, and a Droplet's own address is on the internet. It would serve the vault over plain HTTP to anyone. On a cloud server, choose the domain or Tailscale.
+
+</Note>
+
+## 4. Run the installer
+
+Over SSH, as root:
+
+```sh
+ssh root@your-droplet-ip
+curl -fsSL https://get.docker.com | sh
+curl -fsSLO https://raw.githubusercontent.com/openharborhq/harbor/main/install.sh
+less install.sh
+sh install.sh
+```
+
+What to answer:
+
+- **Where should that live?** Press enter for `/data`.
+- **How should you reach Harbor?** `2` for your domain, then type the domain. Or `1` for Tailscale; the installer can install it and sign the Droplet in.
+- **Backup repository.** Where backups go, or leave it empty for now.
+- **Set up an encrypted volume now?** Yes. Pick the disk whose size matches your Volume, usually `/dev/sda`. The Droplet's own disk is not offered. Type its name to confirm.
+- **How should it unlock after a reboot?** `1`, you unlock it. Droplets have no TPM, and nobody is at a keyboard to type a passphrase at boot.
+
+The volume's passphrase is written to `/root/harbor-luks-passphrase`. Copy it onto [the break-glass envelope](/docs/break-glass), then delete that file.
+
+## 5. Create your account
+
+On the domain path, the installer ends with a setup link:
+
+```
+https://harbor.example.com/setup?token=…
+```
+
+Open it. The vault creates its first account only through that link, so nobody who finds your domain before you can claim the vault. The certificate is issued on that first visit; if the page does not load, the A record probably does not point at the Droplet yet, and `harbor logs caddy` says so.
+
+On the Tailscale path, open the tailnet address the installer printed.
+
+Then continue with [First run](/docs/first-run).
+
+## After a reboot
+
+When the Droplet restarts, after maintenance or a power cycle you started, the vault stays closed until you unlock it:
+
+```sh
+ssh root@your-droplet-ip
+harbor unlock
+```
+
+If SSH does not answer, the Droplet's **Recovery Console** in the control panel works as a keyboard and screen.

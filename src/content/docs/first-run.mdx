@@ -7,6 +7,8 @@ export const meta = {
 
 Open the address the installer printed. A vault with no owner shows **Set up your vault** instead of a sign-in page: your name, your email, and a password of at least twelve characters.
 
+If you chose to reach the vault directly on the internet, the installer printed a setup link instead, such as `https://harbor.example.com/setup?token=…`. Open that link: the vault creates its first account only through it, so nobody who finds the address before you can claim it. On every other path, whoever opens the vault first can create the account, so do it as soon as the installer finishes.
+
 The next screen shows an authenticator key and ten recovery codes, **once**. Add the key to your authenticator app and print the codes now. Two-factor is required for every account. Harbor does not provide password reset by email. Keep the recovery codes somewhere safe, separate from your phone. Everyone else in the household joins through an invitation from Settings.
 
 For command-line setup, run the following from the deployment directory. Replace the example password and account details before running it:

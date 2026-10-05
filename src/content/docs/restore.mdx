@@ -18,7 +18,7 @@ The volume passphrase from the old box is *not* needed. A new box gets a new vol
 
 ## 1. A box with an empty vault
 
-Follow [Prerequisites](/docs/prerequisites) and [The data volume](/docs/data-volume) on the new machine, and install Tailscale if you use it. Then stop before the installer: a restore puts the old secrets back instead of generating new ones, so this part is done by hand, following the repository's [deploy.md](https://github.com/openharborhq/harbor/blob/main/docs/deploy.md) for the images and the configuration file. When it comes to secrets, put the old ones back exactly:
+Prepare the new machine with the [install guide](/docs/install) for it, up to running the installer, and set up [the data volume](/docs/data-volume); install Tailscale if you use it. Then stop before the installer: a restore puts the old secrets back instead of generating new ones, so this part is done by hand, following the repository's [deploy.md](https://github.com/openharborhq/harbor/blob/main/docs/deploy.md) for the images and the configuration file. When it comes to secrets, put the old ones back exactly:
 
 ```sh
 mkdir -p /data/secrets && chmod 700 /data/secrets

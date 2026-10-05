@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
   images: { unoptimized: dev },
   // The guides under src/content/docs are MDX.
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  // Prerequisites became the install chooser and the guide for each kind of machine.
+  async redirects() {
+    return [{ source: "/docs/prerequisites", destination: "/docs/install", permanent: true }];
+  },
 };
 
 /*

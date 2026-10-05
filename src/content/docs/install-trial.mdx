@@ -1,0 +1,50 @@
+export const meta = {
+  title: "Try it on your computer",
+  description: "Harbor on Docker Desktop on a Mac, to look around before installing it for real. Not for real paperwork.",
+};
+
+To see what Harbor is like before you buy hardware or rent a server, run it on your Mac with Docker Desktop. The installer knows it is on a Mac and keeps everything in one folder.
+
+<Note label="Only for looking around">
+
+On a Mac the installer cannot encrypt the data directory, and there is no backup unless you configure one. Use made-up documents. When you decide to keep Harbor, install it on [one of the real options](/docs/install) and start there; a trial is not meant to be moved.
+
+</Note>
+
+## What you need
+
+- A Mac with [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+- A few GB of disk for the images.
+
+## Run the installer
+
+In a new, empty folder, without `sudo`:
+
+```sh
+mkdir harbor-trial && cd harbor-trial
+curl -fsSLO https://raw.githubusercontent.com/openharborhq/harbor/main/install.sh
+less install.sh
+sh install.sh
+```
+
+What to answer:
+
+- **Where should that live?** Press enter: a `harbor-data` folder in this one.
+- **How should you reach Harbor?** `3`, on your own network.
+- **Address to publish on.** `127.0.0.1`, so only your Mac can reach it.
+- **Port.** Press enter. If something already uses that port, such as a development server, the installer suggests another.
+- **Backup repository.** Leave it empty.
+
+It prints the address when it is done, such as `http://127.0.0.1:3000`. Open it, create an account as in [First run](/docs/first-run), and drop in a test document.
+
+The installer puts its `harbor` command in the `harbor` folder, since `/usr/local/bin` is usually not writable on a Mac: `./harbor/harbor status`, `./harbor/harbor logs`.
+
+## Remove it
+
+```sh
+./harbor/harbor stop
+docker compose -p harbor down --volumes
+cd .. && rm -rf harbor-trial
+```
+
+`--volumes` also removes the database, which Docker Desktop keeps in its own storage rather than in the folder.

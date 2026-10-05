@@ -9,8 +9,9 @@ export const meta = {
 
 | Container | Does | Network |
 | --- | --- | --- |
-| `tailscale` | Optional. Serves the app on your tailnet over HTTPS | When present, the only thing reachable, and only from your tailnet. Without it, `web` publishes a port on the address you chose |
-| `web` | The app | No host port of its own behind Tailscale; otherwise the published port |
+| `tailscale` | Optional. Serves the app on your tailnet over HTTPS | When present, the only thing reachable, and only from your tailnet |
+| `caddy` | Optional. Serves the app at your domain over HTTPS, with a certificate from Let's Encrypt, and lets the first account be created only through the setup link | When present, the only thing listening, on ports 80 and 443 |
+| `web` | The app | No host port of its own behind Tailscale or Caddy; otherwise a port on the address you chose |
 | `api` | HTTP API, migrations, sessions | Internal, plus mail autodiscover during setup |
 | `worker` | OCR, thumbnails, and text extraction | **No route out** |
 | `suggester` | Titles, categories and dates from the text, via the model you chose or none | Out to that provider only |
@@ -40,7 +41,7 @@ The database keeps each document's text in the clear so that search is fast, whi
 | --- | --- | --- |
 | A burglar who takes the box | A powered-off appliance | With manual unlocking, the encrypted volume requires a passphrase kept separately |
 | A breach at the backup provider | Snapshots | Snapshots are encrypted before upload; keep recovery keys separate from the provider |
-| An attacker on the internet | Nothing to connect to | Zero inbound ports on the tailnet path; on your own network, nothing unless you publish to the internet yourself |
+| An attacker on the internet | Nothing to connect to, unless you chose the internet | Zero inbound ports on the tailnet path and on your own network. On the internet path, Caddy and the sign-in page, which needs a password and an authenticator code; the first account can only be created through the setup link |
 | A malicious PDF sent by email | Code running in the OCR worker | The worker has no direct internet access or root privileges, but can reach required internal services |
 | Someone with a stolen family laptop | A session | An existing session may still allow access. Revoke it promptly; MFA protects new sign-ins, not an already authenticated session |
 

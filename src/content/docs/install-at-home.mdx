@@ -1,0 +1,75 @@
+export const meta = {
+  title: "Your own hardware",
+  description: "Harbor on a small machine in your house: a mini PC, NUC, Protectli box or Raspberry Pi 5, with its data on an encrypted disk.",
+};
+
+The most private way to run Harbor: the machine is in your house, the documents are on a disk you own, and that disk is encrypted, so a stolen box is a locked box.
+
+## What you need
+
+- **A machine of its own.** A small fanless N100-class box, a Protectli, a NUC, or a Raspberry Pi 5 with an SSD. At least 4 GB of memory; 8 GB is comfortable.
+- **A second disk for the documents**, 100 GB or more. A spare NVMe or SATA slot is ideal: the installer turns that disk into the encrypted volume, and you never have to resize anything. Size for scans, not PDFs: phone photos and long scanned contracts add up.
+- **A keyboard and screen**, once, to install the operating system.
+- **Somewhere for backups to go** that is not this box: a Backblaze B2 bucket, an SFTP host you already have, or a disk in another machine. See [Backups](/docs/backups).
+
+<Note label="One rule">
+
+Do not run Harbor on the machine that is also your firewall or router. If your fanless box runs OPNsense or pfSense, the vault gets a box of its own.
+
+</Note>
+
+## 1. Install Debian
+
+Install **Debian 12 (bookworm)**, minimal: when the installer offers software, choose only *SSH server* and *standard system utilities*, no desktop. Put the system on the first disk and leave the second one alone. The installer is tested on Debian 12.
+
+On a Raspberry Pi 5, use the 64-bit Raspberry Pi OS Lite, which is Debian underneath, and boot it from the SSD.
+
+**Only one disk?** Then leave at least 100 GB unallocated while partitioning, and follow [The data volume](/docs/data-volume) to encrypt that space by hand before you run the installer.
+
+From here on, everything happens over SSH from your own computer.
+
+## 2. Install Docker
+
+```sh
+curl -fsSL https://get.docker.com | sh
+```
+
+## 3. Run the installer
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/openharborhq/harbor/main/install.sh
+less install.sh
+sudo sh install.sh
+```
+
+What to answer:
+
+- **Where should that live?** Press enter for `/data`.
+- **How should you reach Harbor?**
+  - **Through Tailscale** if you want the vault on your phone away from home. The installer can install Tailscale and sign the box in; you need a free Tailscale account.
+  - **On your own network** if home is enough. The installer suggests the box's address on your network; press enter to accept it.
+  - The internet path works from home too, but needs ports 80 and 443 forwarded on your router to this box, and puts the sign-in page on the open internet. Tailscale gets you the same reach with nothing exposed.
+- **Backup repository.** Where backups go, or leave it empty for now.
+- **Set up an encrypted volume now?** Yes. Pick your second disk from the list (the system disk is never offered), and type its name to confirm. It erases that disk.
+- **How should it unlock after a reboot?**
+
+| Choice | After a power cut | A stolen box |
+| --- | --- | --- |
+| **You unlock it** (recommended) | The box boots and SSH works; the vault waits until you run `sudo harbor unlock`. | Locked. |
+| **Automatically, with the TPM** | Comes back on its own. | Unlocks itself for whoever took it. |
+| **Ask at boot** | Waits at boot for the passphrase, on a keyboard and screen. | Locked. |
+
+The volume's passphrase is written to `/root/harbor-luks-passphrase`, and never printed. Copy it onto [the break-glass envelope](/docs/break-glass), then delete that file.
+
+When it finishes, the installer prints the address of your vault. Continue with [First run](/docs/first-run).
+
+## After a power cut
+
+With manual unlocking, the vault stays closed until someone types the passphrase:
+
+```sh
+ssh you@your-box
+sudo harbor unlock
+```
+
+While it is closed, `/data` is empty and write-protected, so nothing can start a second, empty vault in its place. A small UPS rides out short interruptions. [The data volume](/docs/data-volume) says more about unlocking.

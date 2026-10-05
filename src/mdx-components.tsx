@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ComponentProps } from "react";
 import { BoxDiagram } from "@/components/docs/BoxDiagram";
 import { CodeBlock } from "@/components/docs/CodeBlock";
+import { InstallChooser } from "@/components/docs/InstallChooser";
 import { Note } from "@/components/docs/Note";
 import { Prove } from "@/components/docs/Prove";
 
@@ -50,6 +51,7 @@ const components: MDXComponents = {
   Note,
   Prove,
   BoxDiagram,
+  InstallChooser,
 };
 
 export function useMDXComponents(): MDXComponents {

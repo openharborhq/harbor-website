@@ -534,6 +534,20 @@ body {
 .doc-box-volume .doc-box-name { margin-right: 8px; }
 .doc-box-legend { grid-column: 1 / -1; font-size: calc(13.5px * var(--ds)); line-height: calc(20px * var(--ds)); color: var(--color-muted); }
 
+/* The install chooser: where will Harbor run? One card per guide. */
+.doc-choose { margin-top: 24px; display: flex; flex-direction: column; gap: 20px; }
+.doc-choose-label { font-family: var(--font-mono); font-size: calc(11px * var(--ds)); line-height: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 10px; }
+.doc-choose .doc-choose-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.doc-choose .doc-choose-list > li, .doc-choose .doc-choose-list > li + li { margin: 0; }
+.doc-choose .doc-choose-card { display: flex; flex-direction: column; gap: 4px; height: 100%; border: 1px solid var(--color-border); border-radius: 12px; padding: 14px 16px 16px; background: var(--color-ground); text-decoration: none; transition: border-color 120ms ease, background-color 120ms ease; }
+.doc-choose .doc-choose-card:hover { border-color: var(--color-accent); background: var(--color-accent-soft); }
+.doc-choose .doc-choose-card:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.doc-choose-title { font-weight: 600; color: var(--color-text); font-size: calc(15.5px * var(--ds)); line-height: calc(22px * var(--ds)); }
+.doc-choose-title span { color: var(--color-accent); }
+.doc-choose-copy { color: var(--color-muted); font-size: calc(13.5px * var(--ds)); line-height: calc(20px * var(--ds)); }
+@media (max-width: 639px) { .doc-choose .doc-choose-list { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .doc-choose .doc-choose-card { transition: none; } }
+
 /* ---- Narrower ---- */
 @media (max-width: 1279px) {
   .docs-main { grid-template-columns: minmax(0, 1fr); padding: 36px 32px 88px 44px; }

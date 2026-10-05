@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { TrackedLink } from "@/components/TrackedLink";
 import { getLatestRelease, GITHUB } from "@/lib/github";
 import { Arrow } from "./parts";
@@ -68,10 +67,6 @@ export async function Hero() {
             <StaggerItem>
               <HeroCta github={GITHUB} />
             </StaggerItem>
-
-            <StaggerItem>
-              <SetupGuide />
-            </StaggerItem>
           </StaggerGroup>
 
           {/* `w-full`, because the column centres its children and the demo sizes itself from its
@@ -82,31 +77,5 @@ export async function Hero() {
         </StaggerGroup>
       </div>
     </section>
-  );
-}
-
-/**
- * The setup guide helps visitors understand what they need before installing.
- */
-function SetupGuide() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-[9px]">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" className="shrink-0" aria-hidden="true">
-        <path
-          d="M8 1.6v12.8M1.6 8h12.8M3.5 3.5l9 9M12.5 3.5l-9 9"
-          stroke="var(--color-accent)"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      </svg>
-      <span className="text-body leading-[22px] text-muted">New to self-hosting?</span>
-      <Link
-        href="/docs/prerequisites"
-        className="flex items-center gap-[7px] border-b border-border-strong pb-[2px] text-body font-medium leading-[22px] text-text"
-      >
-        Read the setup guide
-        <Arrow size={14} />
-      </Link>
-    </div>
   );
 }

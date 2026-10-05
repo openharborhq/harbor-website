@@ -1,0 +1,57 @@
+export const meta = {
+  title: "A server you already run",
+  description: "Harbor beside the containers you already have, on a home server or VPS with Docker, behind your reverse proxy if you run one.",
+};
+
+If you already run a home server or a VPS with Docker on it, Harbor can move in beside everything else. The installer works around what is there and leaves it alone: your other containers keep running, with the settings you gave them.
+
+## What Harbor takes
+
+| Harbor uses | Where | If it is taken |
+| --- | --- | --- |
+| A Compose project | named `harbor` | Set `HARBOR_PROJECT` to another name, for example if you run the Harbor container registry. |
+| One web port | `3000` by default | The installer suggests the next free one. |
+| Its files | `/opt/harbor` and `/data` | Set `HARBOR_DIR` or `HARBOR_DATA_DIR`. |
+| A command | `/usr/local/bin/harbor` | Set `HARBOR_CLI_DIR`. |
+
+Portainer and similar tools will show Harbor as a stack they did not create. Manage it with the [harbor command](/docs/harbor-command) rather than from there, so upgrades and unlocking keep working.
+
+## The data volume
+
+Harbor's documents need an encrypted volume, and a server that already exists rarely has one waiting. In order of preference:
+
+- **A spare disk.** The installer offers to encrypt it, and erases it in the process.
+- **An encrypted disk you already have.** If the server was installed with full-disk encryption, or you keep an encrypted array, point `HARBOR_DATA_DIR` at a directory on it; the installer sees it is encrypted and carries on.
+- **Neither.** The installer asks whether to continue unencrypted. It works, but a copy of that disk is a readable copy of your paperwork. See [The data volume](/docs/data-volume) for doing it by hand on free space.
+
+## Behind your reverse proxy
+
+If you already run Nginx Proxy Manager, Traefik, Caddy or nginx on ports 80 and 443, choose **directly, on the internet** and give Harbor its domain. The installer notices the ports are taken and sits behind your proxy instead of beside it. It asks which port to publish on, on `127.0.0.1`, and your proxy forwards the domain there:
+
+```
+harbor.example.com {
+	reverse_proxy 127.0.0.1:3000
+}
+```
+
+That is Caddy; in nginx, a `proxy_pass http://127.0.0.1:3000;` with `client_max_body_size 200m;` so large scans can be uploaded. Your proxy, not Harbor, handles the certificate.
+
+There is no setup link on this path: until the first account exists, whoever opens the domain first can create it. Create yours as soon as the installer finishes.
+
+If the server is only for home, choose **on your own network** instead and the installer publishes on its LAN address. **Through Tailscale** works here as on any machine.
+
+## Run the installer
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/openharborhq/harbor/main/install.sh
+less install.sh
+sudo sh install.sh
+```
+
+Or answer the questions up front, for example behind your proxy:
+
+```sh
+sudo env HARBOR_DOMAIN=harbor.example.com HARBOR_PROXY=own HARBOR_WEB_PORT=3010 sh install.sh
+```
+
+[The installer](/docs/installer) lists every variable. When it finishes, continue with [First run](/docs/first-run).

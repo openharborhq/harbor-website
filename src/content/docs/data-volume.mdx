@@ -5,11 +5,11 @@ export const meta = {
 
 ## Why it is required
 
-The data directory holds the documents, the database, the queues and the secrets. Every document is encrypted with a key of its own, but the database keeps the extracted text of every document in the clear so that search is fast. A stolen disk without volume encryption is therefore a readable copy of your paperwork. The installer checks that `HARBOR_DATA_DIR` sits on an encrypted volume and refuses to continue otherwise.
+The data directory holds the documents, the database, the queues and the secrets. Every document is encrypted with a key of its own, but the database keeps the extracted text of every document in the clear so that search is fast. A stolen disk without volume encryption is therefore a readable copy of your paperwork. The installer checks that `HARBOR_DATA_DIR` sits on an encrypted volume. If it does not, it offers to make one from a spare disk, and otherwise asks before continuing unencrypted.
 
 ## Format the volume
 
-These steps use LUKS on Debian and require root access. Identify an unused partition or disk before continuing. The device path below is an example, not a device to select automatically.
+With a spare disk, the installer does this for you: it encrypts the whole disk and asks how it should unlock. The steps below are for a partition, such as space left unallocated on the system disk, or for doing it by hand. They use LUKS on Debian and require root access. Identify an unused partition or disk before continuing. The device path below is an example, not a device to select automatically.
 
 <Note label="Formatting erases the selected volume">
 

@@ -3,13 +3,12 @@ export const meta = {
   description: "Harbor is a self-hosted document vault for a household. Learn how to install Harbor, organize household records, and recover from a backup.",
 };
 
-Harbor runs as a small stack of containers on one Linux machine, with everything it stores on one encrypted volume. Your household reaches it over a Tailscale tailnet, your own network, or a VPN you already run; Tailscale is the easiest path, not a requirement. Paperwork gets in by upload or by email. Harbor extracts searchable text and, with a language model configured, suggests how to organize documents and track their dates. Configure nightly encrypted backups and review the monthly restore-test results in Settings.
+Harbor runs as a small stack of containers on one Linux machine, with everything it stores on one encrypted volume. Your household reaches it privately through Tailscale, directly at a domain of your own on the internet, or directly on your own network or a VPN you already run; Tailscale is one option, not a requirement. Paperwork gets in by upload or by email. Harbor extracts searchable text and, with a language model configured, suggests how to organize documents and track their dates. Configure nightly encrypted backups and review the monthly restore-test results in Settings.
 
 ## Start here
 
-1. [Prerequisites](/docs/prerequisites): prepare your Linux machine, encrypted storage, and access method.
-2. [Install](/docs/install): run the installer once the prerequisites are ready.
-3. [First run](/docs/first-run): create your account, add a test document, and check backups.
+1. [Install](/docs/install): choose where Harbor will run, at home, on a cloud server, or on a server you already have, and follow the guide for it.
+2. [First run](/docs/first-run): create your account, add a test document, and check backups.
 
 Before adding important records, configure [Backups](/docs/backups) and [The break-glass envelope](/docs/break-glass).
 

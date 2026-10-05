@@ -1,0 +1,64 @@
+export const meta = {
+  title: "The installer",
+  description: "What install.sh asks, what it does, what it checks, and how to run it without questions.",
+};
+
+The installer is one shell script, the same on every machine. The [install guides](/docs/install) say how to prepare each kind of machine and which answers suit it; this page describes the script itself. Read it before you run it as root.
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/openharborhq/harbor/main/install.sh
+less install.sh
+sudo sh install.sh
+```
+
+## What it asks
+
+1. **Where the documents should live.** `/data` by default. It should be an encrypted volume; if it is not, the installer offers to turn a spare disk into one. It lists the disks, leaves out the one the system boots from, makes you type the device name before erasing anything, and asks how the volume should unlock after a reboot. See [The data volume](/docs/data-volume).
+2. **How you want to reach it.** Privately through Tailscale, directly at a domain of your own on the internet, or directly on your own network. Then only what that answer needs: installing and signing in to Tailscale, the domain, or the address and port. See [Reaching your vault](/docs/reaching-your-vault).
+3. **Where backups should go.** A bucket, an SFTP host, or a path on a second disk. Leave it empty to decide later. See [Backups](/docs/backups).
+
+It then creates the Compose files, secrets, and configuration, downloads the images, starts the services, and installs the [harbor command](/docs/harbor-command). When it finishes it prints the address of your vault, or on the internet path, a setup link that is the only way to create the first account. Continue with [First run](/docs/first-run).
+
+## What it checks
+
+- **The data directory is encrypted.** If not, it offers to encrypt a spare disk. Without one, it asks before continuing unencrypted, and an unattended install stops unless you allow it.
+- **The port is free.** If something else on the machine already uses the port it would publish on, it suggests a free one. On the internet path, if ports 80 and 443 are taken by a reverse proxy, it sits behind that proxy instead.
+- **It is not about to replace another vault.** If a Harbor already runs on the machine with its data somewhere else, it stops rather than point the existing services at an empty directory.
+- **The first account is yours.** On the internet path, the first account can only be created through the setup link it prints.
+
+It generates two secrets that exist nowhere else, the master key that decrypts every document and the password that encrypts every backup; keep a recovery copy on [the break-glass sheet](/docs/break-glass), separate from the server. And it cannot give your backups somewhere to go unless you tell it.
+
+## Unattended install
+
+Answer any of the questions up front and the installer stays silent, which is what makes it scriptable, for example from a cloud server's startup script:
+
+```sh
+sudo env HARBOR_DOMAIN=harbor.example.com RESTIC_REPOSITORY=sftp:backup@nas.example.com:/srv/harbor sh install.sh
+```
+
+| Variable | What it sets |
+| --- | --- |
+| `HARBOR_DATA_DIR` | Where documents, database and secrets live. Default `/data`. |
+| `HARBOR_REACH` | How the vault is reached: `tailnet`, `internet` or `local`. Usually implied by the variables below. |
+| `TS_AUTHKEY` | A Tailscale auth key, for Tailscale running as one of Harbor's containers. Implies `tailnet`. `USE_HOST_TS=1` uses a Tailscale already signed in on the machine instead. |
+| `HARBOR_DOMAIN` | The domain to serve the vault at, over HTTPS. Implies `internet`. |
+| `HARBOR_PROXY` | On the internet path, `caddy` (the default) to answer on ports 80 and 443 itself, or `own` to sit behind a reverse proxy already on the machine. |
+| `HARBOR_BIND`, `HARBOR_WEB_PORT` | On your own network, the address and port to publish on. Default `127.0.0.1:3000`, that machine only. |
+| `RESTIC_REPOSITORY` | Where nightly backups go. |
+| `HARBOR_ALLOW_UNENCRYPTED_DATA` | `yes` to install on a data directory that is not on an encrypted volume. Without a terminal to ask, the installer refuses otherwise. |
+| `HARBOR_PROJECT` | The Compose project name. Default `harbor`; change it if something else on the machine already uses that name. |
+| `HARBOR_IMAGE_TAG` | The release to install. Default the current one. |
+
+An unattended install cannot encrypt a disk for you: that step asks you to type the device name, on purpose. Prepare the encrypted volume first, or run the installer over SSH. Every setting it writes is described in [Configuration](/docs/configuration).
+
+## Running it again
+
+The installer never overwrites a secret or an existing configuration file, so it is safe to run again. That is also how a changed setting takes effect, such as a new way to reach the vault: change it with `harbor config`, then run the installer again.
+
+## Releases
+
+The install pins to a release tag, not to `latest`, so the box only moves when you decide it should. `harbor upgrade` backs up first and refuses to continue if the backup fails. The [changelog](https://github.com/openharborhq/harbor/blob/main/CHANGELOG.md) says what changed in each release.
+
+## By hand
+
+If you would rather see every part than let a script do it, the repository's [deploy.md](https://github.com/openharborhq/harbor/blob/main/docs/deploy.md) is the same procedure step by step: the compose files, the configuration file, and starting the stack yourself.
