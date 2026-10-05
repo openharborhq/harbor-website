@@ -7,7 +7,9 @@ import { useEffect, useRef, useState } from "react";
 import { GITHUB } from "@/lib/github";
 import { Wordmark } from "../Logo";
 import { MobileMenu } from "./MobileMenu";
-import { DOCS, FEATURES, HOME, PRICING, doc } from "./routes";
+import type { Lang } from "@/lib/i18n";
+import { NAV_COPY, navLinks } from "./navLinks";
+import { doc, home } from "./routes";
 
 /*
  * The bar that arrives once the hero is behind you.
@@ -36,13 +38,13 @@ import { DOCS, FEATURES, HOME, PRICING, doc } from "./routes";
  * the header it replaces; at this size it reads as a control that followed you down, and the
  * sections keep their own edges.
  */
-const LINKS = [
-  { label: "Features", href: FEATURES },
-  { label: "Docs", href: DOCS },
-];
-
-export function StickyNav({ sentinelClassName = "h-px w-full", pricingEnabled = siteConfig.pricingEnabled }: { sentinelClassName?: string; pricingEnabled?: boolean } = {}) {
-  const links = [...LINKS, ...(pricingEnabled ? [{ label: "Harbor Cloud", href: PRICING }] : [])];
+export function StickyNav({
+  sentinelClassName = "h-px w-full",
+  pricingEnabled = siteConfig.pricingEnabled,
+  lang = "en",
+}: { sentinelClassName?: string; pricingEnabled?: boolean; lang?: Lang } = {}) {
+  const links = navLinks(lang, pricingEnabled);
+  const t = NAV_COPY[lang];
   const sentinel = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 
@@ -79,7 +81,7 @@ export function StickyNav({ sentinelClassName = "h-px w-full", pricingEnabled = 
           shown ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-[180%] opacity-0"
         }`}
       >
-        <Link href={HOME} aria-label="Harbor home">
+        <Link href={home(lang)} aria-label={t.home}>
           <Wordmark mark={17} text="text-row leading-[18px]" />
         </Link>
 
@@ -95,9 +97,9 @@ export function StickyNav({ sentinelClassName = "h-px w-full", pricingEnabled = 
           ))}
         </nav>
 
-        <MobileMenu links={links} size="sm" />
+        <MobileMenu links={links} size="sm" lang={lang} />
 
-        <Link href={GITHUB} className="hidden items-center text-text md:flex" aria-label="Harbor on GitHub">
+        <Link href={GITHUB} className="hidden items-center text-text md:flex" aria-label={t.github}>
           <svg width="15" height="15" viewBox="0 0 16 16" className="shrink-0" aria-hidden="true">
             <path
               d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38v-1.34C3.8 14.35 3.33 12.8 3.33 12.8c-.36-.93-.89-1.17-.89-1.17-.72-.5.06-.49.06-.49.8.06 1.22.83 1.22.83.71 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.19c0 .21.145.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
@@ -112,7 +114,7 @@ export function StickyNav({ sentinelClassName = "h-px w-full", pricingEnabled = 
           analyticsProperties={{ placement: "sticky_nav" }}
           className="hidden rounded-pill bg-text px-[14px] py-[6px] md:block text-small font-semibold leading-[16px] tracking-[-0.01em] text-ground transition-[filter] duration-150 hover:brightness-[1.15]"
         >
-          Get started
+          {t.start}
         </TrackedLink>
       </div>
     </>

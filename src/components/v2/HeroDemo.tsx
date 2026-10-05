@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import posthog from "posthog-js";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { Lang } from "@/lib/i18n";
 
 /*
  * The hero demo: a still of the app that plays a scripted run when pressed.
@@ -27,15 +28,53 @@ import { useCallback, useEffect, useRef, useState } from "react";
 /** The walkthrough's full length. Every scene is scheduled against this one clock. */
 const DURATION = 46;
 
-const SCENES: { at: number; label: string }[] = [
-  { at: 0, label: "Sign in" },
-  { at: 3.2, label: "Verify" },
-  { at: 5.3, label: "Home" },
-  { at: 13.6, label: "Inbox" },
-  { at: 24.9, label: "To do" },
-  { at: 27.8, label: "Search" },
-  { at: 36.6, label: "Share" },
-];
+type Scene = { at: number; label: string };
+
+/*
+ * The transport is the site's control, not the app's, so its labels follow the page. Screens the
+ * app itself names in English (Home, Inbox, To do) keep that name, so the label matches what is on
+ * screen. The German labels stay short: the readout is a fixed 54px.
+ */
+const SCENES: Record<Lang, Scene[]> = {
+  en: [
+    { at: 0, label: "Sign in" },
+    { at: 3.2, label: "Verify" },
+    { at: 5.3, label: "Home" },
+    { at: 13.6, label: "Inbox" },
+    { at: 24.9, label: "To do" },
+    { at: 27.8, label: "Search" },
+    { at: 36.6, label: "Share" },
+  ],
+  de: [
+    { at: 0, label: "Anmelden" },
+    { at: 3.2, label: "Code" },
+    { at: 5.3, label: "Home" },
+    { at: 13.6, label: "Inbox" },
+    { at: 24.9, label: "To do" },
+    { at: 27.8, label: "Suche" },
+    { at: 36.6, label: "Teilen" },
+  ],
+};
+
+/** The words around the demo — the site's, not the app's. */
+const COPY: Record<Lang, { alt: string; play: string; cta: string; pause: string; resume: string; position: string }> = {
+  en: {
+    alt: "Harbor's Home page: four family members and four items, each with its record count and what expires next.",
+    play: "Play a walkthrough of Harbor",
+    cta: "See it work",
+    pause: "Pause the walkthrough",
+    resume: "Play the walkthrough",
+    position: "Walkthrough position",
+  },
+  de: {
+    alt: "Harbors Startseite: vier Familienmitglieder und vier Dinge, jeweils mit der Zahl ihrer Unterlagen und dem, was als Nächstes abläuft.",
+    play: "Rundgang durch Harbor abspielen",
+    cta: "Rundgang ansehen",
+    pause: "Rundgang pausieren",
+    resume: "Rundgang abspielen",
+    position: "Position im Rundgang",
+  },
+};
 
 const clock = (t: number) => `0:${String(Math.floor(t)).padStart(2, "0")}`;
 
@@ -67,7 +106,8 @@ const clock = (t: number) => `0:${String(Math.floor(t)).padStart(2, "0")}`;
 const STAGE_W = 750;
 const STAGE_H = 455;
 
-export function HeroDemo() {
+export function HeroDemo({ lang = "en" }: { lang?: Lang } = {}) {
+  const t = COPY[lang];
   const [started, setStarted] = useState(false);
   const root = useRef<HTMLDivElement>(null);
 
@@ -88,7 +128,7 @@ export function HeroDemo() {
     >
       <Image
         src="/mock/hero-home@2x.png"
-        alt="Harbor's Home page: four family members and four items, each with its record count and what expires next."
+        alt={t.alt}
         width={2640}
         height={1600}
         priority
@@ -105,19 +145,19 @@ export function HeroDemo() {
             }
             setStarted(true);
           }}
-          aria-label="Play a walkthrough of Harbor"
+          aria-label={t.play}
           className="hd-play absolute inset-0 flex items-center justify-center"
         >
           <span className="flex items-center gap-[10px] rounded-pill bg-text/90 px-[22px] py-[14px] text-body font-semibold text-ground backdrop-blur-sm transition-transform duration-200 ease-out">
             <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor" aria-hidden="true">
               <path d="M1.5 1.3v13.4a.6.6 0 0 0 .92.5l10.6-6.7a.6.6 0 0 0 0-1l-10.6-6.7a.6.6 0 0 0-.92.5Z" />
             </svg>
-            See it work
+            {t.cta}
           </span>
         </button>
       )}
 
-      {started && <Walkthrough />}
+      {started && <Walkthrough lang={lang} />}
     </div>
   );
 }
@@ -135,7 +175,8 @@ export function HeroDemo() {
  * the time off, so the readout never depends on whichever animation happens to come back first.
  * It is also the authority when resuming — see `toggle`.
  */
-function Walkthrough() {
+function Walkthrough({ lang }: { lang: Lang }) {
+  const scenes = SCENES[lang];
   const stage = useRef<HTMLDivElement>(null);
   const clockEl = useRef<HTMLSpanElement>(null);
   const [playing, setPlaying] = useState(true);
@@ -212,7 +253,7 @@ function Walkthrough() {
    */
   const nudge = useCallback((delta: number) => seek(now() + delta), [seek, now]);
 
-  const scene = [...SCENES].reverse().find((s) => time >= s.at)?.label ?? SCENES[0].label;
+  const scene = [...scenes].reverse().find((s) => time >= s.at)?.label ?? scenes[0].label;
 
   return (
     <>
@@ -226,16 +267,18 @@ function Walkthrough() {
         >
           <SignIn />
           <Totp />
-          <App />
+          <App lang={lang} />
           <Cursor />
         </div>
       </div>
-      <Transport playing={playing} time={time} scene={scene} onToggle={toggle} onSeek={seek} onNudge={nudge} />
+      <Transport lang={lang} scenes={scenes} playing={playing} time={time} scene={scene} onToggle={toggle} onSeek={seek} onNudge={nudge} />
     </>
   );
 }
 
 function Transport({
+  lang,
+  scenes,
   playing,
   time,
   scene,
@@ -243,6 +286,8 @@ function Transport({
   onSeek,
   onNudge,
 }: {
+  lang: Lang;
+  scenes: Scene[];
   playing: boolean;
   time: number;
   scene: string;
@@ -250,6 +295,7 @@ function Transport({
   onSeek: (t: number) => void;
   onNudge: (delta: number) => void;
 }) {
+  const t = COPY[lang];
   const track = useRef<HTMLDivElement>(null);
 
   const seekFromPointer = (clientX: number) => {
@@ -263,7 +309,7 @@ function Transport({
       <button
         type="button"
         onClick={onToggle}
-        aria-label={playing ? "Pause the walkthrough" : "Play the walkthrough"}
+        aria-label={playing ? t.pause : t.resume}
         className="flex size-[22px] shrink-0 items-center justify-center rounded-pill text-ground"
       >
         {playing ? (
@@ -288,7 +334,7 @@ function Transport({
         ref={track}
         role="slider"
         tabIndex={0}
-        aria-label="Walkthrough position"
+        aria-label={t.position}
         aria-valuemin={0}
         aria-valuemax={DURATION}
         aria-valuenow={Number(time.toFixed(1))}
@@ -313,7 +359,7 @@ function Transport({
           className="absolute left-0 top-1/2 h-[3px] -translate-y-1/2 rounded-pill bg-ground"
           style={{ width: `${(time / DURATION) * 100}%` }}
         />
-        {SCENES.slice(1).map((s) => (
+        {scenes.slice(1).map((s) => (
           <span
             key={s.label}
             title={s.label}
@@ -418,7 +464,7 @@ const NAV: { label: string; d: string; cls?: string }[] = [
   { label: "Settings", d: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7.4-3a7.4 7.4 0 0 0-.1-1l2-1.5-2-3.4-2.3.9a7.5 7.5 0 0 0-1.7-1L15 3.5H9l-.3 2.5a7.5 7.5 0 0 0-1.7 1L4.7 6.1l-2 3.4 2 1.5a7.4 7.4 0 0 0 0 2l-2 1.5 2 3.4 2.3-.9a7.5 7.5 0 0 0 1.7 1L9 20.5h6l.3-2.5a7.5 7.5 0 0 0 1.7-1l2.3.9 2-3.4-2-1.5c.1-.3.1-.7.1-1Z" },
 ];
 
-function App() {
+function App({ lang }: { lang: Lang }) {
   return (
     <div className="hd-app absolute inset-0 flex bg-ground">
       <aside className="flex w-[186px] shrink-0 flex-col border-r border-border bg-surface px-3 py-4">
@@ -440,7 +486,7 @@ function App() {
         </nav>
         <div className="mt-5 flex flex-col gap-[1px]">
           <span className="px-2.5 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">Categories</span>
-          {CATS.slice(0, 5).map(([c, n]) => (
+          {CATS[lang].slice(0, 5).map(([c, n]) => (
             <span key={c} className="flex h-[22px] items-center gap-2 rounded-md px-2.5 text-[9px] text-text">
               <span className="flex-1 truncate">{c}</span>
               <span className="text-[8px] text-muted">{n}</span>
@@ -489,26 +535,49 @@ function App() {
           </span>
         </header>
         <main className="relative min-h-0 flex-1 overflow-hidden">
-          <Home />
-          <Inbox />
-          <Todo />
-          <Search />
+          <Home lang={lang} />
+          <Inbox lang={lang} />
+          <Todo lang={lang} />
+          <Search lang={lang} />
         </main>
       </div>
-      <ShareDialog />
+      <ShareDialog lang={lang} />
     </div>
   );
 }
 
 /** Invented throughout — the Weber household the site's other mocks already use. */
-const CATS: [string, string][] = [
-  ["Identity", "18"],
-  ["Real Estate", "61"],
-  ["Money", "37"],
-  ["Taxes", "26"],
-  ["Insurance", "31"],
-  ["Health", "44"],
-];
+/*
+ * What the app says is English in both languages — its screens, buttons, field labels and the
+ * counts it writes ("74 records", "Expires in 24 days"). What the household put in, and what
+ * Harbor wrote about their documents, is in the household's language: category names, document
+ * titles, summaries, item names, to-dos. In German that is the same Weber family, living in
+ * Germany. Counts and timings are identical so the animation does not change.
+ */
+const CATS: Record<Lang, [string, string][]> = {
+  en: [
+    ["Identity", "18"],
+    ["Real Estate", "61"],
+    ["Money", "37"],
+    ["Taxes", "26"],
+    ["Insurance", "31"],
+    ["Health", "44"],
+  ],
+  de: [
+    ["Ausweise", "18"],
+    ["Immobilien", "61"],
+    ["Finanzen", "37"],
+    ["Steuern", "26"],
+    ["Versicherungen", "31"],
+    ["Gesundheit", "44"],
+  ],
+};
+
+/** The subcategories a Home card lists under its name; the rest show a dash. */
+const CAT_HINTS: Record<Lang, Record<string, string>> = {
+  en: { Identity: "Passports · Licences", Money: "Banking · Pensions" },
+  de: { Ausweise: "Pässe · Führerscheine", Finanzen: "Konten · Renten" },
+};
 
 function SectionHeader({ title, meta }: { title: string; meta: string }) {
   return (
@@ -598,7 +667,27 @@ function ItemCard({ name, role, records, expiry, warn, avatar, at }: { name: str
   );
 }
 
-function Home() {
+/*
+ * The three things on Home. The people above them need no German twin: their names, the roles the
+ * app assigns and the counts it writes read the same in both.
+ */
+type Thing = { name: string; role: string; records: string; expiry: string };
+
+const PROPERTY: Record<Lang, [Thing, Thing, Thing]> = {
+  en: [
+    { name: "1428 Maple Ave", role: "Primary residence", records: "86 records", expiry: "Expires in 112 days" },
+    { name: "Subaru Outback", role: "ABC-4471 · 2019", records: "14 records", expiry: "Expires in 57 days" },
+    { name: "Lake cabin", role: "22 Birch Ln", records: "29 records", expiry: "Nothing expiring" },
+  ],
+  de: [
+    { name: "Ahornweg 12", role: "Hauptwohnsitz", records: "86 records", expiry: "Expires in 112 days" },
+    { name: "VW Passat", role: "M-SW 4471 · 2019", records: "14 records", expiry: "Expires in 57 days" },
+    { name: "Ferienhaus am See", role: "Birkenweg 22", records: "29 records", expiry: "Nothing expiring" },
+  ],
+};
+
+function Home({ lang }: { lang: Lang }) {
+  const [house, car, cabin] = PROPERTY[lang];
   return (
     <div className="hd-view hd-home absolute inset-0 overflow-hidden px-5 pb-5">
       <div className="hd-scroll flex flex-col gap-5">
@@ -614,9 +703,9 @@ function Home() {
         <section className="flex flex-col gap-2.5">
           <SectionHeader title="Property &amp; things" meta="4 items · 151 records" />
           <div className="grid grid-cols-4 gap-2.5">
-            <ItemCard at={5.71} name="1428 Maple Ave" role="Primary residence" records="86 records" expiry="Expires in 112 days" avatar={<Avatar tint="accent">{THINGS.house}</Avatar>} />
-            <ItemCard at={5.775} name="Subaru Outback" role="ABC-4471 · 2019" records="14 records" expiry="Expires in 57 days" avatar={<Avatar tint="warn">{THINGS.car}</Avatar>} />
-            <ItemCard at={5.84} name="Lake cabin" role="22 Birch Ln" records="29 records" expiry="Nothing expiring" avatar={<Avatar tint="green">{THINGS.cabin}</Avatar>} />
+            <ItemCard at={5.71} {...house} avatar={<Avatar tint="accent">{THINGS.house}</Avatar>} />
+            <ItemCard at={5.775} {...car} avatar={<Avatar tint="warn">{THINGS.car}</Avatar>} />
+            <ItemCard at={5.84} {...cabin} avatar={<Avatar tint="green">{THINGS.cabin}</Avatar>} />
             {/* The real grid ends on a dashed invitation, not on the last item. */}
             <span
               className="hd-item flex flex-col items-center justify-center rounded-lg border border-dashed border-border-strong px-2 text-center text-[8px] font-medium text-muted"
@@ -629,14 +718,14 @@ function Home() {
         <section className="flex flex-col gap-2.5">
           <SectionHeader title="Categories" meta="6 categories · 348 documents · backed up 2 hours ago" />
           <div className="grid grid-cols-4 gap-2">
-            {CATS.map(([c, n]) => (
+            {CATS[lang].map(([c, n]) => (
               <span key={c} className="flex flex-col gap-1 rounded-lg border border-border px-2.5 py-2">
                 <span className="flex items-center justify-between">
                   <span className="text-[9px] font-semibold text-text">{c}</span>
                   <span className="text-[9px] text-muted">{n}</span>
                 </span>
                 <span className="truncate text-[7.5px] text-muted">
-                  {c === "Identity" ? "Passports · Licences" : c === "Money" ? "Banking · Pensions" : "—"}
+                  {CAT_HINTS[lang][c] ?? "—"}
                 </span>
               </span>
             ))}
@@ -669,13 +758,23 @@ type Row = {
   t: [number, number, number];
 };
 
-const ROWS: Row[] = [
-  { title: "Homeowners Policy Renewal 2027", meta: "Forwarded by email · 12 min ago", summary: "Premium rises to $2,140 and the wind-and-hail deductible is now 2%.", tags: ["Insurance › Home", "1428 Maple Ave"], verdict: "accept", t: [13.9, 15.5, 16.1] },
-  { title: "Lake County Property Tax Bill 2026", meta: "Forwarded by email · 2 h ago", summary: "$3,812 due 1 March, with a second instalment in August.", tags: ["Taxes › Property", "Lake cabin"], verdict: "accept", t: [14.0, 17.6, 18.2] },
-  { title: "Home & Garden — this week's picks", meta: "Forwarded by email · 3 h ago", summary: "A newsletter: patio furniture on sale, and a note about autumn bulbs.", tags: null, verdict: "delete", t: [14.1, 19.5, 20.3] },
-  { title: "Learner's Permit, Lucas Weber", meta: "Photo from phone · 3 h ago", summary: "Valid to 4 June 2027; the road test must be booked before it expires.", tags: ["Identity › Licences", "Lucas"], verdict: "accept", t: [14.2, 21.8, 22.4] },
-  { title: "Your coffee subscription receipt", meta: "Forwarded by email · 5 h ago", summary: "$18.00 charged to the card ending 4417 for the monthly bag.", tags: null, verdict: "delete", t: [14.3, 23.7, 24.5] },
-];
+/* `meta` is the app's own line and stays English; the timings are the same in both languages. */
+const ROWS: Record<Lang, Row[]> = {
+  en: [
+    { title: "Homeowners Policy Renewal 2027", meta: "Forwarded by email · 12 min ago", summary: "Premium rises to $2,140 and the wind-and-hail deductible is now 2%.", tags: ["Insurance › Home", "1428 Maple Ave"], verdict: "accept", t: [13.9, 15.5, 16.1] },
+    { title: "Lake County Property Tax Bill 2026", meta: "Forwarded by email · 2 h ago", summary: "$3,812 due 1 March, with a second instalment in August.", tags: ["Taxes › Property", "Lake cabin"], verdict: "accept", t: [14.0, 17.6, 18.2] },
+    { title: "Home & Garden — this week's picks", meta: "Forwarded by email · 3 h ago", summary: "A newsletter: patio furniture on sale, and a note about autumn bulbs.", tags: null, verdict: "delete", t: [14.1, 19.5, 20.3] },
+    { title: "Learner's Permit, Lucas Weber", meta: "Photo from phone · 3 h ago", summary: "Valid to 4 June 2027; the road test must be booked before it expires.", tags: ["Identity › Licences", "Lucas"], verdict: "accept", t: [14.2, 21.8, 22.4] },
+    { title: "Your coffee subscription receipt", meta: "Forwarded by email · 5 h ago", summary: "$18.00 charged to the card ending 4417 for the monthly bag.", tags: null, verdict: "delete", t: [14.3, 23.7, 24.5] },
+  ],
+  de: [
+    { title: "Wohngebäudeversicherung 2027", meta: "Forwarded by email · 12 min ago", summary: "Der Beitrag steigt auf 2.140 €, die Selbstbeteiligung bei Sturm und Hagel liegt jetzt bei 2 %.", tags: ["Versicherungen › Haus", "Ahornweg 12"], verdict: "accept", t: [13.9, 15.5, 16.1] },
+    { title: "Grundsteuerbescheid 2026", meta: "Forwarded by email · 2 h ago", summary: "3.812 € im Jahr in vier Raten, die nächste ist am 15. Nov. fällig.", tags: ["Steuern › Grundsteuer", "Ferienhaus am See"], verdict: "accept", t: [14.0, 17.6, 18.2] },
+    { title: "Haus & Garten – Tipps der Woche", meta: "Forwarded by email · 3 h ago", summary: "Ein Newsletter: Gartenmöbel im Angebot und ein Hinweis zu Blumenzwiebeln im Herbst.", tags: null, verdict: "delete", t: [14.1, 19.5, 20.3] },
+    { title: "BF17-Bescheinigung, Lucas Weber", meta: "Photo from phone · 3 h ago", summary: "Gültig bis 4. Juni 2027; bis dahin muss der Kartenführerschein beantragt sein.", tags: ["Ausweise › Führerscheine", "Lucas"], verdict: "accept", t: [14.2, 21.8, 22.4] },
+    { title: "Beleg für dein Kaffee-Abo", meta: "Forwarded by email · 5 h ago", summary: "18,00 € von der Karte mit Endung 4417 abgebucht, für die monatliche Packung.", tags: null, verdict: "delete", t: [14.3, 23.7, 24.5] },
+  ],
+};
 
 /** The discard verdict, at 9px. Lid, can, two ruled lines. */
 function Trash() {
@@ -700,14 +799,14 @@ function Preview() {
   );
 }
 
-function Inbox() {
+function Inbox({ lang }: { lang: Lang }) {
   return (
     <div className="hd-view hd-inbox absolute inset-0 overflow-hidden px-5 pb-5">
       <h1 className="text-[15px] font-bold tracking-snug text-text">Inbox</h1>
       <p className="hd-count mt-0.5 text-[9px] text-muted">5 documents to review · each has a suggested filing</p>
       <p className="mt-2 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">Today</p>
       <ul className="mt-1.5 flex flex-col gap-[5px]">
-        {ROWS.map((r) => (
+        {ROWS[lang].map((r) => (
           <li
             key={r.title}
             className={`hd-row hd-row-${r.verdict} flex items-center gap-2.5 overflow-hidden rounded-md border border-border bg-ground p-1.5`}
@@ -752,17 +851,29 @@ function Inbox() {
 }
 
 /* ---- 5. To do — apps/web (shell)/todo/TaskRow.tsx ---- */
-function Todo() {
+/*
+ * The to-dos come from the two documents filed in the Inbox, so they follow its language. In
+ * German the second one is the Grundsteuer's next quarterly instalment (3.812 € ÷ 4).
+ */
+const TASKS: Record<Lang, { t: string; d: string; doc: string; tone: string }[]> = {
+  en: [
+    { t: "Renew the policy", d: "Due 31 Dec 2027", doc: "Homeowners Policy Renewal 2027", tone: "text-muted" },
+    { t: "Pay $2,140", d: "Due 31 Oct 2026", doc: "Lake County Property Tax Bill 2026", tone: "text-warn font-medium" },
+  ],
+  de: [
+    { t: "Verlängerung prüfen", d: "Fällig 31. Dez. 2027", doc: "Wohngebäudeversicherung 2027", tone: "text-muted" },
+    { t: "953 € zahlen", d: "Fällig 15. Nov. 2026", doc: "Grundsteuerbescheid 2026", tone: "text-warn font-medium" },
+  ],
+};
+
+function Todo({ lang }: { lang: Lang }) {
   return (
     <div className="hd-view hd-todo absolute inset-0 overflow-hidden px-5 pb-5">
       <h1 className="text-[15px] font-bold tracking-snug text-text">To do</h1>
       <p className="mt-1 text-[9px] text-muted">2 open · both from documents you filed just now</p>
       <p className="mt-3 text-[8px] font-medium uppercase tracking-[0.08em] text-muted">Due later</p>
       <ul className="mt-1.5 flex flex-col">
-        {[
-          { t: "Renew the policy", d: "Due 31 Dec 2027", doc: "Homeowners Policy Renewal 2027", tone: "text-muted" },
-          { t: "Pay $2,140", d: "Due 31 Oct 2026", doc: "Lake County Property Tax Bill 2026", tone: "text-warn font-medium" },
-        ].map((x, i) => (
+        {TASKS[lang].map((x, i) => (
           <li
             key={x.t}
             className="hd-task flex items-start gap-3 border-t border-border py-2.5 last:border-b"
@@ -797,24 +908,52 @@ type Hit = {
   at: number;
 };
 
-const HITS: Hit[] = [
-  {
-    title: "Apple Store receipt — MacBook Pro 14”",
-    meta: "Money › Receipts · 4 Mar 2026",
-    snippet: ["Order W419268341 · ", "MacBook", " Pro 14-inch, 1 TB, space black. $2,499.00 on the card ending 4417."],
-    chips: ["Sarah Weber", "Home office"],
-    at: 31.0,
-  },
-  {
-    title: "Home office deductions, tax year 2026",
-    meta: "Taxes › Deductions · 12 Jan 2027",
-    snippet: ["Equipment bought in March: one ", "MacBook", " Pro, depreciated over three years."],
-    chips: ["Sarah Weber"],
-    at: 31.12,
-  },
-];
+/* The query typed is "Macbook" in both languages, so each German snippet still carries the word. */
+const HITS: Record<Lang, Hit[]> = {
+  en: [
+    {
+      title: "Apple Store receipt — MacBook Pro 14”",
+      meta: "Money › Receipts · 4 Mar 2026",
+      snippet: ["Order W419268341 · ", "MacBook", " Pro 14-inch, 1 TB, space black. $2,499.00 on the card ending 4417."],
+      chips: ["Sarah Weber", "Home office"],
+      at: 31.0,
+    },
+    {
+      title: "Home office deductions, tax year 2026",
+      meta: "Taxes › Deductions · 12 Jan 2027",
+      snippet: ["Equipment bought in March: one ", "MacBook", " Pro, depreciated over three years."],
+      chips: ["Sarah Weber"],
+      at: 31.12,
+    },
+  ],
+  de: [
+    {
+      title: "Kaufbeleg MacBook Pro 14”",
+      meta: "Finanzen › Belege · 4. März 2026",
+      snippet: ["Bestellung W419268341 · ", "MacBook", " Pro 14 Zoll, 1 TB, Space Schwarz. 2.499,00 € mit der Karte, Endung 4417."],
+      chips: ["Sarah Weber", "Arbeitszimmer"],
+      at: 31.0,
+    },
+    {
+      title: "Arbeitszimmer, Steuerjahr 2026",
+      meta: "Steuern › Werbungskosten · 12. Jan. 2027",
+      snippet: ["Im März angeschafft: ein ", "MacBook", " Pro, als Arbeitsmittel abgesetzt."],
+      chips: ["Sarah Weber"],
+      at: 31.12,
+    },
+  ],
+};
 
-function Search() {
+/*
+ * Who the link goes to. A free-text label in the app (see the dialog); the German one is the same
+ * length as the English, because the typing animation is timed to it.
+ */
+const RECIPIENT: Record<Lang, string> = {
+  en: "rich@myaccountant.com",
+  de: "info@stb-roth.example",
+};
+
+function Search({ lang }: { lang: Lang }) {
   return (
     <div className="hd-view hd-search absolute inset-0 overflow-hidden px-5 pb-5">
       <h1 className="text-[15px] font-bold tracking-snug text-text">Library</h1>
@@ -827,7 +966,7 @@ function Search() {
         <span className="text-[9px] font-medium text-accent">Clear search</span>
       </div>
       <ul className="mt-1 flex flex-col">
-        {HITS.map((h, i) => (
+        {HITS[lang].map((h, i) => (
           <li key={h.title} className="hd-hit flex items-start gap-2.5 border-t border-border py-2.5 last:border-b" style={{ ["--d" as string]: `${h.at}s` }}>
             {/* The app's ShareCheckbox. Only the first is ticked, and only it needs a hook. */}
             {/* The glyph takes `currentColor`, which the tick animates from transparent — an unticked
@@ -873,7 +1012,7 @@ function Search() {
  * What the footer says is the product's, not the script's: Harbor mints a link per recipient and
  * cannot send mail. See the note where the recipient is typed.
  */
-function ShareDialog() {
+function ShareDialog({ lang }: { lang: Lang }) {
   return (
     <div className="hd-modal pointer-events-none absolute inset-0 z-30">
       <i className="hd-scrim absolute inset-0 block bg-text/40 not-italic" />
@@ -919,7 +1058,7 @@ function ShareDialog() {
                   <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
                   <path d="M14 3v5h5M9 13h6M9 17h4" />
                 </svg>
-                <span className="min-w-0 flex-1 truncate text-[8.5px] font-semibold text-accent">Apple Store receipt — MacBook Pro 14”</span>
+                <span className="min-w-0 flex-1 truncate text-[8.5px] font-semibold text-accent">{HITS[lang][0].title}</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="size-[8px] shrink-0 text-muted">
                   <path d="M6 6l12 12M18 6L6 18" />
                 </svg>
@@ -937,7 +1076,7 @@ function ShareDialog() {
                 <span className="hd-t-rcpt hd-field flex h-[20px] items-center rounded-md border border-border bg-ground px-2">
                   <span className="relative flex min-w-0 flex-1 items-center text-[8.5px]">
                     <span className="hd-rph absolute inset-y-0 left-0 flex items-center text-muted/70">Accountant</span>
-                    <span className="hd-rcpt font-medium text-text">rich@myaccountant.com</span>
+                    <span className="hd-rcpt font-medium text-text">{RECIPIENT[lang]}</span>
                     <i className="hd-rcaret ml-px block h-[9px] not-italic" />
                   </span>
                 </span>
@@ -963,7 +1102,7 @@ function ShareDialog() {
             <span className="text-[8.5px] leading-[1.45] text-text">
               The link is ready. Copy it now — Harbor keeps them hashed and cannot show them again.
             </span>
-            <span className="mt-2.5 text-[9px] font-semibold text-text">rich@myaccountant.com</span>
+            <span className="mt-2.5 text-[9px] font-semibold text-text">{RECIPIENT[lang]}</span>
             <span className="mt-1 flex items-center gap-1.5">
               <span className="min-w-0 flex-1 truncate rounded-md border border-border bg-surface px-2 py-1.5 font-mono text-[7.5px] text-muted">
                 https://share.weber.family/s/k7Qp2m9XvB

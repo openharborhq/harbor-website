@@ -13,8 +13,15 @@ const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   // Prerequisites became the install chooser and the guide for each kind of machine.
   async redirects() {
-    return [{ source: "/docs/prerequisites", destination: "/docs/install", permanent: true }];
+    return [
+      { source: "/docs/prerequisites", destination: "/docs/install", permanent: true },
+      // The docs are English only; a German reader who guesses /de/docs lands on them.
+      { source: "/de/docs/:path*", destination: "/docs/:path*", permanent: false },
+    ];
   },
+  // Two root layouts (English and German) leave no single layout for a 404, so the site ships a
+  // global one in app/global-not-found.tsx.
+  experimental: { globalNotFound: true },
 };
 
 /*

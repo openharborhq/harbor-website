@@ -1,4 +1,5 @@
 import type { FeatureGroup } from "@/components/features/FeatureSection";
+import type { Lang } from "@/lib/i18n";
 import { Eyebrow } from "./parts";
 import { StaggerGroup, StaggerItem } from "./Stagger";
 
@@ -19,7 +20,10 @@ import { StaggerGroup, StaggerItem } from "./Stagger";
  * group across six groups that is twenty-four blue-grey lines down a page whose own sections are
  * already separated by a tonal step, and the 40px grid gap says the same thing more quietly.
  */
-export function FeatureBand({ group, tone }: { group: FeatureGroup; tone: "ground" | "surface" }) {
+export function FeatureBand({ group, tone, lang = "en" }: { group: FeatureGroup; tone: "ground" | "surface"; lang?: Lang }) {
+  /* German compounds ("Wiederherstellungstest") are wider than a phone column; let the browser
+     break them. Added for German only, so the English class strings stay exactly as they were. */
+  const hyphens = lang === "de" ? " hyphens-auto" : "";
   return (
     /*
      * The left-hand argument arrives first, then the four items behind it, each on its own beat.
@@ -42,7 +46,7 @@ export function FeatureBand({ group, tone }: { group: FeatureGroup; tone: "groun
           <span className="font-mono text-label font-medium leading-[14px] tracking-mono text-accent">{group.number}</span>
           <Eyebrow>{group.label}</Eyebrow>
         </span>
-        <h2 className="text-subhead font-bold leading-[1.17] tracking-tight text-text">{group.title}</h2>
+        <h2 className={`text-subhead font-bold leading-[1.17] tracking-tight text-text${hyphens}`}>{group.title}</h2>
         <p className="text-[16px] leading-section text-muted">{group.lead}</p>
       </StaggerItem>
 
@@ -52,7 +56,7 @@ export function FeatureBand({ group, tone }: { group: FeatureGroup; tone: "groun
             <svg width="22" height="22" viewBox="0 0 22 22" className="shrink-0" fill="none" stroke="var(--color-accent)" strokeWidth="1.6" aria-hidden="true">
               {item.icon}
             </svg>
-            <h3 className="font-title text-section leading-[24px] tracking-snug text-text">{item.title}</h3>
+            <h3 className={`font-title text-section leading-[24px] tracking-snug text-text${hyphens}`}>{item.title}</h3>
             <p className="text-[15.5px] leading-[25px] text-muted">{item.copy}</p>
           </StaggerItem>
         ))}

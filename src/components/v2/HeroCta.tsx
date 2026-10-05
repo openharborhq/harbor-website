@@ -4,6 +4,12 @@ import { motion, useReducedMotion } from "motion/react";
 import { TrackedLink } from "@/components/TrackedLink";
 import { Arrow, GitHubIcon, PRIMARY, SECONDARY } from "./parts";
 import { doc } from "./routes";
+import type { Lang } from "@/lib/i18n";
+
+const COPY: Record<Lang, { start: string; github: string }> = {
+  en: { start: "Get started", github: "View on GitHub" },
+  de: { start: "Loslegen", github: "Auf GitHub ansehen" },
+};
 
 const MotionLink = motion.create(TrackedLink);
 
@@ -36,8 +42,9 @@ const REVEAL = { rest: { opacity: 0, x: -14 }, hover: { opacity: 1, x: 0 }, pres
  * on a hairline button a tonal step is nearly the whole of the change, and it tells you nothing
  * you did not already know.
  */
-export function HeroCta({ github }: { github: string }) {
+export function HeroCta({ github, lang = "en" }: { github: string; lang?: Lang }) {
   const still = useReducedMotion();
+  const t = COPY[lang];
 
   /* Under `prefers-reduced-motion` the buttons revert to what they were before any of this: the
      primary showing its arrow outright, the secondary offering the `surface` wash, and neither
@@ -52,7 +59,7 @@ export function HeroCta({ github }: { github: string }) {
           analyticsProperties={{ placement: "hero" }}
           className={`flex items-center gap-[9px] ${PRIMARY}`}
         >
-          Get started
+          {t.start}
           <Arrow />
         </TrackedLink>
         <TrackedLink
@@ -61,7 +68,7 @@ export function HeroCta({ github }: { github: string }) {
           analyticsProperties={{ placement: "hero" }}
           className={`${SECONDARY} transition-colors duration-150 ease-out hover:bg-surface`}
         >
-          View on GitHub
+          {t.github}
         </TrackedLink>
       </Row>
     );
@@ -78,7 +85,7 @@ export function HeroCta({ github }: { github: string }) {
         gap="ml-[9px]"
         mark={<Arrow />}
       >
-        Get started
+        {t.start}
       </Button>
       <Button
         href={github}
@@ -89,7 +96,7 @@ export function HeroCta({ github }: { github: string }) {
         gap="ml-[8px]"
         mark={<GitHubIcon />}
       >
-        View on GitHub
+        {t.github}
       </Button>
     </Row>
   );

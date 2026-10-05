@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import type { Lang } from "@/lib/i18n";
 import { Arrow } from "./parts";
 
 /*
@@ -22,11 +23,14 @@ import { Arrow } from "./parts";
 export function MobileMenu({
   links,
   size = "lg",
+  lang = "en",
 }: {
   links: { label: string; href: string }[];
   /** `lg` in the header, beside a 44px row; `sm` in the sticky pill. */
   size?: "lg" | "sm";
+  lang?: Lang;
 }) {
+  const t = lang === "de" ? { open: "Menü öffnen", close: "Menü schließen", nav: "Hauptnavigation" } : { open: "Open menu", close: "Close menu", nav: "Primary" };
   const pathname = usePathname();
   const [openFor, setOpenFor] = useState<string | null>(null);
   const open = openFor === pathname;
@@ -65,7 +69,7 @@ export function MobileMenu({
         type="button"
         aria-expanded={open}
         aria-controls={id}
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? t.close : t.open}
         onClick={() => setOpenFor(open ? null : pathname)}
         className={`flex items-center justify-center rounded-pill text-text transition-colors duration-150 hover:bg-surface ${
           size === "lg" ? "h-[44px] w-[44px]" : "h-[30px] w-[30px]"
@@ -82,7 +86,7 @@ export function MobileMenu({
 
       <nav
         id={id}
-        aria-label="Primary"
+        aria-label={t.nav}
         inert={!open}
         className={`absolute left-1/2 top-[calc(100%+8px)] z-50 w-[calc(100vw-48px)] -translate-x-1/2 rounded-[20px] border border-border bg-ground p-[8px] shadow-[0_8px_26px_-16px_rgba(13,22,34,0.5)] transition-[opacity,translate] duration-150 ease-out ${
           open ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-[6px] opacity-0"

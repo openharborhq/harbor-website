@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { StaggerGroup, StaggerItem } from "./Stagger";
+import type { Lang } from "@/lib/i18n";
 
 /*
  * Eight feature boxes on a four-tint palette.
@@ -48,10 +49,18 @@ function Glyph({ tint, children }: { tint: Tint; children: ReactNode }) {
   );
 }
 
-const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
+const BOXES: { text: Record<Lang, { head: string; copy: string }>; tint: Tint; glyph: ReactNode }[] = [
   {
-    head: "Connect your inbox",
-    copy: "Connect a mailbox or forward email. Choose which senders Harbor should file automatically.",
+    text: {
+      en: {
+        head: "Connect your inbox",
+        copy: "Connect a mailbox or forward email. Choose which senders Harbor should file automatically.",
+      },
+      de: {
+        head: "Postfach verbinden",
+        copy: "Verbinde ein Postfach oder leite E-Mails weiter. Du legst fest, welche Absender Harbor automatisch ablegt.",
+      },
+    },
     tint: "accent",
     glyph: (
       <>
@@ -61,8 +70,16 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Upload files and photos",
-    copy: "Add PDFs, scans, and photos. Harbor reads the text so you can search their contents.",
+    text: {
+      en: {
+        head: "Upload files and photos",
+        copy: "Add PDFs, scans, and photos. Harbor reads the text so you can search their contents.",
+      },
+      de: {
+        head: "Dateien und Fotos hochladen",
+        copy: "Füge PDFs, Scans und Fotos hinzu. Harbor liest den Text, damit du ihren Inhalt durchsuchen kannst.",
+      },
+    },
     tint: "violet",
     glyph: (
       <>
@@ -73,8 +90,16 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "AI summaries",
-    copy: "Get summaries and suggested tags and categories. Choose a local model or connect an AI provider.",
+    text: {
+      en: {
+        head: "AI summaries",
+        copy: "Get summaries and suggested tags and categories. Choose a local model or connect an AI provider.",
+      },
+      de: {
+        head: "KI-Zusammenfassungen",
+        copy: "Du bekommst Zusammenfassungen und Vorschläge für Tags und Kategorien. Wähle ein lokales Modell oder verbinde einen KI-Anbieter.",
+      },
+    },
     tint: "green",
     glyph: (
       <>
@@ -84,8 +109,16 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Automatic backups",
-    copy: "Back up nightly to Backblaze B2, an SFTP server, or a second disk. Harbor tests a restore each month.",
+    text: {
+      en: {
+        head: "Automatic backups",
+        copy: "Back up nightly to Backblaze B2, an SFTP server, or a second disk. Harbor tests a restore each month.",
+      },
+      de: {
+        head: "Automatische Backups",
+        copy: "Sichere jede Nacht auf Backblaze B2, einen SFTP-Server oder eine zweite Festplatte. Jeden Monat testet Harbor eine Wiederherstellung.",
+      },
+    },
     tint: "warn",
     glyph: (
       <>
@@ -96,8 +129,16 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "For the whole household",
-    copy: "Keep passports, bills, deeds, and more together, organized by the people and things they belong to.",
+    text: {
+      en: {
+        head: "For the whole household",
+        copy: "Keep passports, bills, deeds, and more together, organized by the people and things they belong to.",
+      },
+      de: {
+        head: "Für den ganzen Haushalt",
+        copy: "Bewahre Pässe, Rechnungen, Urkunden und mehr zusammen auf, geordnet nach den Personen und Dingen, zu denen sie gehören.",
+      },
+    },
     tint: "violet",
     glyph: (
       <>
@@ -111,8 +152,16 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Built-in protection",
-    copy: "Protect your records with document encryption, multi-factor authentication, and device access you can revoke.",
+    text: {
+      en: {
+        head: "Built-in protection",
+        copy: "Protect your records with document encryption, multi-factor authentication, and device access you can revoke.",
+      },
+      de: {
+        head: "Eingebauter Schutz",
+        copy: "Schütze deine Unterlagen mit Dokumentverschlüsselung, Mehr-Faktor-Authentifizierung und Gerätezugängen, die du widerrufen kannst.",
+      },
+    },
     tint: "accent",
     glyph: (
       <>
@@ -123,8 +172,16 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Open source",
-    copy: "Read the code, host your own vault, and choose when to update. Your records stay under your control.",
+    text: {
+      en: {
+        head: "Open source",
+        copy: "Read the code, host your own vault, and choose when to update. Your records stay under your control.",
+      },
+      de: {
+        head: "Open Source",
+        copy: "Lies den Code, hoste deinen eigenen Tresor und entscheide selbst, wann du aktualisierst. Deine Unterlagen bleiben unter deiner Kontrolle.",
+      },
+    },
     tint: "warn",
     glyph: (
       <>
@@ -137,8 +194,16 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
     ),
   },
   {
-    head: "Secure sharing",
-    copy: "Send documents through a shared link. Set an expiration date and download limit, or revoke access early.",
+    text: {
+      en: {
+        head: "Secure sharing",
+        copy: "Send documents through a shared link. Set an expiration date and download limit, or revoke access early.",
+      },
+      de: {
+        head: "Sicher teilen",
+        copy: "Verschicke Dokumente über einen geteilten Link. Lege Ablaufdatum und Download-Limit fest oder widerrufe den Zugriff vorzeitig.",
+      },
+    },
     tint: "green",
     glyph: (
       <>
@@ -151,19 +216,31 @@ const BOXES: { head: string; copy: string; tint: Tint; glyph: ReactNode }[] = [
   },
 ];
 
-export function Boxes() {
+const COPY: Record<Lang, { title: string; lead: string }> = {
+  en: {
+    title: "Ditch the filing cabinet",
+    lead: "Give your household paperwork a home. Search the text inside your documents, review suggested tags and summaries, and share a copy when someone needs one.",
+  },
+  de: {
+    title: "Schluss mit dem Aktenschrank",
+    lead: "Gib dem Papierkram deines Haushalts ein Zuhause. Durchsuche den Text in deinen Dokumenten, prüfe vorgeschlagene Tags und Zusammenfassungen und teile eine Kopie, wenn jemand eine braucht.",
+  },
+};
+
+export function Boxes({ lang = "en" }: { lang?: Lang } = {}) {
+  const t = COPY[lang];
+
   return (
     <section
       id="features"
       className="flex flex-col items-center gap-[56px] rounded-[26px] bg-ground lane py-[60px] md:py-[88px]"
     >
       <div className="flex w-full flex-col items-center gap-[18px]">
-        <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text">
-          Ditch the filing cabinet
+        <h2 className="max-w-[860px] text-center text-section-head font-bold leading-[1.1] tracking-tight text-text hyphens-auto">
+          {t.title}
         </h2>
         <p className="max-w-[660px] text-center text-lead leading-copy text-muted">
-          Give your household paperwork a home. Search the text inside your documents, review suggested tags and
-          summaries, and share a copy when someone needs one.
+          {t.lead}
         </p>
       </div>
 
@@ -173,12 +250,12 @@ export function Boxes() {
         {BOXES.map((b) => (
           <StaggerItem
             as="li"
-            key={b.head}
+            key={b.text.en.head}
             className="flex flex-col gap-[18px] rounded-[20px] bg-surface p-[28px]"
           >
             <Glyph tint={b.tint}>{b.glyph}</Glyph>
-            <h3 className="text-section font-bold leading-[26px] tracking-snug text-text">{b.head}</h3>
-            <p className="text-body leading-[24px] text-muted">{b.copy}</p>
+            <h3 className="text-section font-bold leading-[26px] tracking-snug text-text hyphens-auto">{b.text[lang].head}</h3>
+            <p className="text-body leading-[24px] text-muted">{b.text[lang].copy}</p>
           </StaggerItem>
         ))}
       </StaggerGroup>

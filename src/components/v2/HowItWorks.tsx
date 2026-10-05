@@ -3,6 +3,7 @@
 import { useRef, useState, type ReactNode } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { groupVariants, itemVariants } from "./Stagger";
+import type { Lang } from "@/lib/i18n";
 
 /*
  * Four things Harbor does, with a stage on the left showing whichever is selected.
@@ -20,6 +21,11 @@ import { groupVariants, itemVariants } from "./Stagger";
  *
  * Each option owns a tint, and the stage takes the tint of whichever is active, so the colour is
  * what ties the selection to the panel rather than being decoration.
+ *
+ * In German, the app's own words stay English, because the app is: screen names, field labels,
+ * statuses and the share durations. What Harbor writes about a document is in the household's
+ * language, so titles, the "Looks like …" summary (German: „Sieht aus wie …“), values, tags and
+ * item names are German — the same Weber family, living in Germany.
  */
 type Tint = "accent" | "violet" | "green" | "warn";
 
@@ -123,13 +129,30 @@ function Row({ title, meta, tags, state }: { title: string; meta: string; tags: 
   );
 }
 
-function InboxStage() {
+/* `meta` is the app's line, English in both; titles and tags are the household's. */
+type InboxRow = { title: string; meta: string; tags: string[] };
+
+const INBOX_ROWS: Record<Lang, [InboxRow, InboxRow, InboxRow]> = {
+  en: [
+    { title: "Homeowners Policy Renewal 2027", meta: "Forwarded by email · just now", tags: ["Insurance", "1428 Maple Ave"] },
+    { title: "Lake County Property Tax Bill", meta: "Forwarded by email · 2 h ago", tags: ["Taxes", "Lake cabin"] },
+    { title: "Learner’s Permit, Lucas Weber", meta: "Photo from phone · 3 h ago", tags: ["Identity", "Lucas"] },
+  ],
+  de: [
+    { title: "Wohngebäudeversicherung 2027", meta: "Forwarded by email · just now", tags: ["Versicherungen", "Ahornweg 12"] },
+    { title: "Grundsteuerbescheid 2026", meta: "Forwarded by email · 2 h ago", tags: ["Steuern", "Ferienhaus am See"] },
+    { title: "BF17-Bescheinigung, Lucas Weber", meta: "Photo from phone · 3 h ago", tags: ["Ausweise", "Lucas"] },
+  ],
+};
+
+function InboxStage({ lang }: { lang: Lang }) {
+  const [first, second, third] = INBOX_ROWS[lang];
   return (
     <Stage tint="accent" icon={MAIL} title="Inbox" meta="3 TO REVIEW">
       <ul className="flex flex-col gap-[12px] p-[18px]">
-        <Row state title="Homeowners Policy Renewal 2027" meta="Forwarded by email · just now" tags={["Insurance", "1428 Maple Ave"]} />
-        <Row title="Lake County Property Tax Bill" meta="Forwarded by email · 2 h ago" tags={["Taxes", "Lake cabin"]} />
-        <Row title="Learner’s Permit, Lucas Weber" meta="Photo from phone · 3 h ago" tags={["Identity", "Lucas"]} />
+        <Row state {...first} />
+        <Row {...second} />
+        <Row {...third} />
       </ul>
     </Stage>
   );
@@ -153,28 +176,50 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ReadingStage() {
+const READING: Record<Lang, { title: string; summary: string; category: string; item: string; dated: string; renews: string; tags: [string, string, string] }> = {
+  en: {
+    title: "Homeowners Policy Renewal 2027",
+    summary: "Looks like the annual homeowners policy for 1428 Maple Ave. It renews on 1 March and the premium is $1,840 for the year.",
+    category: "Insurance",
+    item: "1428 Maple Ave",
+    dated: "14 February 2027",
+    renews: "1 March 2027",
+    tags: ["Insurance", "Renewal", "Maple Ave"],
+  },
+  de: {
+    title: "Wohngebäudeversicherung 2027",
+    summary: "Sieht aus wie die jährliche Wohngebäudeversicherung für Ahornweg 12. Sie verlängert sich am 1. März, der Beitrag liegt bei 1.840 € im Jahr.",
+    category: "Versicherungen",
+    item: "Ahornweg 12",
+    dated: "14. Februar 2027",
+    renews: "1. März 2027",
+    tags: ["Versicherung", "Verlängerung", "Ahornweg"],
+  },
+};
+
+function ReadingStage({ lang }: { lang: Lang }) {
+  const r = READING[lang];
   return (
-    <Stage tint="violet" icon={SPARK} title="Homeowners Policy Renewal 2027" meta="SUGGESTED">
+    <Stage tint="violet" icon={SPARK} title={r.title} meta="SUGGESTED">
       <div className="flex flex-col gap-[18px] p-[18px]">
         <div className="flex items-start gap-[14px]">
           <Thumb />
           <p className="flex-1 rounded-md bg-violet-soft p-[13px] text-row leading-[21px] text-text">
-            Looks like the annual homeowners policy for 1428 Maple Ave. It renews on 1 March and the premium is $1,840 for the year.
+            {r.summary}
           </p>
         </div>
 
         <dl className="grid grid-cols-2 gap-x-[18px] gap-y-[16px]">
-          <Field label="CATEGORY" value="Insurance" />
-          <Field label="FILED AGAINST" value="1428 Maple Ave" />
-          <Field label="DATED" value="14 February 2027" />
-          <Field label="RENEWS" value="1 March 2027" />
+          <Field label="CATEGORY" value={r.category} />
+          <Field label="FILED AGAINST" value={r.item} />
+          <Field label="DATED" value={r.dated} />
+          <Field label="RENEWS" value={r.renews} />
         </dl>
 
         <div className="flex flex-wrap items-center gap-[6px] border-t border-border pt-[16px]">
-          <Chip tint="violet">Insurance</Chip>
-          <Chip tint="violet">Renewal</Chip>
-          <Chip tint="violet">Maple Ave</Chip>
+          <Chip tint="violet">{r.tags[0]}</Chip>
+          <Chip tint="violet">{r.tags[1]}</Chip>
+          <Chip tint="violet">{r.tags[2]}</Chip>
           <span className={`${MONO} ml-auto text-faint`}>HIGH CONFIDENCE</span>
         </div>
       </div>
@@ -198,19 +243,40 @@ const PAWS = (
 
 /* People get their initial, things get a glyph — the same split the app makes, so a grid of both
    reads at a glance. */
-const ITEMS = [
-  { glyph: "M", name: "Maya", kind: "Person" },
-  { glyph: "⌂", name: "1428 Maple Ave", kind: "Property" },
-  { glyph: "⛭", name: "Volvo V60", kind: "Vehicle" },
-  { glyph: "❋", name: "Rosie", kind: "Pet", on: true },
-];
+const ITEMS: Record<Lang, { glyph: string; name: string; kind: string; on?: boolean }[]> = {
+  en: [
+    { glyph: "M", name: "Maya", kind: "Person" },
+    { glyph: "⌂", name: "1428 Maple Ave", kind: "Property" },
+    { glyph: "⛭", name: "Volvo V60", kind: "Vehicle" },
+    { glyph: "❋", name: "Rosie", kind: "Pet", on: true },
+  ],
+  de: [
+    { glyph: "M", name: "Maya", kind: "Person" },
+    { glyph: "⌂", name: "Ahornweg 12", kind: "Property" },
+    { glyph: "⛭", name: "Volvo V60", kind: "Vehicle" },
+    { glyph: "❋", name: "Rosie", kind: "Pet", on: true },
+  ],
+};
 
-function ItemsStage() {
+const PET_DOCS: Record<Lang, { title: string; meta: string; tag: string }[]> = {
+  en: [
+    { title: "Vet invoice — dental clean", meta: "Paid · 9 January 2027", tag: "Veterinary" },
+    { title: "Rabies vaccination record", meta: "Valid to 4 June 2028", tag: "Health" },
+    { title: "Pet insurance policy", meta: "Renews 1 October 2027", tag: "Insurance" },
+  ],
+  de: [
+    { title: "Tierarztrechnung – Zahnreinigung", meta: "Bezahlt · 9. Januar 2027", tag: "Tierarzt" },
+    { title: "Tollwut-Impfnachweis", meta: "Gültig bis 4. Juni 2028", tag: "Gesundheit" },
+    { title: "Tierkrankenversicherung", meta: "Verlängert sich am 1. Oktober 2027", tag: "Versicherung" },
+  ],
+};
+
+function ItemsStage({ lang }: { lang: Lang }) {
   return (
     <Stage tint="green" icon={PAWS} title="Rosie" meta="PET · 6 DOCUMENTS">
       <div className="flex flex-col gap-[18px] p-[18px]">
         <ul className="flex flex-wrap gap-[8px]">
-          {ITEMS.map((it) => (
+          {ITEMS[lang].map((it) => (
             <li
               key={it.name}
               className={`flex items-center gap-[9px] rounded-pill py-[7px] pl-[7px] pr-[14px] ${
@@ -230,11 +296,7 @@ function ItemsStage() {
         </ul>
 
         <ul className="flex flex-col gap-[10px] border-t border-border pt-[16px]">
-          {[
-            { title: "Vet invoice — dental clean", meta: "Paid · 9 January 2027", tag: "Veterinary" },
-            { title: "Rabies vaccination record", meta: "Valid to 4 June 2028", tag: "Health" },
-            { title: "Pet insurance policy", meta: "Renews 1 October 2027", tag: "Insurance" },
-          ].map((d) => (
+          {PET_DOCS[lang].map((d) => (
             <li key={d.title} className="flex items-center gap-[14px] rounded-md border border-border bg-ground p-[13px]">
               <Thumb />
               <div className="flex min-w-0 flex-1 flex-col gap-[6px]">
@@ -273,17 +335,25 @@ function Tick() {
   );
 }
 
-function ShareStage() {
+/* "Share with" and the durations are the app's; the recipient and the documents are the household's. */
+const SHARED: Record<Lang, { title: string; docs: string[] }> = {
+  en: {
+    title: "Share with Dr. Alvarez",
+    docs: ["Rabies vaccination record", "Vet invoice — dental clean", "Pet insurance policy", "Microchip registration"],
+  },
+  de: {
+    title: "Share with Dr. Albers",
+    docs: ["Tollwut-Impfnachweis", "Tierarztrechnung – Zahnreinigung", "Tierkrankenversicherung", "Mikrochip-Registrierung"],
+  },
+};
+
+function ShareStage({ lang }: { lang: Lang }) {
+  const sh = SHARED[lang];
   return (
-    <Stage tint="warn" icon={SHARE} title="Share with Dr. Alvarez" meta="4 SELECTED">
+    <Stage tint="warn" icon={SHARE} title={sh.title} meta="4 SELECTED">
       <div className="flex flex-col gap-[16px] p-[18px]">
         <ul className="flex flex-col gap-[8px]">
-          {[
-            "Rabies vaccination record",
-            "Vet invoice — dental clean",
-            "Pet insurance policy",
-            "Microchip registration",
-          ].map((t) => (
+          {sh.docs.map((t) => (
             <li key={t} className="flex items-center gap-[12px] rounded-md border border-border bg-ground px-[13px] py-[11px]">
               <Tick />
               <span className="min-w-0 flex-1 truncate text-row font-medium leading-[18px] text-text">{t}</span>
@@ -319,41 +389,95 @@ function ShareStage() {
 
 /* ──────────────────────────────────────── the section ──────────────────────────────────── */
 
-const OPTIONS: { head: string; copy: string; tint: Tint; glyph: ReactNode; stage: ReactNode }[] = [
-  {
-    head: "Bring paperwork together",
-    copy: "Connect a mailbox or forward documents to Harbor. Review new arrivals in your Inbox.",
-    tint: "accent",
-    glyph: MAIL,
-    stage: <InboxStage />,
+type Option = { head: string; copy: string; tint: Tint; glyph: ReactNode; stage: ReactNode };
+
+function options(lang: Lang): Option[] {
+  if (lang === "de") {
+    return [
+      {
+        head: "Unterlagen zusammenführen",
+        copy: "Verbinde ein Postfach oder leite Dokumente an Harbor weiter. Neue Eingänge prüfst du in deiner Inbox.",
+        tint: "accent",
+        glyph: MAIL,
+        stage: <InboxStage lang={lang} />,
+      },
+      {
+        head: "Vorschläge prüfen",
+        copy: "Harbor schlägt Titel, Kategorie, Tags und wichtige Termine vor. Du prüfst sie, bevor etwas abgelegt wird.",
+        tint: "violet",
+        glyph: SPARK,
+        stage: <ReadingStage lang={lang} />,
+      },
+      {
+        head: "Nach Person oder Ding ordnen",
+        copy: "Unterlagen liegen bei der Person, dem Haus, dem Auto oder dem Haustier, zu dem sie gehören – vom Reisepass bis zur Tierarztrechnung.",
+        tint: "green",
+        glyph: PAWS,
+        stage: <ItemsStage lang={lang} />,
+      },
+      {
+        head: "Eine Kopie teilen",
+        copy: "Wähl Dokumente aus, leg fest, wann der Link abläuft, und gib ihn weiter. Den Zugriff kannst du jederzeit widerrufen.",
+        tint: "warn",
+        glyph: SHARE,
+        stage: <ShareStage lang={lang} />,
+      },
+    ];
+  }
+  return [
+    {
+      head: "Bring paperwork together",
+      copy: "Connect a mailbox or forward documents to Harbor. Review new arrivals in your Inbox.",
+      tint: "accent",
+      glyph: MAIL,
+      stage: <InboxStage lang={lang} />,
+    },
+    {
+      head: "Review the suggestions",
+      copy: "Harbor suggests a title, category, tags, and important dates. Review them before filing.",
+      tint: "violet",
+      glyph: SPARK,
+      stage: <ReadingStage lang={lang} />,
+    },
+    {
+      head: "Organize by person or thing",
+      copy: "Keep records with the person, home, car, or pet they belong to, from passports to vet bills.",
+      tint: "green",
+      glyph: PAWS,
+      stage: <ItemsStage lang={lang} />,
+    },
+    {
+      head: "Share a copy",
+      copy: "Select documents, set an expiration date, and send a link. Revoke access whenever you need to.",
+      tint: "warn",
+      glyph: SHARE,
+      stage: <ShareStage lang={lang} />,
+    },
+  ];
+}
+
+/** The section's own words, around the stage. */
+const SECTION: Record<Lang, { eyebrow: string; head: string; lead: string; tabs: string }> = {
+  en: {
+    eyebrow: "HOW IT WORKS",
+    head: "See how Harbor works",
+    lead: "From a bill arriving in your inbox to a copy shared with your accountant.",
+    tabs: "What Harbor does",
   },
-  {
-    head: "Review the suggestions",
-    copy: "Harbor suggests a title, category, tags, and important dates. Review them before filing.",
-    tint: "violet",
-    glyph: SPARK,
-    stage: <ReadingStage />,
+  de: {
+    eyebrow: "SO FUNKTIONIERT’S",
+    head: "So arbeitet Harbor",
+    lead: "Von der Rechnung in deinem Postfach bis zur Kopie für deine Steuerberatung.",
+    tabs: "Was Harbor macht",
   },
-  {
-    head: "Organize by person or thing",
-    copy: "Keep records with the person, home, car, or pet they belong to, from passports to vet bills.",
-    tint: "green",
-    glyph: PAWS,
-    stage: <ItemsStage />,
-  },
-  {
-    head: "Share a copy",
-    copy: "Select documents, set an expiration date, and send a link. Revoke access whenever you need to.",
-    tint: "warn",
-    glyph: SHARE,
-    stage: <ShareStage />,
-  },
-];
+};
 
 /** The tabs enter from the right rather than from below. */
 const FROM_RIGHT = itemVariants("right");
 
-export function HowItWorks() {
+export function HowItWorks({ lang = "en" }: { lang?: Lang } = {}) {
+  const OPTIONS = options(lang);
+  const t = SECTION[lang];
   const [active, setActive] = useState(0);
   const still = useReducedMotion();
   const tabList = useRef<HTMLDivElement>(null);
@@ -374,12 +498,12 @@ export function HowItWorks() {
   return (
     <section className="flex flex-col gap-[56px] rounded-[26px] bg-surface-2 lane py-[60px] md:py-[88px]">
       <div className="flex flex-col gap-[18px]">
-        <span className={`${MONO} text-faint`}>HOW IT WORKS</span>
+        <span className={`${MONO} text-faint`}>{t.eyebrow}</span>
         <h2 className="max-w-[820px] text-section-head font-bold leading-[1.1] tracking-tight text-text">
-          See how Harbor works
+          {t.head}
         </h2>
         <p className="max-w-[700px] text-lead leading-copy text-muted">
-          From a bill arriving in your inbox to a copy shared with your accountant.
+          {t.lead}
         </p>
       </div>
 
@@ -415,7 +539,7 @@ export function HowItWorks() {
           ref={tabList}
           role="tablist"
           aria-orientation="vertical"
-          aria-label="What Harbor does"
+          aria-label={t.tabs}
           onKeyDown={onKey}
           className="flex w-full shrink-0 flex-col gap-[10px] lg:w-[430px]"
           variants={still ? undefined : groupVariants(0.09, 0.06)}

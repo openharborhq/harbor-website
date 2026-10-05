@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Lang } from "@/lib/i18n";
 
 export type FeatureItem = { icon: ReactNode; title: string; copy: string };
 
@@ -15,8 +16,18 @@ export type FeatureGroup = {
  * One numbered group: the argument on the left, the four features it covers on the right.
  * `dark` inverts it onto the terminal slab, which stays dark in both themes.
  */
-export function FeatureSection({ group, tone }: { group: FeatureGroup; tone: "ground" | "surface" | "dark" }) {
+export function FeatureSection({
+  group,
+  tone,
+  lang = "en",
+}: {
+  group: FeatureGroup;
+  tone: "ground" | "surface" | "dark";
+  lang?: Lang;
+}) {
   const dark = tone === "dark";
+  /* German only: long compounds may break in the headings. English class strings are unchanged. */
+  const hyphens = lang === "de" ? " hyphens-auto" : "";
   const surface = tone === "surface" ? "bg-surface" : "bg-ground";
 
   return (
@@ -36,7 +47,7 @@ export function FeatureSection({ group, tone }: { group: FeatureGroup; tone: "gr
           </span>
         </div>
         <h2
-          className={`text-subhead font-bold leading-[1.17] tracking-tight ${dark ? "text-on-band" : "text-text"}`}
+          className={`text-subhead font-bold leading-[1.17] tracking-tight ${dark ? "text-on-band" : "text-text"}${hyphens}`}
         >
           {group.title}
         </h2>
@@ -61,7 +72,7 @@ export function FeatureSection({ group, tone }: { group: FeatureGroup; tone: "gr
             >
               {item.icon}
             </svg>
-            <h3 className={`font-title text-section leading-[24px] tracking-snug ${dark ? "text-on-band" : "text-text"}`}>
+            <h3 className={`font-title text-section leading-[24px] tracking-snug ${dark ? "text-on-band" : "text-text"}${hyphens}`}>
               {item.title}
             </h3>
             <p className={`text-[15.5px] leading-[25px] ${dark ? "text-on-dark" : "text-muted"}`}>{item.copy}</p>

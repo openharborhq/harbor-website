@@ -4,6 +4,20 @@ import { Arrow } from "./parts";
 import { HeroDemo } from "./HeroDemo";
 import { HeroCta } from "./HeroCta";
 import { StaggerGroup, StaggerItem } from "./Stagger";
+import type { Lang } from "@/lib/i18n";
+
+const COPY: Record<Lang, { whatsNew: string; title: string; lead: string }> = {
+  en: {
+    whatsNew: "What’s new",
+    title: "Bring sanity to your household paperwork",
+    lead: "Harbor is an open-source document vault you host yourself. Connect your inbox or upload files to organize your household records, keep track of important dates, and find what you need.",
+  },
+  de: {
+    whatsNew: "Neu in dieser Version",
+    title: "Bring Ordnung in den Papierkram deines Haushalts",
+    lead: "Harbor ist ein quelloffener Dokumententresor, den du selbst hostest. Verbinde dein Postfach oder lade Dateien hoch, um die Unterlagen deines Haushalts zu ordnen, wichtige Fristen im Blick zu behalten und zu finden, was du brauchst.",
+  },
+};
 
 /*
  * A tinted band with a 26px corner, and the app rising out of its floor.
@@ -19,8 +33,9 @@ import { StaggerGroup, StaggerItem } from "./Stagger";
  * MacBook bezel and notch; the plain shot reads as the product rather than as a photograph of a
  * laptop, so the chrome came off.
  */
-export async function Hero() {
+export async function Hero({ lang = "en" }: { lang?: Lang } = {}) {
   const release = await getLatestRelease();
+  const t = COPY[lang];
 
   return (
     <section className="flex flex-col pb-[26px]">
@@ -49,30 +64,29 @@ export async function Hero() {
                   className="flex items-center gap-[10px] rounded-pill bg-text px-[14px] py-[7px] text-ground"
                 >
                   <span className="font-mono text-label font-medium leading-[14px] tracking-mono">{release.tag}</span>
-                  <span className="shiny-text text-row leading-[18px] text-ground/75">What&rsquo;s new</span>
+                  <span className="shiny-text text-row leading-[18px] text-ground/75">{t.whatsNew}</span>
                   <Arrow size={13} />
                 </TrackedLink>
               </StaggerItem>
             )}
 
-            <StaggerItem as="h1" className="font-display text-hero font-bold leading-[1.03] tracking-hero text-text">
-              Bring sanity to your household paperwork
+            <StaggerItem as="h1" className="font-display text-hero font-bold leading-[1.03] tracking-hero text-text hyphens-auto">
+              {t.title}
             </StaggerItem>
 
             <StaggerItem as="p" className="max-w-[680px] text-lead leading-copy text-muted">
-              Harbor is an open-source document vault you host yourself. Connect your inbox or upload files to
-              organize your household records, keep track of important dates, and find what you need.
+              {t.lead}
             </StaggerItem>
 
             <StaggerItem>
-              <HeroCta github={GITHUB} />
+              <HeroCta github={GITHUB} lang={lang} />
             </StaggerItem>
           </StaggerGroup>
 
           {/* `w-full`, because the column centres its children and the demo sizes itself from its
               parent: a wrapper that shrank to its content would take the window down with it. */}
           <StaggerItem className="w-full">
-            <HeroDemo />
+            <HeroDemo lang={lang} />
           </StaggerItem>
         </StaggerGroup>
       </div>

@@ -1,3 +1,4 @@
+import type { Lang } from "@/lib/i18n";
 import "./DocumentMarquee.css";
 
 /*
@@ -21,7 +22,7 @@ const ROW_H = 52;
    is legible rather than decorative. */
 const SPEED = 34;
 
-const ROWS: Chip[][] = [
+const ROWS_EN: Chip[][] = [
   [
     { w: 94, label: "Passport", accent: true, dy: -2, rot: -1.2 },
     { w: 174, label: "Birth certificate", dy: 3, rot: 0.9 },
@@ -47,6 +48,43 @@ const ROWS: Chip[][] = [
     { w: 126, label: "Utility bill", dy: 1, rot: -1.2 },
   ],
 ];
+
+/* The German twins: the same drift and tilt per position, German paperwork on the chips. Widths
+   follow the English rule of thumb (about 8px a character plus the pill's ends), rounded up a
+   little, because German labels run longer and a clipped label is worse than a roomy pill. */
+const ROWS_DE: Chip[][] = [
+  [
+    { w: 104, label: "Reisepass", accent: true, dy: -2, rot: -1.2 },
+    { w: 144, label: "Geburtsurkunde", dy: 3, rot: 0.9 },
+    { w: 216, label: "Wohngebäudeversicherung", accent: true, dy: -1, rot: -0.7 },
+    { w: 136, label: "Fahrzeugbrief", dy: 2, rot: 1.5 },
+    { w: 144, label: "Steuerbescheid", dy: -3, rot: -1.1 },
+    { w: 104, label: "Testament", dy: 1, rot: 0.7 },
+    { w: 184, label: "Grundsteuerbescheid", dy: 2, rot: -1.4 },
+    { w: 160, label: "Gesundheitskarte", dy: -2, rot: 1.1 },
+    { w: 120, label: "Kontoauszug", dy: 3, rot: -0.8 },
+    { w: 168, label: "Renteninformation", dy: -1, rot: 1.3 },
+  ],
+  [
+    { w: 128, label: "Führerschein", dy: 2, rot: 1.2 },
+    { w: 144, label: "Garantieschein", dy: -3, rot: -1 },
+    { w: 96, label: "Impfpass", dy: 1, rot: 0.8 },
+    { w: 120, label: "Mietvertrag", dy: 3, rot: -1.4 },
+    { w: 144, label: "Heiratsurkunde", accent: true, dy: -2, rot: 0.6 },
+    { w: 152, label: "Grundbuchauszug", dy: 2, rot: -0.9 },
+    { w: 168, label: "Vorsorgevollmacht", dy: -1, rot: 1.3 },
+    { w: 160, label: "Kfz-Versicherung", dy: 3, rot: -0.7 },
+    { w: 104, label: "Arztbrief", accent: true, dy: -2, rot: 1 },
+    { w: 136, label: "Stromrechnung", dy: 1, rot: -1.2 },
+  ],
+];
+
+const ROWS: Record<Lang, Chip[][]> = { en: ROWS_EN, de: ROWS_DE };
+
+const LABEL: Record<Lang, string> = {
+  en: "The kinds of paperwork Harbor keeps: passports, certificates, policies, titles, tax returns, wills, statements, licenses and more.",
+  de: "Die Arten von Unterlagen, die Harbor aufbewahrt: Ausweise, Urkunden, Versicherungen, Fahrzeugpapiere, Steuerbescheide, Testamente, Kontoauszüge, Verträge und mehr.",
+};
 
 /** A pill with a bow in each long edge and corners that do not quite meet. */
 function pill(x: number, w: number, top: number) {
@@ -109,16 +147,16 @@ function Row({ chips }: { chips: Chip[] }) {
   );
 }
 
-export function DocumentMarquee() {
+export function DocumentMarquee({ lang = "en" }: { lang?: Lang } = {}) {
   return (
     /* One label for the pair. The rows themselves are `aria-hidden`: read out, twenty duplicated
        chip names in two copies apiece is noise, and the sentence says what the picture says. */
     <div
       className="flex w-full flex-col gap-[10px]"
       role="img"
-      aria-label="The kinds of paperwork Harbor keeps: passports, certificates, policies, titles, tax returns, wills, statements, licenses and more."
+      aria-label={LABEL[lang]}
     >
-      {ROWS.map((chips, i) => {
+      {ROWS[lang].map((chips, i) => {
         const { width } = layout(chips);
         return (
           <div key={i} className="marq">
