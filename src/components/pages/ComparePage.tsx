@@ -70,7 +70,7 @@ export function ComparePage({ comparison: c }: { comparison: Comparison }) {
               <ComparisonTable comparison={c} />
             </StaggerItem>
             <StaggerItem as="p" className="text-center text-small leading-[20px] text-muted">
-              From {c.name}’s own pages, checked <time dateTime={c.checked}>{longDate(c.checked)}</time>:{" "}
+              Checked <time dateTime={c.checked}>{longDate(c.checked)}</time> against these sources:{" "}
               {c.sources.map((s, i) => (
                 <span key={s.href}>
                   {i > 0 && ", "}
@@ -114,6 +114,7 @@ export function ComparePage({ comparison: c }: { comparison: Comparison }) {
                 <StaggerItem className="flex flex-col justify-center">
                   {p.quote && <Evidence quote={p.quote} />}
                   {p.figures && <CostChart figures={p.figures} note={p.note} />}
+                  {p.checklist && <Checklist {...p.checklist} />}
                 </StaggerItem>
               </StaggerGroup>
             ))}
@@ -160,6 +161,25 @@ function Evidence({ quote }: { quote: Quote }) {
           {quote.source}
         </a>
       </figcaption>
+    </figure>
+  );
+}
+
+/** What Harbor does, as a short list in the same box the other points use for their evidence. */
+function Checklist({ caption, items }: { caption: string; items: string[] }) {
+  return (
+    <figure className="flex flex-col gap-[18px] rounded-lg border border-border bg-surface px-[22px] py-[22px] sm:px-[28px] sm:py-[26px]">
+      <figcaption className="font-mono text-label font-medium uppercase leading-[14px] tracking-mono text-faint">{caption}</figcaption>
+      <ul className="flex flex-col gap-[12px]">
+        {items.map((item) => (
+          <li key={item} className="flex gap-[10px] text-copy leading-[25px] text-text">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-[5px] shrink-0" aria-hidden="true">
+              <path d="M3 8.5l3.2 3L13 4.5" stroke="var(--color-accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {item}
+          </li>
+        ))}
+      </ul>
     </figure>
   );
 }

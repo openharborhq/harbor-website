@@ -1,3 +1,4 @@
+import { HARBOR_COST_NOTE, HARBOR_FAQ, HARBOR_TEN_YEARS, HERO_LEAD } from "./shared";
 import type { Comparison } from "./types";
 
 /*
@@ -22,7 +23,7 @@ export const trustworthy: Comparison = {
   },
   hero: {
     title: "A self-hosted Trustworthy alternative",
-    lead: "Open source vs hosted. See how Harbor stacks up.",
+    lead: HERO_LEAD,
   },
   rows: [
     { q: "Price", harbor: "Free", them: "$0 to $480 a year" },
@@ -63,9 +64,9 @@ export const trustworthy: Comparison = {
         body: "A subscription charges you every year. Ten years of Trustworthy Platinum, its only plan with unlimited storage, costs $4,800. Harbor is free: buy a small computer once, or use one you already have, and pay a few dollars a year for electricity.",
         figures: [
           { label: "Trustworthy Platinum", value: "$4,800", amount: 4800 },
-          { label: "Harbor at home", value: "about $330", amount: 330, harbor: true },
+          HARBOR_TEN_YEARS,
         ],
-        note: "Ten-year estimate with subscription prices held constant: Platinum is $40 a month, billed annually. Harbor assumes a $250 computer with storage, drawing 5 W at $0.188 per kWh: about $80 in electricity. Backup storage, optional hosted AI and any hardware replacements are extra.",
+        note: `Ten-year estimate with subscription prices held constant: Platinum is $40 a month, billed annually. ${HARBOR_COST_NOTE}`,
       },
     ],
   },
@@ -84,14 +85,7 @@ export const trustworthy: Comparison = {
       q: "Can I move my documents from Trustworthy to Harbor?",
       a: "Yes. Export your files from Trustworthy’s web app under Settings → Export data, then upload the archive to Harbor, which reads and files each document again. Trustworthy’s reminders and notes do not carry over.",
     },
-    {
-      q: "What do I need to run Harbor?",
-      a: "A Linux machine with Docker, such as a Raspberry Pi 5 with an SSD or a small PC, an encrypted disk, somewhere for backups, and some comfort with the command line.",
-    },
-    {
-      q: "How long does it take to set up Harbor?",
-      a: "Download Harbor and run a single script. It asks a few simple questions: which drive should hold your documents, how you want to reach Harbor and where your backups should go. Harbor does the rest. On a typical home connection it is ready in minutes. Then open Harbor in your browser and create your account.",
-    },
+    ...HARBOR_FAQ,
   ],
   sources: [
     { label: "pricing", href: "https://www.trustworthy.com/pricing" },

@@ -20,6 +20,8 @@ export type Differentiator = {
   body: string;
   quote?: Quote;
   figures?: Figure[];
+  /** A short list in the evidence box, for a point whose evidence is what Harbor does. */
+  checklist?: { caption: string; items: string[] };
   /** Small print under the figures: what the estimate assumes. */
   note?: string;
 };
