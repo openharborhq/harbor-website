@@ -4,8 +4,7 @@ import { getLatestRelease, GITHUB, REPO } from "@/lib/github";
 import { Wordmark } from "../Logo";
 import type { Lang } from "@/lib/i18n";
 import { LanguageSwitch } from "./LanguageSwitch";
-import { COMPARISONS } from "@/content/compare";
-import { compare, doc, home, pricing } from "./routes";
+import { COMPARE, doc, home, pricing } from "./routes";
 
 /*
  * The v2 footer. Same columns as the live one, plus the theme control, which moved out of the
@@ -28,8 +27,9 @@ const columns = (lang: Lang): Column[] => {
         { label: de ? "Installieren (EN)" : "Install and deploy", href: doc("install") },
         { label: de ? "Backups (EN)" : "Backups & restore", href: doc("backups") },
         { label: "Changelog", href: `${GITHUB}/blob/main/CHANGELOG.md` },
-        // The versus pages are English only, so the German footer leaves them out.
-        ...(de ? [] : COMPARISONS.map((c) => ({ label: `Harbor vs ${c.name}`, href: compare(c.slug) }))),
+        // The comparisons are English only, so the German footer leaves them out. One link to the
+        // hub rather than one per page: the hub links each of them.
+        ...(de ? [] : [{ label: "Compare alternatives", href: COMPARE }]),
       ],
     },
     {

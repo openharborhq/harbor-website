@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ClosingBand } from "@/components/v2/ClosingBand";
 import { Faq } from "@/components/v2/Faq";
 import { FooterV2 } from "@/components/v2/FooterV2";
 import { Mark } from "@/components/Logo";
 import { NavV2 } from "@/components/v2/NavV2";
-import { Eyebrow } from "@/components/v2/parts";
-import { compare } from "@/components/v2/routes";
+import { Arrow, Eyebrow } from "@/components/v2/parts";
+import { COMPARE, compare } from "@/components/v2/routes";
 import { StaggerGroup, StaggerItem } from "@/components/v2/Stagger";
 import { StickyNav } from "@/components/v2/StickyNav";
-import type { Comparison } from "@/content/compare";
+import { COMPARISONS, type Comparison } from "@/content/compare";
 import type { Figure, Quote } from "@/content/compare/types";
 
 /*
@@ -142,6 +143,8 @@ export function ComparePage({ comparison: c }: { comparison: Comparison }) {
 
         <Faq title={`Switching from ${c.name}`} questions={c.faq} />
 
+        <MoreComparisons current={c.slug} />
+
         <ClosingBand lead="Free, open source, and on a machine you own." placement={`compare_${c.slug}_closing`} />
       </main>
       <FooterV2 />
@@ -215,6 +218,36 @@ function CostChart({ figures, note }: { figures: Figure[]; note?: string }) {
       </dl>
       {note && <p className="border-t border-border pt-[16px] text-small leading-[19px] text-muted">{note}</p>}
     </figure>
+  );
+}
+
+/*
+ * The way on to the other versus pages, under the FAQ: each one by name, then the hub. Links in
+ * the content of related pages are what tie the comparisons together for a reader and for search
+ * alike; the footer carries only the hub.
+ */
+function MoreComparisons({ current }: { current: string }) {
+  const others = COMPARISONS.filter((o) => o.slug !== current);
+  return (
+    <nav aria-label="More comparisons" className="flex flex-col items-center gap-[20px] bg-ground lane pb-[60px] md:pb-[80px]">
+      <Eyebrow>MORE COMPARISONS</Eyebrow>
+      <ul className="flex max-w-[860px] flex-wrap justify-center gap-[10px]">
+        {others.map((o) => (
+          <li key={o.slug}>
+            <Link
+              href={compare(o.slug)}
+              className="block rounded-pill border border-border-strong bg-ground px-[18px] py-[9px] text-body font-medium leading-[20px] text-text transition-colors duration-150 hover:border-accent hover:text-accent"
+            >
+              Harbor vs {o.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <Link href={COMPARE} className="flex items-center gap-[8px] text-body font-semibold leading-[20px] text-accent hover:underline">
+        All comparisons
+        <Arrow size={14} />
+      </Link>
+    </nav>
   );
 }
 

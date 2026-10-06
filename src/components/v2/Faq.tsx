@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { COMPARE } from "./routes";
 import { StaggerGroup, StaggerItem } from "./Stagger";
 import type { Lang } from "@/lib/i18n";
 
@@ -7,7 +9,10 @@ import type { Lang } from "@/lib/i18n";
  * A plain list rather than an accordion: five questions is short enough to read straight through,
  * and collapsing them hides the two answers — cost and security — that the audience came for.
  */
-const QUESTIONS: Record<Lang, { q: string; a: string }[]> = {
+/** A question may end with one link, for an answer that continues on another page. */
+type Question = { q: string; a: string; link?: { label: string; href: string } };
+
+const QUESTIONS: Record<Lang, Question[]> = {
   en: [
     {
       q: "What does Harbor cost?",
@@ -28,6 +33,11 @@ const QUESTIONS: Record<Lang, { q: string; a: string }[]> = {
     {
       q: "What hardware can I use?",
       a: "A Raspberry Pi 5 with an SSD or a small Linux PC can run Harbor. Plan for at least 100 GB of available storage. The setup guide uses Debian 12; check the prerequisites before preparing your machine.",
+    },
+    {
+      q: "How does Harbor compare with other document vaults?",
+      a: "Hosted vaults like Trustworthy, Everplans and Quicken LifeHub keep your records on their servers, under their terms. Paperless-ngx is a general document manager you run yourself. Harbor is a household data manager on your own hardware.",
+      link: { label: "See how Harbor compares", href: COMPARE },
     },
   ],
   de: [
@@ -71,7 +81,7 @@ export function Faq({
   /** Defaults to the home page's heading in `lang`. */
   title?: string;
   /** Defaults to the home page's questions in `lang`. */
-  questions?: { q: string; a: string }[];
+  questions?: Question[];
   lang?: Lang;
 } = {}) {
   const heading = title ?? TITLE[lang];
@@ -93,7 +103,17 @@ export function Faq({
             className={`flex flex-col gap-[10px] py-[28px] ${i > 0 ? "border-t border-border" : "pt-0"}`}
           >
             <dt className="text-section font-bold leading-[26px] tracking-snug text-text">{item.q}</dt>
-            <dd className="text-[15.5px] leading-[26px] text-muted">{item.a}</dd>
+            <dd className="text-[15.5px] leading-[26px] text-muted">
+              {item.a}
+              {item.link && (
+                <>
+                  {" "}
+                  <Link href={item.link.href} className="font-semibold text-accent hover:underline">
+                    {item.link.label}
+                  </Link>
+                </>
+              )}
+            </dd>
           </StaggerItem>
         ))}
       </StaggerGroup>

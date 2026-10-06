@@ -18,6 +18,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
   const docs = ALL_PAGES.map((p) => ({ url: SITE + p.href }));
-  const compare = COMPARISONS.map((c) => ({ url: `${SITE}/compare/${c.slug}`, lastModified: c.checked }));
+  const compare = [
+    { url: `${SITE}/compare` },
+    ...COMPARISONS.map((c) => ({ url: `${SITE}/compare/${c.slug}`, lastModified: c.checked })),
+  ];
   return [...bilingual, ...compare, ...docs];
 }
