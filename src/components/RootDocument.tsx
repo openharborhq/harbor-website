@@ -62,6 +62,8 @@ export function rootMetadata(lang: Lang): Metadata {
       locale: lang === "de" ? "de_DE" : "en_US",
       type: "website",
     },
+    // The shared card is drawn wide (opengraph-image.tsx), so ask X and the like to show it wide.
+    twitter: { card: "summary_large_image" },
   };
 }
 
