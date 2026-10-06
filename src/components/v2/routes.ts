@@ -18,7 +18,11 @@ export const DOCS = "/docs";
 export const FEATURES = "/features";
 export const PRICING = "/pricing";
 
+export const COMPARE = "/compare";
+
 export const doc = (path: string) => `${DOCS}/${path}`;
+/** A versus page. English only, like the docs, so it takes no language. */
+export const compare = (slug: string) => `${COMPARE}/${slug}`;
 
 export const home = (lang: Lang) => localize(HOME, lang);
 export const features = (lang: Lang) => localize(FEATURES, lang);

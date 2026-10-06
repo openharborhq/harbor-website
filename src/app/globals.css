@@ -35,6 +35,11 @@
   --color-violet: #5b3fd0;
   --color-violet-soft: #ece7fb;
 
+  /* The neutral bar in a chart, beside an accent one: 3.3:1 on white, so a bar still reads as a
+     shape, and far enough from the accent that the two never blur (checked with the dataviz
+     palette validator). */
+  --color-chart-neutral: #7d8a9c;
+
   /* The promise band stays the same saturated cobalt in both themes, so these four never flip. */
   --color-band: #123fa8;
   --color-on-band: #ffffff;
