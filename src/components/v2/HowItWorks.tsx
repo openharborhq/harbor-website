@@ -466,7 +466,7 @@ const SECTION: Record<Lang, { eyebrow: string; head: string; lead: string; tabs:
   },
   de: {
     eyebrow: "SO FUNKTIONIERT’S",
-    head: "So arbeitet Harbor",
+    head: "So funktioniert Harbor",
     lead: "Von der Rechnung in deinem Postfach bis zur Kopie für deine Steuerberatung.",
     tabs: "Was Harbor macht",
   },
