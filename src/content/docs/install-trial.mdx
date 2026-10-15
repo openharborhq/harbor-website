@@ -37,7 +37,7 @@ What to answer:
 
 It prints the address when it is done, such as `http://127.0.0.1:3000`. Open it, create an account as in [First run](/docs/first-run), and drop in a test document.
 
-The installer puts its `harbor` command in the `harbor` folder, since `/usr/local/bin` is usually not writable on a Mac: `./harbor/harbor status`, `./harbor/harbor logs`.
+The installer says where it put its `harbor` command. If it found a folder on your PATH, such as `~/.local/bin`, plain `harbor status` works. Otherwise it is in the `harbor` folder, so type `./harbor/harbor status` from this one.
 
 ## Remove it
 
@@ -45,6 +45,7 @@ The installer puts its `harbor` command in the `harbor` folder, since `/usr/loca
 ./harbor/harbor stop
 docker compose -p harbor down --volumes
 cd .. && rm -rf harbor-trial
+rm -f ~/.local/bin/harbor   # only if the installer put it there
 ```
 
 `--volumes` also removes the database, which Docker Desktop keeps in its own storage rather than in the folder.
